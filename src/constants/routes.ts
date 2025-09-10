@@ -7,6 +7,10 @@ export const ROUTES = {
   LOGIN: '/login',
   FORGOT_PASSWORD: '/forgot-password',
   SIGNUP: '/signup',
+  TEST: '/test',
+  UI_TEST: '/test/ui',
+  SHADCN_TEST: '/test/shadcn',
+  TAILWIND_TEST: '/test/tailwind',
 } as const;
 
 // 타입 정의
