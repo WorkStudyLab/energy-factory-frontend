@@ -2,10 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 /* 기본 스타일 리셋 */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+.container { 
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 body {

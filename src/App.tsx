@@ -11,7 +11,6 @@ import TestPage from './pages/test/TestPage';
 import UiTestPage from './pages/test/UiTestPage';
 import ShadcnTestPage from './pages/test/ShadcnTestPage';
 import TailwindTestPage from './pages/test/TailwindTestPage';
-import './App.css';
 
 function App() {
   return (
@@ -29,7 +28,7 @@ function App() {
           </ul>
         </nav>
         
-        <main className="flex-1 p-8 max-w-7xl mx-auto w-full">
+        <main className="flex-1">
           <Routes>
             <Route path={ROUTES.HOME} element={<HomePage />} />
             <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
