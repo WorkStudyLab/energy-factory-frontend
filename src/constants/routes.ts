@@ -7,6 +7,11 @@ export const ROUTES = {
   LOGIN: '/login',
   FORGOT_PASSWORD: '/forgot-password',
   SIGNUP: '/signup',
+  PROFILE: '/profile',
+  NUTRITION: '/nutrition',
+  DIET_COACH: '/diet-coach',
+
+
   TEST: '/test',
   UI_TEST: '/test/ui',
   SHADCN_TEST: '/test/shadcn',
