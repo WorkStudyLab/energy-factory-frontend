@@ -15,6 +15,8 @@ export const ROUTES = {
   SIGNUP: '/signup',
   // 프로필
   PROFILE: '/profile',
+  // 마이페이지
+  MY_PAGE: '/mypage',
   // 영양 계산기
   NUTRITION: '/nutrition',
   // 식단 코치

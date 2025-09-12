@@ -16,16 +16,22 @@ export default function LoginPage() {
     e.preventDefault()
     // 로그인 로직 구현
     console.log("로그인 시도:", { email, password })
+    // 로그인 성공 시 마이페이지로 이동
+    navigate(ROUTES.MY_PAGE)
   }
 
   const handleGoogleLogin = () => {
     // Google 로그인 로직 구현
     console.log("Google 로그인 시도")
+    // 로그인 성공 시 마이페이지로 이동
+    navigate(ROUTES.MY_PAGE)
   }
 
   const handleKakaoLogin = () => {
     // Kakao 로그인 로직 구현
     console.log("Kakao 로그인 시도")
+    // 로그인 성공 시 마이페이지로 이동
+    navigate(ROUTES.MY_PAGE)
   }
   return (
     <div className="container flex items-center justify-center min-h-[calc(100vh-16rem)] py-8">

@@ -10,6 +10,7 @@ import SignupPage from './pages/auth/SignupPage';
 import NutritionPage from './pages/nutrition/NutritionPage';
 import DietCoachPage from './pages/diet-coach/DietCoachPage';
 import OrderHistoryPage from './pages/order-history/OrderHistoryPage';
+import MyPage from './pages/mypage/MyPage';
 import TestPage from './pages/test/TestPage';
 import UiTestPage from './pages/test/UiTestPage';
 import ShadcnTestPage from './pages/test/ShadcnTestPage';
@@ -37,6 +38,7 @@ function App() {
             <Route path={ROUTES.NUTRITION} element={<NutritionPage />} />
             <Route path={ROUTES.DIET_COACH} element={<DietCoachPage />} />
             <Route path={ROUTES.ORDER_HISTORY} element={<OrderHistoryPage />} />
+            <Route path={ROUTES.MY_PAGE} element={<MyPage />} />
             <Route path={ROUTES.TEST} element={<TestPage />} />
             <Route path={ROUTES.UI_TEST} element={<UiTestPage />} />
             <Route path={ROUTES.SHADCN_TEST} element={<ShadcnTestPage />} />
