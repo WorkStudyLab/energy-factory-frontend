@@ -1,10 +1,23 @@
 // import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 // import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from "recharts"
 
@@ -33,7 +46,9 @@ export default function NutritionPage() {
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold">영양소 계산기</h1>
-          <p className="text-gray-500">목표에 맞는 영양소 섭취량을 계산하고 관리하세요</p>
+          <p className="text-gray-500">
+            목표에 맞는 영양소 섭취량을 계산하고 관리하세요
+          </p>
         </div>
 
         <Tabs defaultValue="calculator">
@@ -47,7 +62,9 @@ export default function NutritionPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>개인 정보</CardTitle>
-                  <CardDescription>정확한 계산을 위해 신체 정보를 입력해주세요</CardDescription>
+                  <CardDescription>
+                    정확한 계산을 위해 신체 정보를 입력해주세요
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
@@ -85,11 +102,21 @@ export default function NutritionPage() {
                         <SelectValue placeholder="활동량 선택" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="sedentary">거의 운동 안함</SelectItem>
-                        <SelectItem value="light">가벼운 활동 (주 1-3회)</SelectItem>
-                        <SelectItem value="moderate">보통 활동 (주 3-5회)</SelectItem>
-                        <SelectItem value="active">활발한 활동 (주 6-7회)</SelectItem>
-                        <SelectItem value="very-active">매우 활발한 활동 (하루 2회)</SelectItem>
+                        <SelectItem value="sedentary">
+                          거의 운동 안함
+                        </SelectItem>
+                        <SelectItem value="light">
+                          가벼운 활동 (주 1-3회)
+                        </SelectItem>
+                        <SelectItem value="moderate">
+                          보통 활동 (주 3-5회)
+                        </SelectItem>
+                        <SelectItem value="active">
+                          활발한 활동 (주 6-7회)
+                        </SelectItem>
+                        <SelectItem value="very-active">
+                          매우 활발한 활동 (하루 2회)
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -99,7 +126,9 @@ export default function NutritionPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>목표 설정</CardTitle>
-                  <CardDescription>운동 목표와 식이 제한 사항을 선택해주세요</CardDescription>
+                  <CardDescription>
+                    운동 목표와 식이 제한 사항을 선택해주세요
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
@@ -123,10 +152,16 @@ export default function NutritionPage() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="balanced">균형 잡힌 식단</SelectItem>
-                        <SelectItem value="high-protein">고단백 식단</SelectItem>
-                        <SelectItem value="low-carb">저탄수화물 식단</SelectItem>
+                        <SelectItem value="high-protein">
+                          고단백 식단
+                        </SelectItem>
+                        <SelectItem value="low-carb">
+                          저탄수화물 식단
+                        </SelectItem>
                         <SelectItem value="keto">케토 식단</SelectItem>
-                        <SelectItem value="mediterranean">지중해식 식단</SelectItem>
+                        <SelectItem value="mediterranean">
+                          지중해식 식단
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -147,21 +182,27 @@ export default function NutritionPage() {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full bg-green-600 hover:bg-green-700">계산하기</Button>
+                  <Button className="w-full bg-green-600 hover:bg-green-700">
+                    계산하기
+                  </Button>
                 </CardFooter>
               </Card>
 
               <Card className="md:col-span-2">
                 <CardHeader>
                   <CardTitle>계산 결과</CardTitle>
-                  <CardDescription>목표 달성을 위한 일일 권장 영양소 섭취량</CardDescription>
+                  <CardDescription>
+                    목표 달성을 위한 일일 권장 영양소 섭취량
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="space-y-4">
                       <div>
                         <h3 className="text-lg font-medium">일일 칼로리</h3>
-                        <p className="text-3xl font-bold text-green-600">2,450 kcal</p>
+                        <p className="text-3xl font-bold text-green-600">
+                          2,450 kcal
+                        </p>
                       </div>
                       <div className="space-y-2">
                         <div className="flex justify-between">
@@ -191,7 +232,8 @@ export default function NutritionPage() {
                       {/* 차트 컴포넌트 - recharts 라이브러리 설치 후 활성화 */}
                       <div className="h-[200px] w-[200px] flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
                         <p className="text-gray-500 text-center">
-                          차트 영역<br />
+                          차트 영역
+                          <br />
                           <small>recharts 설치 필요</small>
                         </p>
                       </div>
@@ -249,13 +291,16 @@ export default function NutritionPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>주간 영양소 섭취 현황</CardTitle>
-                  <CardDescription>지난 7일간의 영양소 섭취 추이</CardDescription>
+                  <CardDescription>
+                    지난 7일간의 영양소 섭취 추이
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   {/* 주간 영양소 차트 - recharts 라이브러리 설치 후 활성화 */}
                   <div className="h-[300px] flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
                     <p className="text-gray-500 text-center">
-                      주간 영양소 차트<br />
+                      주간 영양소 차트
+                      <br />
                       <small>recharts 설치 필요</small>
                     </p>
                   </div>
@@ -297,13 +342,17 @@ export default function NutritionPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>목표 달성률</CardTitle>
-                  <CardDescription>오늘의 영양소 목표 달성 현황</CardDescription>
+                  <CardDescription>
+                    오늘의 영양소 목표 달성 현황
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>칼로리</span>
-                      <span className="font-medium">1,850 / 2,450 kcal (76%)</span>
+                      <span className="font-medium">
+                        1,850 / 2,450 kcal (76%)
+                      </span>
                     </div>
                     <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                       <div className="h-full bg-green-600 w-[76%]"></div>
@@ -342,28 +391,39 @@ export default function NutritionPage() {
               <Card className="md:col-span-2">
                 <CardHeader>
                   <CardTitle>AI 영양 코치 피드백</CardTitle>
-                  <CardDescription>영양 데이터를 기반으로 한 맞춤형 조언</CardDescription>
+                  <CardDescription>
+                    영양 데이터를 기반으로 한 맞춤형 조언
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="bg-green-50 p-4 rounded-lg">
-                    <h3 className="font-medium text-green-800 mb-2">오늘의 영양 분석</h3>
+                    <h3 className="font-medium text-green-800 mb-2">
+                      오늘의 영양 분석
+                    </h3>
                     <p className="text-green-700">
-                      단백질 섭취가 목표에 근접하고 있습니다. 저녁 식사에 단백질 소스를 추가하면 목표를 달성할 수
-                      있습니다. 탄수화물은 복합 탄수화물 위주로 섭취하는 것이 좋습니다.
+                      단백질 섭취가 목표에 근접하고 있습니다. 저녁 식사에 단백질
+                      소스를 추가하면 목표를 달성할 수 있습니다. 탄수화물은 복합
+                      탄수화물 위주로 섭취하는 것이 좋습니다.
                     </p>
                   </div>
                   <div className="bg-blue-50 p-4 rounded-lg">
-                    <h3 className="font-medium text-blue-800 mb-2">주간 추세 분석</h3>
+                    <h3 className="font-medium text-blue-800 mb-2">
+                      주간 추세 분석
+                    </h3>
                     <p className="text-blue-700">
-                      지난 주에 비해 단백질 섭취량이 10% 증가했습니다. 이는 근육 증가 목표에 긍정적인 영향을 줄
-                      것입니다. 주말에는 단백질 섭취가 감소하는 경향이 있으니 주의하세요.
+                      지난 주에 비해 단백질 섭취량이 10% 증가했습니다. 이는 근육
+                      증가 목표에 긍정적인 영향을 줄 것입니다. 주말에는 단백질
+                      섭취가 감소하는 경향이 있으니 주의하세요.
                     </p>
                   </div>
                   <div className="bg-amber-50 p-4 rounded-lg">
-                    <h3 className="font-medium text-amber-800 mb-2">추천 식품</h3>
+                    <h3 className="font-medium text-amber-800 mb-2">
+                      추천 식품
+                    </h3>
                     <p className="text-amber-700">
-                      목표 달성을 위해 다음 식품을 추천합니다: 그릭 요거트, 닭가슴살, 퀴노아, 아보카도. 이러한 식품은
-                      균형 잡힌 영양소를 제공하며 목표 달성에 도움이 됩니다.
+                      목표 달성을 위해 다음 식품을 추천합니다: 그릭 요거트,
+                      닭가슴살, 퀴노아, 아보카도. 이러한 식품은 균형 잡힌
+                      영양소를 제공하며 목표 달성에 도움이 됩니다.
                     </p>
                   </div>
                 </CardContent>
@@ -378,5 +438,5 @@ export default function NutritionPage() {
         </Tabs>
       </div>
     </div>
-  )
+  );
 }

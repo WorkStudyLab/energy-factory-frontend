@@ -1,13 +1,39 @@
-import { useState } from "react"
-import { ArrowRight, Leaf, ShoppingBag, ChevronRight, Target, Brain } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
+import { useState } from "react";
+import {
+  ArrowRight,
+  Leaf,
+  ShoppingBag,
+  ChevronRight,
+  Target,
+  Brain,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 
 export default function HomePage() {
-  const [fitnessGoal, setFitnessGoal] = useState("")
+  const [fitnessGoal, setFitnessGoal] = useState("");
 
   // 목표별 추천 제품
   const recommendedProducts = {
@@ -98,7 +124,7 @@ export default function HomePage() {
         tags: ["장건강", "면역"],
       },
     ],
-  }
+  };
 
   // 인기 제품
   const popularProducts = [
@@ -147,7 +173,7 @@ export default function HomePage() {
       calories: 200,
       tags: ["고단백", "간편식"],
     },
-  ]
+  ];
 
   // 성공 사례
   const successStories = [
@@ -178,7 +204,7 @@ export default function HomePage() {
         "만성 피로와 소화 문제로 고생했는데, Energy Factory의 균형 잡힌 식단과 영양제 추천으로 건강이 크게 개선되었습니다. 활력이 넘치는 일상을 되찾았어요!",
       products: ["종합 비타민", "오메가3", "프로바이오틱스"],
     },
-  ]
+  ];
 
   // AI 코치 샘플 대화
   const aiCoachSamples = [
@@ -197,7 +223,7 @@ export default function HomePage() {
       answer:
         "칼로리 적자를 만들되 단백질 섭취는 유지하세요. 섬유질이 풍부한 채소와 과일, 단백질 위주의 식단으로 포만감을 유지하면서 체중 감량이 가능합니다.",
     },
-  ]
+  ];
 
   return (
     <div className="flex flex-col gap-8 py-8">
@@ -210,7 +236,8 @@ export default function HomePage() {
                 당신의 운동 목표에 맞는 식단, Energy Factory와 함께
               </h1>
               <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                운동 목표에 맞는 영양소 계산과 식단 계획을 바탕으로 식재료를 구매할 수 있는 통합 쇼핑 플랫폼입니다.
+                운동 목표에 맞는 영양소 계산과 식단 계획을 바탕으로 식재료를
+                구매할 수 있는 통합 쇼핑 플랫폼입니다.
               </p>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Button
@@ -220,7 +247,8 @@ export default function HomePage() {
                   시작하기
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                <Button variant="outline" // onClick={() => onNavigate && onNavigate("products")}
+                <Button
+                  variant="outline" // onClick={() => onNavigate && onNavigate("products")}
                 >
                   상품 둘러보기
                 </Button>
@@ -240,8 +268,12 @@ export default function HomePage() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center mb-8">
             <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">맞춤형 추천</div>
-              <h2 className="text-3xl font-bold tracking-tighter">내 목표에 맞는 제품 찾기</h2>
+              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">
+                맞춤형 추천
+              </div>
+              <h2 className="text-3xl font-bold tracking-tighter">
+                내 목표에 맞는 제품 찾기
+              </h2>
               <p className="max-w-[700px] text-gray-500">
                 운동 목표를 선택하면 그에 맞는 최적의 제품을 추천해 드립니다.
               </p>
@@ -271,7 +303,9 @@ export default function HomePage() {
                 을 위한 추천 제품
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {recommendedProducts[fitnessGoal as keyof typeof recommendedProducts].map((product: any) => (
+                {recommendedProducts[
+                  fitnessGoal as keyof typeof recommendedProducts
+                ].map((product: any) => (
                   <Card key={product.id} className="overflow-hidden">
                     <CardContent className="p-0">
                       <img
@@ -283,20 +317,30 @@ export default function HomePage() {
                     <CardHeader className="p-4 pb-0">
                       <div className="flex flex-wrap gap-1 mb-2">
                         {product.tags.map((tag: any, index: any) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
+                          <Badge
+                            key={index}
+                            variant="secondary"
+                            className="text-xs"
+                          >
                             {tag}
                           </Badge>
                         ))}
                       </div>
                       <CardTitle className="text-lg">{product.name}</CardTitle>
                       <CardDescription>
-                        {product.protein > 0 && `단백질: ${product.protein}g · `}
-                        {product.calories > 0 && `칼로리: ${product.calories}kcal`}
+                        {product.protein > 0 &&
+                          `단백질: ${product.protein}g · `}
+                        {product.calories > 0 &&
+                          `칼로리: ${product.calories}kcal`}
                       </CardDescription>
                     </CardHeader>
                     <CardFooter className="p-4 pt-0 flex justify-between items-center">
-                      <span className="font-bold">{product.price.toLocaleString()}원</span>
-                      <Button variant="outline" size="sm" // onClick={() => onNavigate && onNavigate("cart")}
+                      <span className="font-bold">
+                        {product.price.toLocaleString()}원
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm" // onClick={() => onNavigate && onNavigate("cart")}
                       >
                         장바구니
                       </Button>
@@ -324,10 +368,15 @@ export default function HomePage() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">주요 기능</div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Energy Factory의 특별한 기능</h2>
+              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">
+                주요 기능
+              </div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                Energy Factory의 특별한 기능
+              </h2>
               <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                운동 목표 달성을 위한 맞춤형 식단 계획과 영양소 계산, 그리고 쉽고 편리한 쇼핑까지
+                운동 목표 달성을 위한 맞춤형 식단 계획과 영양소 계산, 그리고
+                쉽고 편리한 쇼핑까지
               </p>
             </div>
           </div>
@@ -341,11 +390,13 @@ export default function HomePage() {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  근육 증가, 체중 감량 등 개인 목표에 맞는 영양소 섭취량을 자동으로 계산해 드립니다.
+                  근육 증가, 체중 감량 등 개인 목표에 맞는 영양소 섭취량을
+                  자동으로 계산해 드립니다.
                 </CardDescription>
               </CardContent>
               <CardFooter>
-                <Button variant="link" // onClick={() => onNavigate && onNavigate("nutrition")}
+                <Button
+                  variant="link" // onClick={() => onNavigate && onNavigate("nutrition")}
                 >
                   영양 계산기 사용하기
                 </Button>
@@ -360,11 +411,13 @@ export default function HomePage() {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  LLM 기반 AI가 개인 맞춤형 식단을 제안하고 영양 관련 질문에 답변해 드립니다.
+                  LLM 기반 AI가 개인 맞춤형 식단을 제안하고 영양 관련 질문에
+                  답변해 드립니다.
                 </CardDescription>
               </CardContent>
               <CardFooter>
-                <Button variant="link" // onClick={() => onNavigate && onNavigate("diet-coach")}
+                <Button
+                  variant="link" // onClick={() => onNavigate && onNavigate("diet-coach")}
                 >
                   AI 코치와 대화하기
                 </Button>
@@ -379,11 +432,13 @@ export default function HomePage() {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  고단백, 건강한 지방, 복합 탄수화물 등 영양소 기반으로 상품을 쉽게 찾을 수 있습니다.
+                  고단백, 건강한 지방, 복합 탄수화물 등 영양소 기반으로 상품을
+                  쉽게 찾을 수 있습니다.
                 </CardDescription>
               </CardContent>
               <CardFooter>
-                <Button variant="link" // onClick={() => onNavigate && onNavigate("products")}
+                <Button
+                  variant="link" // onClick={() => onNavigate && onNavigate("products")}
                 >
                   카테고리 둘러보기
                 </Button>
@@ -398,11 +453,13 @@ export default function HomePage() {
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  장바구니에 담긴 상품의 총 영양소를 계산하고 목표 달성을 위한 추천 상품을 제안합니다.
+                  장바구니에 담긴 상품의 총 영양소를 계산하고 목표 달성을 위한
+                  추천 상품을 제안합니다.
                 </CardDescription>
               </CardContent>
               <CardFooter>
-                <Button variant="link" // onClick={() => onNavigate && onNavigate("cart")}
+                <Button
+                  variant="link" // onClick={() => onNavigate && onNavigate("cart")}
                 >
                   장바구니 체험하기
                 </Button>
@@ -417,10 +474,15 @@ export default function HomePage() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center mb-8">
             <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">AI 코치</div>
-              <h2 className="text-3xl font-bold tracking-tighter">AI 식단 코치와의 대화</h2>
+              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">
+                AI 코치
+              </div>
+              <h2 className="text-3xl font-bold tracking-tighter">
+                AI 식단 코치와의 대화
+              </h2>
               <p className="max-w-[700px] text-gray-500">
-                Energy Factory의 AI 코치는 영양과 운동에 관한 모든 질문에 전문적인 답변을 제공합니다.
+                Energy Factory의 AI 코치는 영양과 운동에 관한 모든 질문에
+                전문적인 답변을 제공합니다.
               </p>
             </div>
           </div>
@@ -429,7 +491,9 @@ export default function HomePage() {
             {aiCoachSamples.map((sample: any, index: any) => (
               <Card key={index} className="bg-white">
                 <CardHeader>
-                  <CardTitle className="text-lg">Q: {sample.question}</CardTitle>
+                  <CardTitle className="text-lg">
+                    Q: {sample.question}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600">{sample.answer}</p>
@@ -439,7 +503,8 @@ export default function HomePage() {
           </div>
 
           <div className="flex justify-center mt-8">
-            <Button className="bg-green-600 hover:bg-green-700" // onClick={() => onNavigate && onNavigate("diet-coach")}
+            <Button
+              className="bg-green-600 hover:bg-green-700" // onClick={() => onNavigate && onNavigate("diet-coach")}
             >
               AI 코치와 상담하기
               <ChevronRight className="ml-2 h-4 w-4" />
@@ -453,8 +518,12 @@ export default function HomePage() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">베스트셀러</div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">인기 상품</h2>
+              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">
+                베스트셀러
+              </div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                인기 상품
+              </h2>
               <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                 Energy Factory 회원들이 가장 많이 구매한 건강한 식재료
               </p>
@@ -463,7 +532,10 @@ export default function HomePage() {
           <Carousel className="w-full max-w-5xl mx-auto mt-8">
             <CarouselContent>
               {popularProducts.map((product) => (
-                <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3">
+                <CarouselItem
+                  key={product.id}
+                  className="md:basis-1/2 lg:basis-1/3"
+                >
                   <Card className="overflow-hidden">
                     <CardContent className="p-0">
                       <img
@@ -475,20 +547,30 @@ export default function HomePage() {
                     <CardHeader className="p-4">
                       <div className="flex flex-wrap gap-1 mb-2">
                         {product.tags.map((tag, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
+                          <Badge
+                            key={index}
+                            variant="secondary"
+                            className="text-xs"
+                          >
                             {tag}
                           </Badge>
                         ))}
                       </div>
                       <CardTitle className="text-lg">{product.name}</CardTitle>
                       <CardDescription>
-                        {product.protein > 0 && `단백질: ${product.protein}g · `}
-                        {product.calories > 0 && `칼로리: ${product.calories}kcal`}
+                        {product.protein > 0 &&
+                          `단백질: ${product.protein}g · `}
+                        {product.calories > 0 &&
+                          `칼로리: ${product.calories}kcal`}
                       </CardDescription>
                     </CardHeader>
                     <CardFooter className="p-4 pt-0 flex justify-between">
-                      <span className="font-bold">{product.price.toLocaleString()}원</span>
-                      <Button variant="outline" size="sm" // onClick={() => onNavigate && onNavigate("cart")}
+                      <span className="font-bold">
+                        {product.price.toLocaleString()}원
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm" // onClick={() => onNavigate && onNavigate("cart")}
                       >
                         장바구니
                       </Button>
@@ -518,8 +600,12 @@ export default function HomePage() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">성공 사례</div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">고객 성공 스토리</h2>
+              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">
+                성공 사례
+              </div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                고객 성공 스토리
+              </h2>
               <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                 Energy Factory와 함께 목표를 달성한 실제 고객들의 이야기
               </p>
@@ -544,7 +630,9 @@ export default function HomePage() {
                 <CardContent className="space-y-4">
                   <p className="text-gray-600">{story.story}</p>
                   <div>
-                    <p className="text-sm font-medium text-gray-500">주로 사용한 제품:</p>
+                    <p className="text-sm font-medium text-gray-500">
+                      주로 사용한 제품:
+                    </p>
                     <ul className="text-sm text-gray-600 mt-1">
                       {story.products.map((product, index) => (
                         <li key={index} className="flex items-center">
@@ -566,9 +654,12 @@ export default function HomePage() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">지금 바로 시작하세요</h2>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                지금 바로 시작하세요
+              </h2>
               <p className="max-w-[900px] md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Energy Factory와 함께 건강한 식단 관리와 쇼핑을 한 번에 해결하세요.
+                Energy Factory와 함께 건강한 식단 관리와 쇼핑을 한 번에
+                해결하세요.
               </p>
             </div>
             <div className="flex flex-col gap-4 min-[400px]:flex-row">
@@ -597,5 +688,5 @@ export default function HomePage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

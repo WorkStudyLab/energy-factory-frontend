@@ -1,8 +1,8 @@
-import { Facebook, Instagram, Twitter } from "lucide-react"
+import { Facebook, Instagram, Twitter } from "lucide-react";
 
 // TODO: onNavigate prop 타입 정의 필요 (필요시)
 interface FooterProps {
-  onNavigate?: (route: string) => void
+  onNavigate?: (route: string) => void;
 }
 
 export default function Footer({ onNavigate }: FooterProps) {
@@ -12,29 +12,58 @@ export default function Footer({ onNavigate }: FooterProps) {
         <div className="space-y-4">
           <h3 className="text-lg font-bold">Energy Factory</h3>
           <p className="text-sm text-gray-500">
-            운동 목표에 맞는 영양소 계산과 식단 계획을 바탕으로 식재료를 구매할 수 있는 통합 쇼핑 플랫폼
+            운동 목표에 맞는 영양소 계산과 식단 계획을 바탕으로 식재료를 구매할
+            수 있는 통합 쇼핑 플랫폼
           </p>
         </div>
         <div className="space-y-4">
           <h3 className="text-sm font-bold">바로가기</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <a href="/" className="hover:underline" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate("home") }}>
+              <a
+                href="/"
+                className="hover:underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate && onNavigate("home");
+                }}
+              >
                 홈
               </a>
             </li>
             <li>
-              <a href="/products" className="hover:underline" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate("products") }}>
+              <a
+                href="/products"
+                className="hover:underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate && onNavigate("products");
+                }}
+              >
                 상품
               </a>
             </li>
             <li>
-              <a href="/nutrition" className="hover:underline" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate("nutrition") }}>
+              <a
+                href="/nutrition"
+                className="hover:underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate && onNavigate("nutrition");
+                }}
+              >
                 영양 계산기
               </a>
             </li>
             <li>
-              <a href="/diet-coach" className="hover:underline" onClick={(e) => { e.preventDefault(); onNavigate && onNavigate("diet-coach") }}>
+              <a
+                href="/diet-coach"
+                className="hover:underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate && onNavigate("diet-coach");
+                }}
+              >
                 식단 코치
               </a>
             </li>
@@ -99,5 +128,5 @@ export default function Footer({ onNavigate }: FooterProps) {
         </p>
       </div>
     </footer>
-  )
+  );
 }

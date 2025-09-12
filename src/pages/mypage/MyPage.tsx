@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "react";
 import {
   User,
   Package,
@@ -21,19 +21,32 @@ import {
   Mail,
   Phone,
   Activity,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
-import { Switch } from "@/components/ui/switch"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Textarea } from "@/components/ui/textarea"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -41,7 +54,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,11 +65,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 export default function MyPage() {
-  const [activeTab, setActiveTab] = useState("profile")
-  const [editingSection, setEditingSection] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState("profile");
+  const [editingSection, setEditingSection] = useState<string | null>(null);
 
   // 사용자 정보 상태
   const [userInfo, setUserInfo] = useState({
@@ -132,7 +145,7 @@ export default function MyPage() {
       memberSince: "2023-06-15",
       streak: 7,
     },
-  })
+  });
 
   // 주문 내역 데이터
   const orders = [
@@ -194,43 +207,71 @@ export default function MyPage() {
       ],
       canCancel: true,
     },
-  ]
+  ];
 
   // 상태별 색상 및 아이콘
   const getStatusInfo = (status: string) => {
     switch (status) {
       case "delivered":
-        return { color: "bg-green-100 text-green-800", icon: <CheckCircle className="h-4 w-4" /> }
+        return {
+          color: "bg-green-100 text-green-800",
+          icon: <CheckCircle className="h-4 w-4" />,
+        };
       case "shipping":
-        return { color: "bg-blue-100 text-blue-800", icon: <Truck className="h-4 w-4" /> }
+        return {
+          color: "bg-blue-100 text-blue-800",
+          icon: <Truck className="h-4 w-4" />,
+        };
       case "preparing":
-        return { color: "bg-yellow-100 text-yellow-800", icon: <Package className="h-4 w-4" /> }
+        return {
+          color: "bg-yellow-100 text-yellow-800",
+          icon: <Package className="h-4 w-4" />,
+        };
       default:
-        return { color: "bg-gray-100 text-gray-800", icon: <Clock className="h-4 w-4" /> }
+        return {
+          color: "bg-gray-100 text-gray-800",
+          icon: <Clock className="h-4 w-4" />,
+        };
     }
-  }
+  };
 
   // 인증 제공자 정보
   const getAuthProviderInfo = (provider: string) => {
     switch (provider) {
       case "google":
-        return { name: "Google", icon: <Google className="h-4 w-4" />, color: "text-red-600" }
+        return {
+          name: "Google",
+          icon: <Google className="h-4 w-4" />,
+          color: "text-red-600",
+        };
       case "kakao":
-        return { name: "카카오", icon: <MessageSquare className="h-4 w-4" />, color: "text-yellow-600" }
+        return {
+          name: "카카오",
+          icon: <MessageSquare className="h-4 w-4" />,
+          color: "text-yellow-600",
+        };
       case "email":
-        return { name: "이메일", icon: <Mail className="h-4 w-4" />, color: "text-blue-600" }
+        return {
+          name: "이메일",
+          icon: <Mail className="h-4 w-4" />,
+          color: "text-blue-600",
+        };
       default:
-        return { name: "이메일", icon: <Mail className="h-4 w-4" />, color: "text-blue-600" }
+        return {
+          name: "이메일",
+          icon: <Mail className="h-4 w-4" />,
+          color: "text-blue-600",
+        };
     }
-  }
+  };
 
-  const authInfo = getAuthProviderInfo(userInfo.authProvider)
+  const authInfo = getAuthProviderInfo(userInfo.authProvider);
 
   // 정보 수정 함수
   const handleSave = (data: any) => {
-    setUserInfo((prev) => ({ ...prev, ...data }))
-    setEditingSection(null)
-  }
+    setUserInfo((prev) => ({ ...prev, ...data }));
+    setEditingSection(null);
+  };
 
   // 주소 추가/수정/삭제 함수
   // const handleAddAddress = (newAddress: any) => {
@@ -245,8 +286,8 @@ export default function MyPage() {
     setUserInfo((prev) => ({
       ...prev,
       addresses: prev.addresses.filter((a) => a.id !== addressId),
-    }))
-  }
+    }));
+  };
 
   const handleSetDefaultAddress = (addressId: number) => {
     setUserInfo((prev) => ({
@@ -255,8 +296,8 @@ export default function MyPage() {
         ...a,
         isDefault: a.id === addressId,
       })),
-    }))
-  }
+    }));
+  };
 
   return (
     <div className="container py-8">
@@ -265,30 +306,43 @@ export default function MyPage() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-4">
             <Avatar className="h-20 w-20">
-               <AvatarImage src={userInfo.profileImage || "https://placehold.co/120x120"} alt={userInfo.name} />
-              <AvatarFallback className="text-lg">{userInfo.name.slice(0, 2)}</AvatarFallback>
+              <AvatarImage
+                src={userInfo.profileImage || "https://placehold.co/120x120"}
+                alt={userInfo.name}
+              />
+              <AvatarFallback className="text-lg">
+                {userInfo.name.slice(0, 2)}
+              </AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="text-2xl font-bold">{userInfo.name}님의 마이페이지</h1>
+              <h1 className="text-2xl font-bold">
+                {userInfo.name}님의 마이페이지
+              </h1>
               <div className="flex items-center gap-2 mt-1">
                 <div className={`flex items-center gap-1 ${authInfo.color}`}>
                   {authInfo.icon}
                   <span className="text-sm">{authInfo.name} 계정</span>
                 </div>
                 {userInfo.isEmailVerified && (
-                  <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">
+                  <Badge
+                    variant="secondary"
+                    className="text-xs bg-green-100 text-green-700"
+                  >
                     인증완료
                   </Badge>
                 )}
               </div>
               <p className="text-gray-500 text-sm mt-1">
-                {userInfo.stats.memberSince} 가입 · {userInfo.stats.streak}일 연속 활동
+                {userInfo.stats.memberSince} 가입 · {userInfo.stats.streak}일
+                연속 활동
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <div className="text-center">
-              <div className="text-xl font-bold text-green-600">{userInfo.stats.totalOrders}</div>
+              <div className="text-xl font-bold text-green-600">
+                {userInfo.stats.totalOrders}
+              </div>
               <div className="text-xs text-gray-500">총 주문</div>
             </div>
             <Separator orientation="vertical" className="h-8 mx-2" />
@@ -320,7 +374,10 @@ export default function MyPage() {
               <MapPin className="h-4 w-4" />
               <span className="hidden sm:inline">배송지</span>
             </TabsTrigger>
-            <TabsTrigger value="preferences" className="flex items-center gap-1">
+            <TabsTrigger
+              value="preferences"
+              className="flex items-center gap-1"
+            >
               <Heart className="h-4 w-4" />
               <span className="hidden sm:inline">선호도</span>
             </TabsTrigger>
@@ -343,9 +400,17 @@ export default function MyPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setEditingSection(editingSection === "basic" ? null : "basic")}
+                    onClick={() =>
+                      setEditingSection(
+                        editingSection === "basic" ? null : "basic",
+                      )
+                    }
                   >
-                    {editingSection === "basic" ? <X className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
+                    {editingSection === "basic" ? (
+                      <X className="h-4 w-4" />
+                    ) : (
+                      <Edit className="h-4 w-4" />
+                    )}
                   </Button>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -357,9 +422,15 @@ export default function MyPage() {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email">이메일</Label>
-                        <Input id="email" type="email" defaultValue={userInfo.email} disabled />
+                        <Input
+                          id="email"
+                          type="email"
+                          defaultValue={userInfo.email}
+                          disabled
+                        />
                         <p className="text-xs text-gray-500">
-                          이메일은 {authInfo.name} 계정과 연동되어 변경할 수 없습니다
+                          이메일은 {authInfo.name} 계정과 연동되어 변경할 수
+                          없습니다
                         </p>
                       </div>
                       <div className="space-y-2">
@@ -368,14 +439,22 @@ export default function MyPage() {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="birth">생년월일</Label>
-                        <Input id="birth" type="date" defaultValue={userInfo.birthDate} />
+                        <Input
+                          id="birth"
+                          type="date"
+                          defaultValue={userInfo.birthDate}
+                        />
                       </div>
                       <div className="flex gap-2">
-                         <Button size="sm" onClick={() => handleSave({})}>
-                           <Save className="h-4 w-4 mr-1" />
-                           저장
-                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => setEditingSection(null)}>
+                        <Button size="sm" onClick={() => handleSave({})}>
+                          <Save className="h-4 w-4 mr-1" />
+                          저장
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setEditingSection(null)}
+                        >
                           취소
                         </Button>
                       </div>
@@ -391,7 +470,10 @@ export default function MyPage() {
                         <div className="flex items-center gap-2">
                           <span className="font-medium">{userInfo.email}</span>
                           {userInfo.isEmailVerified && (
-                            <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">
+                            <Badge
+                              variant="secondary"
+                              className="text-xs bg-green-100 text-green-700"
+                            >
                               인증완료
                             </Badge>
                           )}
@@ -403,7 +485,9 @@ export default function MyPage() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-500">생년월일</span>
-                        <span className="font-medium">{userInfo.birthDate}</span>
+                        <span className="font-medium">
+                          {userInfo.birthDate}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-500">계정 연동</span>
@@ -422,14 +506,24 @@ export default function MyPage() {
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
                     <CardTitle>신체 정보</CardTitle>
-                    <CardDescription>영양 계산을 위한 신체 정보</CardDescription>
+                    <CardDescription>
+                      영양 계산을 위한 신체 정보
+                    </CardDescription>
                   </div>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setEditingSection(editingSection === "body" ? null : "body")}
+                    onClick={() =>
+                      setEditingSection(
+                        editingSection === "body" ? null : "body",
+                      )
+                    }
                   >
-                    {editingSection === "body" ? <X className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
+                    {editingSection === "body" ? (
+                      <X className="h-4 w-4" />
+                    ) : (
+                      <Edit className="h-4 w-4" />
+                    )}
                   </Button>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -438,11 +532,19 @@ export default function MyPage() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="height">키 (cm)</Label>
-                          <Input id="height" type="number" defaultValue={userInfo.height} />
+                          <Input
+                            id="height"
+                            type="number"
+                            defaultValue={userInfo.height}
+                          />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="weight">몸무게 (kg)</Label>
-                          <Input id="weight" type="number" defaultValue={userInfo.weight} />
+                          <Input
+                            id="weight"
+                            type="number"
+                            defaultValue={userInfo.weight}
+                          />
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
@@ -461,7 +563,11 @@ export default function MyPage() {
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="age">나이</Label>
-                          <Input id="age" type="number" defaultValue={userInfo.age} />
+                          <Input
+                            id="age"
+                            type="number"
+                            defaultValue={userInfo.age}
+                          />
                         </div>
                       </div>
                       <div className="space-y-2">
@@ -471,20 +577,34 @@ export default function MyPage() {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="sedentary">거의 운동 안함</SelectItem>
-                            <SelectItem value="light">가벼운 활동 (주 1-3회)</SelectItem>
-                            <SelectItem value="moderate">보통 활동 (주 3-5회)</SelectItem>
-                            <SelectItem value="active">활발한 활동 (주 6-7회)</SelectItem>
-                            <SelectItem value="very-active">매우 활발한 활동 (하루 2회)</SelectItem>
+                            <SelectItem value="sedentary">
+                              거의 운동 안함
+                            </SelectItem>
+                            <SelectItem value="light">
+                              가벼운 활동 (주 1-3회)
+                            </SelectItem>
+                            <SelectItem value="moderate">
+                              보통 활동 (주 3-5회)
+                            </SelectItem>
+                            <SelectItem value="active">
+                              활발한 활동 (주 6-7회)
+                            </SelectItem>
+                            <SelectItem value="very-active">
+                              매우 활발한 활동 (하루 2회)
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                       <div className="flex gap-2">
-                         <Button size="sm" onClick={() => handleSave({})}>
-                           <Save className="h-4 w-4 mr-1" />
-                           저장
-                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => setEditingSection(null)}>
+                        <Button size="sm" onClick={() => handleSave({})}>
+                          <Save className="h-4 w-4 mr-1" />
+                          저장
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setEditingSection(null)}
+                        >
                           취소
                         </Button>
                       </div>
@@ -501,7 +621,9 @@ export default function MyPage() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-500">성별</span>
-                        <span className="font-medium">{userInfo.gender === "male" ? "남성" : "여성"}</span>
+                        <span className="font-medium">
+                          {userInfo.gender === "male" ? "남성" : "여성"}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-500">나이</span>
@@ -510,7 +632,9 @@ export default function MyPage() {
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-500">BMI</span>
                         <span className="font-medium">
-                          {(userInfo.weight / Math.pow(userInfo.height / 100, 2)).toFixed(1)}
+                          {(
+                            userInfo.weight / Math.pow(userInfo.height / 100, 2)
+                          ).toFixed(1)}
                         </span>
                       </div>
                     </div>
@@ -529,11 +653,18 @@ export default function MyPage() {
                     <div className="flex items-center gap-3">
                       {authInfo.icon}
                       <div>
-                        <div className="font-medium">{authInfo.name} 계정 연동</div>
-                        <div className="text-sm text-gray-500">{userInfo.email}</div>
+                        <div className="font-medium">
+                          {authInfo.name} 계정 연동
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {userInfo.email}
+                        </div>
                       </div>
                     </div>
-                    <Badge variant="secondary" className="bg-green-100 text-green-700">
+                    <Badge
+                      variant="secondary"
+                      className="bg-green-100 text-green-700"
+                    >
                       연동됨
                     </Badge>
                   </div>
@@ -544,7 +675,9 @@ export default function MyPage() {
                         <Shield className="h-5 w-5" />
                         <div>
                           <div className="font-medium">비밀번호</div>
-                          <div className="text-sm text-gray-500">마지막 변경: 2024-01-01</div>
+                          <div className="text-sm text-gray-500">
+                            마지막 변경: 2024-01-01
+                          </div>
                         </div>
                       </div>
                       <Button variant="outline" size="sm">
@@ -558,10 +691,15 @@ export default function MyPage() {
                       <Phone className="h-5 w-5" />
                       <div>
                         <div className="font-medium">휴대폰 인증</div>
-                        <div className="text-sm text-gray-500">{userInfo.phone}</div>
+                        <div className="text-sm text-gray-500">
+                          {userInfo.phone}
+                        </div>
                       </div>
                     </div>
-                    <Badge variant="secondary" className="bg-green-100 text-green-700">
+                    <Badge
+                      variant="secondary"
+                      className="bg-green-100 text-green-700"
+                    >
                       인증완료
                     </Badge>
                   </div>
@@ -576,48 +714,68 @@ export default function MyPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold">주문 내역</h2>
-                  <p className="text-gray-500">최근 주문한 상품들을 확인하세요</p>
+                  <p className="text-gray-500">
+                    최근 주문한 상품들을 확인하세요
+                  </p>
                 </div>
-                 <Button variant="outline" onClick={() => console.log("주문 내역 전체 보기")}>
-                   전체 보기
-                 </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => console.log("주문 내역 전체 보기")}
+                >
+                  전체 보기
+                </Button>
               </div>
 
               <div className="space-y-4">
                 {orders.slice(0, 3).map((order) => {
-                  const statusInfo = getStatusInfo(order.status)
+                  const statusInfo = getStatusInfo(order.status);
                   return (
                     <Card key={order.id}>
                       <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <div>
-                              <CardTitle className="text-base">{order.id}</CardTitle>
+                              <CardTitle className="text-base">
+                                {order.id}
+                              </CardTitle>
                               <CardDescription>{order.date}</CardDescription>
                             </div>
-                            <Badge className={`${statusInfo.color} flex items-center gap-1`}>
+                            <Badge
+                              className={`${statusInfo.color} flex items-center gap-1`}
+                            >
                               {statusInfo.icon}
                               {order.statusText}
                             </Badge>
                           </div>
                           <div className="text-right">
-                            <div className="font-bold">{order.total.toLocaleString()}원</div>
-                            <div className="text-sm text-gray-500">{order.items.length}개 상품</div>
+                            <div className="font-bold">
+                              {order.total.toLocaleString()}원
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {order.items.length}개 상품
+                            </div>
                           </div>
                         </div>
                       </CardHeader>
                       <CardContent>
                         <div className="flex gap-3 overflow-x-auto">
                           {order.items.map((item, index) => (
-                            <div key={index} className="flex-shrink-0 flex items-center gap-2 bg-gray-50 p-2 rounded">
+                            <div
+                              key={index}
+                              className="flex-shrink-0 flex items-center gap-2 bg-gray-50 p-2 rounded"
+                            >
                               <img
-                                 src={item.image || "https://placehold.co/60x60"}
+                                src={item.image || "https://placehold.co/60x60"}
                                 alt={item.name}
                                 className="w-12 h-12 object-cover rounded"
                               />
                               <div className="min-w-0">
-                                <div className="font-medium text-sm truncate">{item.name}</div>
-                                <div className="text-xs text-gray-500">{item.quantity}개</div>
+                                <div className="font-medium text-sm truncate">
+                                  {item.name}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  {item.quantity}개
+                                </div>
                               </div>
                             </div>
                           ))}
@@ -642,7 +800,7 @@ export default function MyPage() {
                         </Button>
                       </CardFooter>
                     </Card>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -660,9 +818,17 @@ export default function MyPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setEditingSection(editingSection === "goals" ? null : "goals")}
+                    onClick={() =>
+                      setEditingSection(
+                        editingSection === "goals" ? null : "goals",
+                      )
+                    }
                   >
-                    {editingSection === "goals" ? <X className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
+                    {editingSection === "goals" ? (
+                      <X className="h-4 w-4" />
+                    ) : (
+                      <Edit className="h-4 w-4" />
+                    )}
                   </Button>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -675,17 +841,28 @@ export default function MyPage() {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="weight-loss">체중 감량</SelectItem>
+                            <SelectItem value="weight-loss">
+                              체중 감량
+                            </SelectItem>
                             <SelectItem value="maintain">체중 유지</SelectItem>
-                            <SelectItem value="muscle-gain">근육 증가</SelectItem>
-                            <SelectItem value="performance">운동 성능 향상</SelectItem>
-                            <SelectItem value="health">전반적인 건강 개선</SelectItem>
+                            <SelectItem value="muscle-gain">
+                              근육 증가
+                            </SelectItem>
+                            <SelectItem value="performance">
+                              운동 성능 향상
+                            </SelectItem>
+                            <SelectItem value="health">
+                              전반적인 건강 개선
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                       <div className="space-y-2">
                         <Label>목표 체중 (kg)</Label>
-                        <Input type="number" defaultValue={userInfo.targetWeight} />
+                        <Input
+                          type="number"
+                          defaultValue={userInfo.targetWeight}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label>목표 기간</Label>
@@ -702,11 +879,15 @@ export default function MyPage() {
                         </Select>
                       </div>
                       <div className="flex gap-2">
-                         <Button size="sm" onClick={() => handleSave({})}>
-                           <Save className="h-4 w-4 mr-1" />
-                           저장
-                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => setEditingSection(null)}>
+                        <Button size="sm" onClick={() => handleSave({})}>
+                          <Save className="h-4 w-4 mr-1" />
+                          저장
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setEditingSection(null)}
+                        >
                           취소
                         </Button>
                       </div>
@@ -716,7 +897,9 @@ export default function MyPage() {
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-500">주요 목표</span>
                         <Badge className="bg-green-100 text-green-700">
-                          {userInfo.fitnessGoal === "muscle-gain" ? "근육 증가" : userInfo.fitnessGoal}
+                          {userInfo.fitnessGoal === "muscle-gain"
+                            ? "근육 증가"
+                            : userInfo.fitnessGoal}
                         </Badge>
                       </div>
                       <div className="flex justify-between">
@@ -725,7 +908,9 @@ export default function MyPage() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-500">목표 체중</span>
-                        <span className="font-medium">{userInfo.targetWeight}kg</span>
+                        <span className="font-medium">
+                          {userInfo.targetWeight}kg
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm text-gray-500">목표 기간</span>
@@ -752,7 +937,9 @@ export default function MyPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-500">일일 칼로리</span>
-                      <span className="font-medium">{userInfo.dailyCalories} kcal</span>
+                      <span className="font-medium">
+                        {userInfo.dailyCalories} kcal
+                      </span>
                     </div>
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
@@ -781,7 +968,7 @@ export default function MyPage() {
                   <Button
                     variant="outline"
                     className="w-full bg-transparent"
-                     onClick={() => console.log("영양 계산기로 이동")}
+                    onClick={() => console.log("영양 계산기로 이동")}
                   >
                     <Activity className="h-4 w-4 mr-1" />
                     영양 계산기에서 수정
@@ -797,7 +984,9 @@ export default function MyPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold">배송지 관리</h2>
-                  <p className="text-gray-500">자주 사용하는 배송지를 관리하세요</p>
+                  <p className="text-gray-500">
+                    자주 사용하는 배송지를 관리하세요
+                  </p>
                 </div>
                 <Dialog>
                   <DialogTrigger asChild>
@@ -808,7 +997,9 @@ export default function MyPage() {
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>새 배송지 추가</DialogTitle>
-                      <DialogDescription>새로운 배송지 정보를 입력해주세요</DialogDescription>
+                      <DialogDescription>
+                        새로운 배송지 정보를 입력해주세요
+                      </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
                       <div className="space-y-2">
@@ -842,12 +1033,21 @@ export default function MyPage() {
 
               <div className="grid gap-4 md:grid-cols-2">
                 {userInfo.addresses.map((address) => (
-                  <Card key={address.id} className={address.isDefault ? "border-green-500" : ""}>
+                  <Card
+                    key={address.id}
+                    className={address.isDefault ? "border-green-500" : ""}
+                  >
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <CardTitle className="text-base">{address.name}</CardTitle>
-                          {address.isDefault && <Badge className="bg-green-100 text-green-700">기본</Badge>}
+                          <CardTitle className="text-base">
+                            {address.name}
+                          </CardTitle>
+                          {address.isDefault && (
+                            <Badge className="bg-green-100 text-green-700">
+                              기본
+                            </Badge>
+                          )}
                         </div>
                         <div className="flex gap-1">
                           <Button variant="ghost" size="sm">
@@ -863,12 +1063,17 @@ export default function MyPage() {
                               <AlertDialogHeader>
                                 <AlertDialogTitle>배송지 삭제</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  이 배송지를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+                                  이 배송지를 삭제하시겠습니까? 이 작업은 되돌릴
+                                  수 없습니다.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>취소</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDeleteAddress(address.id)}>
+                                <AlertDialogAction
+                                  onClick={() =>
+                                    handleDeleteAddress(address.id)
+                                  }
+                                >
                                   삭제
                                 </AlertDialogAction>
                               </AlertDialogFooter>
@@ -909,14 +1114,24 @@ export default function MyPage() {
                 <CardHeader className="flex flex-row items-center justify-between">
                   <div>
                     <CardTitle>식이 제한 및 알레르기</CardTitle>
-                    <CardDescription>안전한 식품 추천을 위한 정보</CardDescription>
+                    <CardDescription>
+                      안전한 식품 추천을 위한 정보
+                    </CardDescription>
                   </div>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setEditingSection(editingSection === "dietary" ? null : "dietary")}
+                    onClick={() =>
+                      setEditingSection(
+                        editingSection === "dietary" ? null : "dietary",
+                      )
+                    }
                   >
-                    {editingSection === "dietary" ? <X className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
+                    {editingSection === "dietary" ? (
+                      <X className="h-4 w-4" />
+                    ) : (
+                      <Edit className="h-4 w-4" />
+                    )}
                   </Button>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -925,8 +1140,18 @@ export default function MyPage() {
                       <div className="space-y-2">
                         <Label>식이 제한</Label>
                         <div className="grid grid-cols-2 gap-2">
-                          {["글루텐프리", "비건", "케토", "저탄수화물", "유기농", "유제품 제외"].map((item) => (
-                            <div key={item} className="flex items-center space-x-2">
+                          {[
+                            "글루텐프리",
+                            "비건",
+                            "케토",
+                            "저탄수화물",
+                            "유기농",
+                            "유제품 제외",
+                          ].map((item) => (
+                            <div
+                              key={item}
+                              className="flex items-center space-x-2"
+                            >
                               <input type="checkbox" id={item} />
                               <Label htmlFor={item} className="text-sm">
                                 {item}
@@ -937,14 +1162,21 @@ export default function MyPage() {
                       </div>
                       <div className="space-y-2">
                         <Label>알레르기 식품</Label>
-                        <Textarea placeholder="예: 땅콩, 갑각류, 유제품" defaultValue={userInfo.allergies} />
+                        <Textarea
+                          placeholder="예: 땅콩, 갑각류, 유제품"
+                          defaultValue={userInfo.allergies}
+                        />
                       </div>
                       <div className="flex gap-2">
-                         <Button size="sm" onClick={() => handleSave({})}>
-                           <Save className="h-4 w-4 mr-1" />
-                           저장
-                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => setEditingSection(null)}>
+                        <Button size="sm" onClick={() => handleSave({})}>
+                          <Save className="h-4 w-4 mr-1" />
+                          저장
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setEditingSection(null)}
+                        >
                           취소
                         </Button>
                       </div>
@@ -961,7 +1193,9 @@ export default function MyPage() {
                               </Badge>
                             ))
                           ) : (
-                            <span className="text-sm text-gray-400">설정된 제한 사항이 없습니다</span>
+                            <span className="text-sm text-gray-400">
+                              설정된 제한 사항이 없습니다
+                            </span>
                           )}
                         </div>
                       </div>
@@ -969,9 +1203,13 @@ export default function MyPage() {
                         <span className="text-sm text-gray-500">알레르기</span>
                         <div className="mt-1">
                           {userInfo.allergies ? (
-                            <span className="text-sm">{userInfo.allergies}</span>
+                            <span className="text-sm">
+                              {userInfo.allergies}
+                            </span>
                           ) : (
-                            <span className="text-sm text-gray-400">알레르기 정보가 없습니다</span>
+                            <span className="text-sm text-gray-400">
+                              알레르기 정보가 없습니다
+                            </span>
                           )}
                         </div>
                       </div>
@@ -989,9 +1227,17 @@ export default function MyPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setEditingSection(editingSection === "foods" ? null : "foods")}
+                    onClick={() =>
+                      setEditingSection(
+                        editingSection === "foods" ? null : "foods",
+                      )
+                    }
                   >
-                    {editingSection === "foods" ? <X className="h-4 w-4" /> : <Edit className="h-4 w-4" />}
+                    {editingSection === "foods" ? (
+                      <X className="h-4 w-4" />
+                    ) : (
+                      <Edit className="h-4 w-4" />
+                    )}
                   </Button>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -999,18 +1245,28 @@ export default function MyPage() {
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <Label>선호하는 식품</Label>
-                        <Textarea placeholder="예: 닭가슴살, 연어, 퀴노아" defaultValue={userInfo.preferredFoods} />
+                        <Textarea
+                          placeholder="예: 닭가슴살, 연어, 퀴노아"
+                          defaultValue={userInfo.preferredFoods}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label>기피하는 식품</Label>
-                        <Textarea placeholder="예: 브로콜리, 양파, 버섯" defaultValue={userInfo.dislikedFoods} />
+                        <Textarea
+                          placeholder="예: 브로콜리, 양파, 버섯"
+                          defaultValue={userInfo.dislikedFoods}
+                        />
                       </div>
                       <div className="flex gap-2">
-                         <Button size="sm" onClick={() => handleSave({})}>
-                           <Save className="h-4 w-4 mr-1" />
-                           저장
-                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => setEditingSection(null)}>
+                        <Button size="sm" onClick={() => handleSave({})}>
+                          <Save className="h-4 w-4 mr-1" />
+                          저장
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setEditingSection(null)}
+                        >
                           취소
                         </Button>
                       </div>
@@ -1020,13 +1276,19 @@ export default function MyPage() {
                       <div>
                         <span className="text-sm text-gray-500">선호 식품</span>
                         <div className="mt-1">
-                          <span className="text-sm">{userInfo.preferredFoods || "설정된 선호 식품이 없습니다"}</span>
+                          <span className="text-sm">
+                            {userInfo.preferredFoods ||
+                              "설정된 선호 식품이 없습니다"}
+                          </span>
                         </div>
                       </div>
                       <div>
                         <span className="text-sm text-gray-500">기피 식품</span>
                         <div className="mt-1">
-                          <span className="text-sm">{userInfo.dislikedFoods || "설정된 기피 식품이 없습니다"}</span>
+                          <span className="text-sm">
+                            {userInfo.dislikedFoods ||
+                              "설정된 기피 식품이 없습니다"}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -1049,28 +1311,36 @@ export default function MyPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>이메일 알림</Label>
-                      <p className="text-sm text-gray-500">주문 상태, 배송 정보를 이메일로 받습니다</p>
+                      <p className="text-sm text-gray-500">
+                        주문 상태, 배송 정보를 이메일로 받습니다
+                      </p>
                     </div>
                     <Switch checked={userInfo.notifications.email} />
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>푸시 알림</Label>
-                      <p className="text-sm text-gray-500">앱 푸시 알림을 받습니다</p>
+                      <p className="text-sm text-gray-500">
+                        앱 푸시 알림을 받습니다
+                      </p>
                     </div>
                     <Switch checked={userInfo.notifications.push} />
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>SMS 알림</Label>
-                      <p className="text-sm text-gray-500">중요한 정보를 문자로 받습니다</p>
+                      <p className="text-sm text-gray-500">
+                        중요한 정보를 문자로 받습니다
+                      </p>
                     </div>
                     <Switch checked={userInfo.notifications.sms} />
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>마케팅 알림</Label>
-                      <p className="text-sm text-gray-500">할인 정보, 신상품 소식을 받습니다</p>
+                      <p className="text-sm text-gray-500">
+                        할인 정보, 신상품 소식을 받습니다
+                      </p>
                     </div>
                     <Switch checked={userInfo.notifications.marketing} />
                   </div>
@@ -1087,7 +1357,9 @@ export default function MyPage() {
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
                       <div className="font-medium">데이터 내보내기</div>
-                      <div className="text-sm text-gray-500">내 정보와 주문 내역을 다운로드합니다</div>
+                      <div className="text-sm text-gray-500">
+                        내 정보와 주문 내역을 다운로드합니다
+                      </div>
                     </div>
                     <Button variant="outline" size="sm">
                       내보내기
@@ -1096,7 +1368,9 @@ export default function MyPage() {
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div>
                       <div className="font-medium">계정 비활성화</div>
-                      <div className="text-sm text-gray-500">계정을 일시적으로 비활성화합니다</div>
+                      <div className="text-sm text-gray-500">
+                        계정을 일시적으로 비활성화합니다
+                      </div>
                     </div>
                     <Button variant="outline" size="sm">
                       비활성화
@@ -1105,24 +1379,35 @@ export default function MyPage() {
                   <div className="flex items-center justify-between p-4 border border-red-200 rounded-lg">
                     <div>
                       <div className="font-medium text-red-600">계정 삭제</div>
-                      <div className="text-sm text-gray-500">모든 데이터가 영구적으로 삭제됩니다</div>
+                      <div className="text-sm text-gray-500">
+                        모든 데이터가 영구적으로 삭제됩니다
+                      </div>
                     </div>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="outline" size="sm" className="text-red-600 border-red-200 bg-transparent">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-red-600 border-red-200 bg-transparent"
+                        >
                           삭제
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>계정을 삭제하시겠습니까?</AlertDialogTitle>
+                          <AlertDialogTitle>
+                            계정을 삭제하시겠습니까?
+                          </AlertDialogTitle>
                           <AlertDialogDescription>
-                            이 작업은 되돌릴 수 없습니다. 모든 데이터가 영구적으로 삭제됩니다.
+                            이 작업은 되돌릴 수 없습니다. 모든 데이터가
+                            영구적으로 삭제됩니다.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>취소</AlertDialogCancel>
-                          <AlertDialogAction className="bg-red-600 hover:bg-red-700">삭제</AlertDialogAction>
+                          <AlertDialogAction className="bg-red-600 hover:bg-red-700">
+                            삭제
+                          </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
@@ -1134,5 +1419,5 @@ export default function MyPage() {
         </Tabs>
       </div>
     </div>
-  )
+  );
 }

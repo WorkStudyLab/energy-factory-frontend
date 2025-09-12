@@ -1,33 +1,40 @@
-import { useState } from "react"
-import { Minus, Plus, ShoppingBag, Trash2, TrendingUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
+import { useState } from "react";
+import { Minus, Plus, ShoppingBag, Trash2, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 // 타입 정의
 interface CartItem {
-  id: number
-  name: string
-  price: number
-  quantity: number
-  image: string
-  protein: number
-  carbs: number
-  fat: number
-  calories: number
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  protein: number;
+  carbs: number;
+  fat: number;
+  calories: number;
 }
 
 interface RecommendedProduct {
-  id: number
-  name: string
-  price: number
-  image: string
-  protein: number
-  fat: number
-  calories: number
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  protein: number;
+  fat: number;
+  calories: number;
 }
 
 export default function CartPage() {
@@ -66,7 +73,7 @@ export default function CartPage() {
       fat: 3.5,
       calories: 120,
     },
-  ])
+  ]);
 
   // Mock recommended products
   const recommendedProducts: RecommendedProduct[] = [
@@ -88,12 +95,15 @@ export default function CartPage() {
       fat: 14,
       calories: 170,
     },
-  ]
+  ];
 
   // Calculate totals
-  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
-  const shipping = subtotal > 30000 ? 0 : 3000
-  const total = subtotal + shipping
+  const subtotal = cartItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
+  const shipping = subtotal > 30000 ? 0 : 3000;
+  const total = subtotal + shipping;
 
   // Calculate nutrition totals
   const nutritionTotals = cartItems.reduce(
@@ -103,10 +113,10 @@ export default function CartPage() {
         carbs: totals.carbs + item.carbs * item.quantity,
         fat: totals.fat + item.fat * item.quantity,
         calories: totals.calories + item.calories * item.quantity,
-      }
+      };
     },
     { protein: 0, carbs: 0, fat: 0, calories: 0 },
-  )
+  );
 
   // Nutrition goals (mock data)
   const nutritionGoals = {
@@ -114,33 +124,51 @@ export default function CartPage() {
     carbs: 245,
     fat: 82,
     calories: 2450,
-  }
+  };
 
   // Calculate percentages
   const nutritionPercentages = {
-    protein: Math.min(100, Math.round((nutritionTotals.protein / nutritionGoals.protein) * 100)),
-    carbs: Math.min(100, Math.round((nutritionTotals.carbs / nutritionGoals.carbs) * 100)),
-    fat: Math.min(100, Math.round((nutritionTotals.fat / nutritionGoals.fat) * 100)),
-    calories: Math.min(100, Math.round((nutritionTotals.calories / nutritionGoals.calories) * 100)),
-  }
+    protein: Math.min(
+      100,
+      Math.round((nutritionTotals.protein / nutritionGoals.protein) * 100),
+    ),
+    carbs: Math.min(
+      100,
+      Math.round((nutritionTotals.carbs / nutritionGoals.carbs) * 100),
+    ),
+    fat: Math.min(
+      100,
+      Math.round((nutritionTotals.fat / nutritionGoals.fat) * 100),
+    ),
+    calories: Math.min(
+      100,
+      Math.round((nutritionTotals.calories / nutritionGoals.calories) * 100),
+    ),
+  };
 
   // Handle quantity change
   const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity < 1) return
-    setCartItems(cartItems.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item)))
-  }
+    if (newQuantity < 1) return;
+    setCartItems(
+      cartItems.map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item,
+      ),
+    );
+  };
 
   // Handle item removal
   const removeItem = (id: number) => {
-    setCartItems(cartItems.filter((item) => item.id !== id))
-  }
+    setCartItems(cartItems.filter((item) => item.id !== id));
+  };
 
   return (
     <div className="container py-8">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold">장바구니</h1>
-          <p className="text-gray-500">장바구니에 담긴 상품과 영양소 정보를 확인하세요</p>
+          <p className="text-gray-500">
+            장바구니에 담긴 상품과 영양소 정보를 확인하세요
+          </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
@@ -154,14 +182,23 @@ export default function CartPage() {
                 {cartItems.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-center">
                     <ShoppingBag className="h-12 w-12 text-gray-300 mb-4" />
-                    <h3 className="text-lg font-medium">장바구니가 비어있습니다</h3>
-                    <p className="text-gray-500 mt-1">상품을 추가하고 건강한 쇼핑을 시작하세요</p>
-                    <Button className="mt-4 bg-green-600 hover:bg-green-700">쇼핑 계속하기</Button>
+                    <h3 className="text-lg font-medium">
+                      장바구니가 비어있습니다
+                    </h3>
+                    <p className="text-gray-500 mt-1">
+                      상품을 추가하고 건강한 쇼핑을 시작하세요
+                    </p>
+                    <Button className="mt-4 bg-green-600 hover:bg-green-700">
+                      쇼핑 계속하기
+                    </Button>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {cartItems.map((item) => (
-                      <div key={item.id} className="flex items-start gap-4 py-4 border-b last:border-0">
+                      <div
+                        key={item.id}
+                        className="flex items-start gap-4 py-4 border-b last:border-0"
+                      >
                         <img
                           src={item.image || "https://placehold.co/80x80"}
                           alt={item.name}
@@ -177,23 +214,31 @@ export default function CartPage() {
                           </div>
                         </div>
                         <div className="flex flex-col items-end gap-2">
-                          <p className="font-bold">{(item.price * item.quantity).toLocaleString()}원</p>
+                          <p className="font-bold">
+                            {(item.price * item.quantity).toLocaleString()}원
+                          </p>
                           <div className="flex items-center border rounded">
                             <Button
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
-                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity - 1)
+                              }
                             >
                               <Minus className="h-3 w-3" />
                               <span className="sr-only">감소</span>
                             </Button>
-                            <span className="w-8 text-center">{item.quantity}</span>
+                            <span className="w-8 text-center">
+                              {item.quantity}
+                            </span>
                             <Button
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity + 1)
+                              }
                             >
                               <Plus className="h-3 w-3" />
                               <span className="sr-only">증가</span>
@@ -225,7 +270,9 @@ export default function CartPage() {
             <Card>
               <CardHeader>
                 <CardTitle>영양소 요약</CardTitle>
-                <CardDescription>장바구니 상품의 총 영양소와 목표 대비 달성률</CardDescription>
+                <CardDescription>
+                  장바구니 상품의 총 영양소와 목표 대비 달성률
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
@@ -236,9 +283,14 @@ export default function CartPage() {
                         {nutritionTotals.protein}g / {nutritionGoals.protein}g
                       </span>
                     </div>
-                    <span className="text-sm font-medium">{nutritionPercentages.protein}%</span>
+                    <span className="text-sm font-medium">
+                      {nutritionPercentages.protein}%
+                    </span>
                   </div>
-                  <Progress value={nutritionPercentages.protein} className="h-2" />
+                  <Progress
+                    value={nutritionPercentages.protein}
+                    className="h-2"
+                  />
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
@@ -248,9 +300,14 @@ export default function CartPage() {
                         {nutritionTotals.carbs}g / {nutritionGoals.carbs}g
                       </span>
                     </div>
-                    <span className="text-sm font-medium">{nutritionPercentages.carbs}%</span>
+                    <span className="text-sm font-medium">
+                      {nutritionPercentages.carbs}%
+                    </span>
                   </div>
-                  <Progress value={nutritionPercentages.carbs} className="h-2" />
+                  <Progress
+                    value={nutritionPercentages.carbs}
+                    className="h-2"
+                  />
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
@@ -260,7 +317,9 @@ export default function CartPage() {
                         {nutritionTotals.fat}g / {nutritionGoals.fat}g
                       </span>
                     </div>
-                    <span className="text-sm font-medium">{nutritionPercentages.fat}%</span>
+                    <span className="text-sm font-medium">
+                      {nutritionPercentages.fat}%
+                    </span>
                   </div>
                   <Progress value={nutritionPercentages.fat} className="h-2" />
                 </div>
@@ -269,12 +328,18 @@ export default function CartPage() {
                     <div className="flex items-center gap-2">
                       <Badge className="bg-purple-600">칼로리</Badge>
                       <span>
-                        {nutritionTotals.calories}kcal / {nutritionGoals.calories}kcal
+                        {nutritionTotals.calories}kcal /{" "}
+                        {nutritionGoals.calories}kcal
                       </span>
                     </div>
-                    <span className="text-sm font-medium">{nutritionPercentages.calories}%</span>
+                    <span className="text-sm font-medium">
+                      {nutritionPercentages.calories}%
+                    </span>
                   </div>
-                  <Progress value={nutritionPercentages.calories} className="h-2" />
+                  <Progress
+                    value={nutritionPercentages.calories}
+                    className="h-2"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -283,17 +348,24 @@ export default function CartPage() {
             <Card>
               <CardHeader>
                 <CardTitle>추천 상품</CardTitle>
-                <CardDescription>영양 목표 달성을 위한 추천 상품</CardDescription>
+                <CardDescription>
+                  영양 목표 달성을 위한 추천 상품
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-green-600">
                     <TrendingUp className="h-4 w-4" />
-                    <span className="text-sm font-medium">단백질 섭취량을 높이기 위한 추천 상품</span>
+                    <span className="text-sm font-medium">
+                      단백질 섭취량을 높이기 위한 추천 상품
+                    </span>
                   </div>
                   <div className="grid gap-4 md:grid-cols-2">
                     {recommendedProducts.map((product) => (
-                      <div key={product.id} className="flex gap-4 items-center border rounded-lg p-3">
+                      <div
+                        key={product.id}
+                        className="flex gap-4 items-center border rounded-lg p-3"
+                      >
                         <img
                           src={product.image || "https://placehold.co/60x60"}
                           alt={product.name}
@@ -305,7 +377,9 @@ export default function CartPage() {
                             단백질 {product.protein}g / {product.calories} kcal
                           </p>
                           <div className="flex justify-between items-center mt-2">
-                            <span className="font-bold">{product.price.toLocaleString()}원</span>
+                            <span className="font-bold">
+                              {product.price.toLocaleString()}원
+                            </span>
                             <Button variant="outline" size="sm">
                               추가
                             </Button>
@@ -333,11 +407,14 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>배송비</span>
-                    <span>{shipping > 0 ? `${shipping.toLocaleString()}원` : "무료"}</span>
+                    <span>
+                      {shipping > 0 ? `${shipping.toLocaleString()}원` : "무료"}
+                    </span>
                   </div>
                   {shipping > 0 && (
                     <div className="text-sm text-gray-500">
-                      {(30000 - subtotal).toLocaleString()}원 더 구매 시 무료 배송
+                      {(30000 - subtotal).toLocaleString()}원 더 구매 시 무료
+                      배송
                     </div>
                   )}
                 </div>
@@ -349,10 +426,14 @@ export default function CartPage() {
                   <span>{total.toLocaleString()}원</span>
                 </div>
 
-                <Button className="w-full bg-green-600 hover:bg-green-700">결제하기</Button>
+                <Button className="w-full bg-green-600 hover:bg-green-700">
+                  결제하기
+                </Button>
 
                 <div className="space-y-2">
-                  <div className="text-sm text-gray-500">쿠폰 또는 할인 코드가 있으신가요?</div>
+                  <div className="text-sm text-gray-500">
+                    쿠폰 또는 할인 코드가 있으신가요?
+                  </div>
                   <div className="flex gap-2">
                     <Input placeholder="할인 코드 입력" />
                     <Button variant="outline">적용</Button>
@@ -364,5 +445,5 @@ export default function CartPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

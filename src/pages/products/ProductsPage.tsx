@@ -1,8 +1,13 @@
-import { useState } from "react"
+import { useState } from "react";
 
 // 타입 정의
-type GoalType = "muscle-gain" | "weight-loss" | "energy" | "recovery" | "health"
-type GoalScores = Record<GoalType, number>
+type GoalType =
+  | "muscle-gain"
+  | "weight-loss"
+  | "energy"
+  | "recovery"
+  | "health";
+type GoalScores = Record<GoalType, number>;
 import {
   Filter,
   Search,
@@ -20,31 +25,59 @@ import {
   Clock,
   Zap,
   BarChart3,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { Slider } from "@/components/ui/slider"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Separator } from "@/components/ui/separator"
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Slider } from "@/components/ui/slider";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 
 export default function ProductsPage() {
-  const [showFilters, setShowFilters] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [selectedGoal, setSelectedGoal] = useState<string>("all")
-  const [proteinRange, setProteinRange] = useState([0, 50])
-  const [carbsRange, setCarbsRange] = useState([0, 100])
-  const [fatRange, setFatRange] = useState([0, 50])
-  const [caloriesRange, setCaloriesRange] = useState([0, 500])
-  const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([])
-  const [sortOption, setSortOption] = useState("recommended")
+  const [showFilters, setShowFilters] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedGoal, setSelectedGoal] = useState<string>("all");
+  const [proteinRange, setProteinRange] = useState([0, 50]);
+  const [carbsRange, setCarbsRange] = useState([0, 100]);
+  const [fatRange, setFatRange] = useState([0, 50]);
+  const [caloriesRange, setCaloriesRange] = useState([0, 500]);
+  const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([]);
+  const [sortOption, setSortOption] = useState("recommended");
 
   // 영양 중심 카테고리
   const nutritionCategories = [
@@ -58,21 +91,26 @@ export default function ProductsPage() {
       id: "protein",
       name: "고단백 식품",
       icon: <Dumbbell className="h-5 w-5" />,
-      description: "근육 성장과 회복을 위한 고단백 식품. 근육 합성과 포만감 유지에 도움이 됩니다.",
-      education: "단백질은 근육 합성의 핵심 영양소로, 운동 후 30분 이내 섭취 시 근육 회복에 가장 효과적입니다.",
+      description:
+        "근육 성장과 회복을 위한 고단백 식품. 근육 합성과 포만감 유지에 도움이 됩니다.",
+      education:
+        "단백질은 근육 합성의 핵심 영양소로, 운동 후 30분 이내 섭취 시 근육 회복에 가장 효과적입니다.",
     },
     {
       id: "healthy-fats",
       name: "건강한 지방 공급원",
       icon: <Heart className="h-5 w-5" />,
-      description: "오메가-3, 불포화지방이 풍부한 식품. 호르몬 생성과 영양소 흡수에 필수적입니다.",
-      education: "건강한 지방은 호르몬 생성, 뇌 기능, 영양소 흡수에 필수적이며 포만감을 오래 유지시킵니다.",
+      description:
+        "오메가-3, 불포화지방이 풍부한 식품. 호르몬 생성과 영양소 흡수에 필수적입니다.",
+      education:
+        "건강한 지방은 호르몬 생성, 뇌 기능, 영양소 흡수에 필수적이며 포만감을 오래 유지시킵니다.",
     },
     {
       id: "complex-carbs",
       name: "복합 탄수화물",
       icon: <Zap className="h-5 w-5" />,
-      description: "지속적인 에너지를 제공하는 복합 탄수화물. 운동 성능 향상에 도움이 됩니다.",
+      description:
+        "지속적인 에너지를 제공하는 복합 탄수화물. 운동 성능 향상에 도움이 됩니다.",
       education:
         "복합 탄수화물은 단순 탄수화물보다 천천히 소화되어 지속적인 에너지를 제공하고 혈당 스파이크를 방지합니다.",
     },
@@ -80,7 +118,8 @@ export default function ProductsPage() {
       id: "vitamins-minerals",
       name: "비타민 & 미네랄",
       icon: <Apple className="h-5 w-5" />,
-      description: "면역력 강화와 전반적인 건강 유지에 필요한 필수 미량 영양소가 풍부한 식품.",
+      description:
+        "면역력 강화와 전반적인 건강 유지에 필요한 필수 미량 영양소가 풍부한 식품.",
       education:
         "비타민과 미네랄은 신체의 모든 생화학적 과정에 필수적이며, 다양한 색상의 과일과 채소를 섭취하는 것이 좋습니다.",
     },
@@ -88,17 +127,20 @@ export default function ProductsPage() {
       id: "weight-loss",
       name: "체중 관리 식품",
       icon: <Weight className="h-5 w-5" />,
-      description: "포만감은 높고 칼로리는 낮은 식품. 체중 감량 목표에 이상적입니다.",
-      education: "효과적인 체중 관리는 칼로리 제한뿐만 아니라 영양 밀도가 높은 식품을 선택하는 것이 중요합니다.",
+      description:
+        "포만감은 높고 칼로리는 낮은 식품. 체중 감량 목표에 이상적입니다.",
+      education:
+        "효과적인 체중 관리는 칼로리 제한뿐만 아니라 영양 밀도가 높은 식품을 선택하는 것이 중요합니다.",
     },
     {
       id: "energy-boosters",
       name: "에너지 부스터",
       icon: <Flame className="h-5 w-5" />,
       description: "운동 전 에너지를 높이고 지구력을 향상시키는 식품.",
-      education: "운동 1-2시간 전에 탄수화물과 약간의 단백질을 함께 섭취하면 최적의 에너지를 제공합니다.",
+      education:
+        "운동 1-2시간 전에 탄수화물과 약간의 단백질을 함께 섭취하면 최적의 에너지를 제공합니다.",
     },
-  ]
+  ];
 
   // 피트니스 목표
   const fitnessGoals = [
@@ -108,7 +150,7 @@ export default function ProductsPage() {
     { id: "energy", name: "에너지 향상" },
     { id: "recovery", name: "회복 촉진" },
     { id: "health", name: "전반적 건강" },
-  ]
+  ];
 
   // 식이 제한
   const dietaryOptions = [
@@ -119,7 +161,7 @@ export default function ProductsPage() {
     { id: "organic", name: "유기농" },
     { id: "dairy-free", name: "유제품 제외" },
     { id: "nut-free", name: "견과류 제외" },
-  ]
+  ];
 
   // 정렬 옵션
   const sortOptions = [
@@ -129,7 +171,7 @@ export default function ProductsPage() {
     { id: "price-desc", name: "가격 높은순" },
     { id: "protein", name: "단백질 높은순" },
     { id: "calories-asc", name: "칼로리 낮은순" },
-  ]
+  ];
 
   // 식사 시간대
   const mealTimes = [
@@ -139,7 +181,7 @@ export default function ProductsPage() {
     { id: "post-workout", name: "운동 후" },
     { id: "snack", name: "간식" },
     { id: "dinner", name: "저녁 식사" },
-  ]
+  ];
 
   // Mock product data with enhanced nutrition information
   const products = [
@@ -165,8 +207,10 @@ export default function ProductsPage() {
       } as GoalScores,
       mealTimes: ["post-workout", "lunch", "dinner"],
       dietaryInfo: ["글루텐프리", "유제품 제외"],
-      description: "100% 유기농 닭가슴살로, 고품질 단백질 공급원입니다. 근육 성장과 회복에 이상적입니다.",
-      nutritionTip: "운동 후 30분 이내에 섭취하면 근육 회복에 가장 효과적입니다.",
+      description:
+        "100% 유기농 닭가슴살로, 고품질 단백질 공급원입니다. 근육 성장과 회복에 이상적입니다.",
+      nutritionTip:
+        "운동 후 30분 이내에 섭취하면 근육 회복에 가장 효과적입니다.",
       complementaryProducts: [3, 5, 8], // 함께 섭취하면 좋은 제품 ID
     },
     {
@@ -191,7 +235,8 @@ export default function ProductsPage() {
       } as GoalScores,
       mealTimes: ["lunch", "dinner"],
       dietaryInfo: ["글루텐프리", "유제품 제외"],
-      description: "오메가-3 지방산이 풍부한 고품질 단백질 공급원. 근육 성장과 심혈관 건강에 도움이 됩니다.",
+      description:
+        "오메가-3 지방산이 풍부한 고품질 단백질 공급원. 근육 성장과 심혈관 건강에 도움이 됩니다.",
       nutritionTip: "오메가-3 지방산은 염증 감소와 근육 회복에 도움이 됩니다.",
       complementaryProducts: [3, 6, 9],
     },
@@ -217,7 +262,8 @@ export default function ProductsPage() {
       } as GoalScores,
       mealTimes: ["breakfast", "lunch", "pre-workout"],
       dietaryInfo: ["글루텐프리", "비건"],
-      description: "모든 필수 아미노산을 함유한 완전 단백질 공급원. 지속적인 에너지를 제공하는 복합 탄수화물입니다.",
+      description:
+        "모든 필수 아미노산을 함유한 완전 단백질 공급원. 지속적인 에너지를 제공하는 복합 탄수화물입니다.",
       nutritionTip: "운동 1-2시간 전에 섭취하면 지속적인 에너지를 제공합니다.",
       complementaryProducts: [1, 2, 7],
     },
@@ -243,8 +289,10 @@ export default function ProductsPage() {
       } as GoalScores,
       mealTimes: ["breakfast", "snack", "lunch"],
       dietaryInfo: ["글루텐프리", "비건", "케토"],
-      description: "단일불포화지방이 풍부하고 비타민 E와 K가 함유되어 있어 심혈관 건강에 좋습니다.",
-      nutritionTip: "아보카도의 건강한 지방은 영양소 흡수를 돕고 포만감을 오래 유지시킵니다.",
+      description:
+        "단일불포화지방이 풍부하고 비타민 E와 K가 함유되어 있어 심혈관 건강에 좋습니다.",
+      nutritionTip:
+        "아보카도의 건강한 지방은 영양소 흡수를 돕고 포만감을 오래 유지시킵니다.",
       complementaryProducts: [3, 7, 10],
     },
     {
@@ -269,8 +317,10 @@ export default function ProductsPage() {
       } as GoalScores,
       mealTimes: ["breakfast", "snack", "post-workout"],
       dietaryInfo: ["글루텐프리"],
-      description: "고단백, 저지방 유제품으로 프로바이오틱스가 풍부하여 소화 건강에 도움이 됩니다.",
-      nutritionTip: "취침 전 섭취하면 야간 근육 분해를 방지하는데 도움이 됩니다.",
+      description:
+        "고단백, 저지방 유제품으로 프로바이오틱스가 풍부하여 소화 건강에 도움이 됩니다.",
+      nutritionTip:
+        "취침 전 섭취하면 야간 근육 분해를 방지하는데 도움이 됩니다.",
       complementaryProducts: [6, 8, 11],
     },
     {
@@ -295,8 +345,10 @@ export default function ProductsPage() {
       } as GoalScores,
       mealTimes: ["snack", "breakfast"],
       dietaryInfo: ["글루텐프리", "비건"],
-      description: "아몬드, 호두, 브라질넛 등 다양한 견과류 믹스. 건강한 지방과 비타민 E가 풍부합니다.",
-      nutritionTip: "소량(30g)만 섭취해도 포만감을 주고 에너지를 오래 유지시킵니다.",
+      description:
+        "아몬드, 호두, 브라질넛 등 다양한 견과류 믹스. 건강한 지방과 비타민 E가 풍부합니다.",
+      nutritionTip:
+        "소량(30g)만 섭취해도 포만감을 주고 에너지를 오래 유지시킵니다.",
       complementaryProducts: [4, 5, 9],
     },
     {
@@ -321,7 +373,8 @@ export default function ProductsPage() {
       } as GoalScores,
       mealTimes: ["pre-workout", "lunch", "dinner"],
       dietaryInfo: ["글루텐프리", "비건", "저지방"],
-      description: "비타민 A가 풍부하고 낮은 GI 지수의 복합 탄수화물. 지속적인 에너지를 제공합니다.",
+      description:
+        "비타민 A가 풍부하고 낮은 GI 지수의 복합 탄수화물. 지속적인 에너지를 제공합니다.",
       nutritionTip: "운동 1-2시간 전에 섭취하면 지속적인 에너지를 제공합니다.",
       complementaryProducts: [1, 2, 8],
     },
@@ -347,8 +400,10 @@ export default function ProductsPage() {
       } as GoalScores,
       mealTimes: ["post-workout", "breakfast", "snack"],
       dietaryInfo: ["글루텐프리"],
-      description: "고품질 유청 단백질 파우더. 빠른 흡수로 운동 후 근육 회복에 이상적입니다.",
-      nutritionTip: "운동 후 30분 이내에 섭취하면 근육 단백질 합성을 최대화할 수 있습니다.",
+      description:
+        "고품질 유청 단백질 파우더. 빠른 흡수로 운동 후 근육 회복에 이상적입니다.",
+      nutritionTip:
+        "운동 후 30분 이내에 섭취하면 근육 단백질 합성을 최대화할 수 있습니다.",
       complementaryProducts: [3, 7, 10],
     },
     {
@@ -373,7 +428,8 @@ export default function ProductsPage() {
       } as GoalScores,
       mealTimes: ["breakfast", "snack"],
       dietaryInfo: ["글루텐프리", "비건", "저지방"],
-      description: "항산화 물질이 풍부한 슈퍼푸드. 염증 감소와 면역력 향상에 도움이 됩니다.",
+      description:
+        "항산화 물질이 풍부한 슈퍼푸드. 염증 감소와 면역력 향상에 도움이 됩니다.",
       nutritionTip: "운동 후 섭취하면 항산화 작용으로 회복을 촉진합니다.",
       complementaryProducts: [5, 6, 11],
     },
@@ -399,8 +455,10 @@ export default function ProductsPage() {
       } as GoalScores,
       mealTimes: ["breakfast", "pre-workout"],
       dietaryInfo: ["비건"],
-      description: "베타글루칸이 풍부한 복합 탄수화물. 콜레스테롤 감소와 지속적인 에너지 공급에 도움이 됩니다.",
-      nutritionTip: "아침 식사로 섭취하면 하루 종일 포만감을 유지하는데 도움이 됩니다.",
+      description:
+        "베타글루칸이 풍부한 복합 탄수화물. 콜레스테롤 감소와 지속적인 에너지 공급에 도움이 됩니다.",
+      nutritionTip:
+        "아침 식사로 섭취하면 하루 종일 포만감을 유지하는데 도움이 됩니다.",
       complementaryProducts: [5, 6, 9],
     },
     {
@@ -425,8 +483,10 @@ export default function ProductsPage() {
       } as GoalScores,
       mealTimes: ["lunch", "dinner"],
       dietaryInfo: ["글루텐프리", "비건", "저지방", "케토"],
-      description: "비타민 K, A, C가 풍부한 녹색 잎채소. 항산화 작용과 염증 감소에 도움이 됩니다.",
-      nutritionTip: "다양한 색상의 채소와 함께 섭취하면 영양소 흡수가 증가합니다.",
+      description:
+        "비타민 K, A, C가 풍부한 녹색 잎채소. 항산화 작용과 염증 감소에 도움이 됩니다.",
+      nutritionTip:
+        "다양한 색상의 채소와 함께 섭취하면 영양소 흡수가 증가합니다.",
       complementaryProducts: [1, 2, 4],
     },
     {
@@ -451,65 +511,87 @@ export default function ProductsPage() {
       } as GoalScores,
       mealTimes: ["breakfast", "pre-workout"],
       dietaryInfo: ["글루텐프리", "비건", "케토"],
-      description: "중쇄 지방산이 함유된 오일로, 빠르게 에너지로 전환되어 케토 식단에 이상적입니다.",
-      nutritionTip: "커피나 스무디에 1티스푼 추가하면 지속적인 에너지를 제공합니다.",
+      description:
+        "중쇄 지방산이 함유된 오일로, 빠르게 에너지로 전환되어 케토 식단에 이상적입니다.",
+      nutritionTip:
+        "커피나 스무디에 1티스푼 추가하면 지속적인 에너지를 제공합니다.",
       complementaryProducts: [6, 8, 10],
     },
-  ]
+  ];
 
   // 필터링된 제품 목록
   const filteredProducts = products.filter((product) => {
     // 카테고리 필터
-    if (selectedCategory !== "all" && product.category !== selectedCategory) return false
+    if (selectedCategory !== "all" && product.category !== selectedCategory)
+      return false;
 
     // 목표 필터
-    if (selectedGoal !== "all" && product.goalScores[selectedGoal as GoalType] < 3.5) return false
+    if (
+      selectedGoal !== "all" &&
+      product.goalScores[selectedGoal as GoalType] < 3.5
+    )
+      return false;
 
     // 영양소 범위 필터
-    if (product.protein < proteinRange[0] || product.protein > proteinRange[1]) return false
-    if (product.carbs < carbsRange[0] || product.carbs > carbsRange[1]) return false
-    if (product.fat < fatRange[0] || product.fat > fatRange[1]) return false
-    if (product.calories < caloriesRange[0] || product.calories > caloriesRange[1]) return false
+    if (product.protein < proteinRange[0] || product.protein > proteinRange[1])
+      return false;
+    if (product.carbs < carbsRange[0] || product.carbs > carbsRange[1])
+      return false;
+    if (product.fat < fatRange[0] || product.fat > fatRange[1]) return false;
+    if (
+      product.calories < caloriesRange[0] ||
+      product.calories > caloriesRange[1]
+    )
+      return false;
 
     // 식이 제한 필터
     if (dietaryRestrictions.length > 0) {
       const matchesAllRestrictions = dietaryRestrictions.every((restriction) =>
         product.dietaryInfo.includes(restriction),
-      )
-      if (!matchesAllRestrictions) return false
+      );
+      if (!matchesAllRestrictions) return false;
     }
 
-    return true
-  })
+    return true;
+  });
 
   // 정렬된 제품 목록
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortOption) {
       case "protein-ratio":
-        return b.proteinRatio - a.proteinRatio
+        return b.proteinRatio - a.proteinRatio;
       case "price-asc":
-        return a.price - b.price
+        return a.price - b.price;
       case "price-desc":
-        return b.price - a.price
+        return b.price - a.price;
       case "protein":
-        return b.protein - a.protein
+        return b.protein - a.protein;
       case "calories-asc":
-        return a.calories - b.calories
+        return a.calories - b.calories;
       case "recommended":
       default:
         // 목표 기반 추천 (선택된 목표가 있는 경우)
         if (selectedGoal !== "all") {
-          return b.goalScores[selectedGoal as GoalType] - a.goalScores[selectedGoal as GoalType]
+          return (
+            b.goalScores[selectedGoal as GoalType] -
+            a.goalScores[selectedGoal as GoalType]
+          );
         }
         // 기본 추천 (ID 기준)
-        return a.id - b.id
+        return a.id - b.id;
     }
-  })
+  });
 
   // 목표별 추천 제품
   const getRecommendedProducts = (goal: string) => {
-    return [...products].sort((a, b) => b.goalScores[goal as keyof typeof b.goalScores] - a.goalScores[goal as keyof typeof a.goalScores]).slice(0, 3)
-  }
+    return [...products]
+      .sort(
+        (a, b) =>
+          b.goalScores[goal as keyof typeof b.goalScores] -
+          a.goalScores[goal as keyof typeof a.goalScores],
+      )
+      .slice(0, 3);
+  };
 
   // 목표별 추천 제품 목록
   const goalRecommendations: Record<GoalType, any[]> = {
@@ -518,7 +600,7 @@ export default function ProductsPage() {
     energy: getRecommendedProducts("energy"),
     recovery: getRecommendedProducts("recovery"),
     health: getRecommendedProducts("health"),
-  }
+  };
 
   // 영양소 최대값 (프로그레스 바용)
   const maxNutrients = {
@@ -526,24 +608,30 @@ export default function ProductsPage() {
     carbs: 50,
     fat: 20,
     calories: 300,
-  }
+  };
 
   // 목표 설명
   const goalDescriptions: Record<GoalType, string> = {
-    "muscle-gain": "근육 성장을 위해 고단백, 적절한 탄수화물, 충분한 칼로리가 필요합니다.",
-    "weight-loss": "체중 감량을 위해 고단백, 저탄수화물, 저칼로리 식품이 효과적입니다.",
+    "muscle-gain":
+      "근육 성장을 위해 고단백, 적절한 탄수화물, 충분한 칼로리가 필요합니다.",
+    "weight-loss":
+      "체중 감량을 위해 고단백, 저탄수화물, 저칼로리 식품이 효과적입니다.",
     energy: "지속적인 에너지를 위해 복합 탄수화물과 건강한 지방이 중요합니다.",
-    recovery: "운동 후 회복을 위해 단백질과 항산화 성분이 풍부한 식품이 도움됩니다.",
+    recovery:
+      "운동 후 회복을 위해 단백질과 항산화 성분이 풍부한 식품이 도움됩니다.",
     health: "전반적인 건강을 위해 다양한 영양소가 균형 잡힌 식품이 중요합니다.",
-  }
+  };
 
   // 영양소 설명
   const nutrientDescriptions = {
-    protein: "단백질은 근육 성장과 회복에 필수적인 영양소입니다. 체중 1kg당 1.6-2.2g 섭취가 권장됩니다.",
-    carbs: "탄수화물은 주요 에너지원으로, 특히 운동 전후에 중요합니다. 복합 탄수화물은 지속적인 에너지를 제공합니다.",
+    protein:
+      "단백질은 근육 성장과 회복에 필수적인 영양소입니다. 체중 1kg당 1.6-2.2g 섭취가 권장됩니다.",
+    carbs:
+      "탄수화물은 주요 에너지원으로, 특히 운동 전후에 중요합니다. 복합 탄수화물은 지속적인 에너지를 제공합니다.",
     fat: "건강한 지방은 호르몬 생성, 영양소 흡수, 포만감 유지에 중요합니다. 불포화지방과 오메가-3가 좋은 공급원입니다.",
-    calories: "칼로리는 에너지의 측정 단위입니다. 목표에 따라 적절한 칼로리 섭취가 중요합니다.",
-  }
+    calories:
+      "칼로리는 에너지의 측정 단위입니다. 목표에 따라 적절한 칼로리 섭취가 중요합니다.",
+  };
 
   return (
     <div className="container py-8">
@@ -551,7 +639,10 @@ export default function ProductsPage() {
         {/* 헤더 섹션 */}
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold">영양 중심 상품 카탈로그</h1>
-          <p className="text-gray-500">당신의 피트니스 목표에 맞는 최적의 영양소 구성을 가진 식품을 찾아보세요</p>
+          <p className="text-gray-500">
+            당신의 피트니스 목표에 맞는 최적의 영양소 구성을 가진 식품을
+            찾아보세요
+          </p>
         </div>
 
         {/* 목표 선택 배너 (선택된 경우) */}
@@ -561,7 +652,8 @@ export default function ProductsPage() {
               <div className="flex items-center gap-2">
                 <Dumbbell className="h-5 w-5 text-green-600" />
                 <h3 className="font-medium text-green-800">
-                  {fitnessGoals.find((g) => g.id === selectedGoal)?.name} 목표를 위한 추천 상품
+                  {fitnessGoals.find((g) => g.id === selectedGoal)?.name} 목표를
+                  위한 추천 상품
                 </h3>
               </div>
               <TooltipProvider>
@@ -573,41 +665,63 @@ export default function ProductsPage() {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p className="max-w-xs">{selectedGoal !== "all" ? goalDescriptions[selectedGoal as GoalType] : ""}</p>
+                    <p className="max-w-xs">
+                      {selectedGoal !== "all"
+                        ? goalDescriptions[selectedGoal as GoalType]
+                        : ""}
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-              {selectedGoal !== "all" && goalRecommendations[selectedGoal as GoalType].map((product: any) => (
-                <div key={product.id} className="flex items-center gap-3 bg-white p-2 rounded border">
-                  <img
-                    src={product.image || "https://placehold.co/300x200"}
-                    alt={product.name}
-                    className="w-12 h-12 object-cover rounded"
-                  />
-                  <div className="flex-1">
-                    <h4 className="font-medium text-sm">{product.name}</h4>
-                    <div className="flex items-center gap-1 mt-1">
-                      <div className="flex items-center">
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        <span className="text-xs ml-1">{selectedGoal !== "all" ? product.goalScores[selectedGoal as GoalType].toFixed(1) : ""}</span>
+              {selectedGoal !== "all" &&
+                goalRecommendations[selectedGoal as GoalType].map(
+                  (product: any) => (
+                    <div
+                      key={product.id}
+                      className="flex items-center gap-3 bg-white p-2 rounded border"
+                    >
+                      <img
+                        src={product.image || "https://placehold.co/300x200"}
+                        alt={product.name}
+                        className="w-12 h-12 object-cover rounded"
+                      />
+                      <div className="flex-1">
+                        <h4 className="font-medium text-sm">{product.name}</h4>
+                        <div className="flex items-center gap-1 mt-1">
+                          <div className="flex items-center">
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                            <span className="text-xs ml-1">
+                              {selectedGoal !== "all"
+                                ? product.goalScores[
+                                    selectedGoal as GoalType
+                                  ].toFixed(1)
+                                : ""}
+                            </span>
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            {product.protein}g 단백질
+                          </span>
+                        </div>
                       </div>
-                      <span className="text-xs text-gray-500">{product.protein}g 단백질</span>
+                      <Button variant="outline" size="sm" className="h-8">
+                        보기
+                      </Button>
                     </div>
-                  </div>
-                  <Button variant="outline" size="sm" className="h-8">
-                    보기
-                  </Button>
-                </div>
-              ))}
+                  ),
+                )}
             </div>
           </div>
         )}
 
         {/* 영양 카테고리 네비게이션 */}
         <div className="bg-white border rounded-lg p-2">
-          <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
+          <Tabs
+            value={selectedCategory}
+            onValueChange={setSelectedCategory}
+            className="w-full"
+          >
             <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 bg-transparent h-auto p-0">
               {nutritionCategories.map((category) => (
                 <TabsTrigger
@@ -628,14 +742,23 @@ export default function ProductsPage() {
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div className="flex items-start gap-4">
               <div className="bg-blue-100 rounded-full p-2 mt-1">
-                {nutritionCategories.find((c) => c.id === selectedCategory)?.icon}
+                {
+                  nutritionCategories.find((c) => c.id === selectedCategory)
+                    ?.icon
+                }
               </div>
               <div>
                 <h3 className="font-medium text-blue-800">
-                  {nutritionCategories.find((c) => c.id === selectedCategory)?.name}
+                  {
+                    nutritionCategories.find((c) => c.id === selectedCategory)
+                      ?.name
+                  }
                 </h3>
                 <p className="text-blue-700 text-sm mt-1">
-                  {nutritionCategories.find((c) => c.id === selectedCategory)?.education}
+                  {
+                    nutritionCategories.find((c) => c.id === selectedCategory)
+                      ?.education
+                  }
                 </p>
               </div>
             </div>
@@ -646,7 +769,11 @@ export default function ProductsPage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-            <Input type="search" placeholder="상품명, 영양소, 태그 검색..." className="w-full pl-8" />
+            <Input
+              type="search"
+              placeholder="상품명, 영양소, 태그 검색..."
+              className="w-full pl-8"
+            />
           </div>
           <div className="flex items-center gap-2">
             <Select value={sortOption} onValueChange={setSortOption}>
@@ -676,7 +803,10 @@ export default function ProductsPage() {
                   {/* 모바일 필터 내용 */}
                   <div>
                     <h3 className="font-medium mb-2">피트니스 목표</h3>
-                    <Select value={selectedGoal} onValueChange={setSelectedGoal}>
+                    <Select
+                      value={selectedGoal}
+                      onValueChange={setSelectedGoal}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="목표 선택" />
                       </SelectTrigger>
@@ -764,19 +894,32 @@ export default function ProductsPage() {
                     <h3 className="font-medium mb-2">식이 제한</h3>
                     <div className="space-y-2">
                       {dietaryOptions.map((option) => (
-                        <div key={option.id} className="flex items-center space-x-2">
+                        <div
+                          key={option.id}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox
                             id={`mobile-diet-${option.id}`}
                             checked={dietaryRestrictions.includes(option.name)}
                             onCheckedChange={(checked) => {
                               if (checked) {
-                                setDietaryRestrictions([...dietaryRestrictions, option.name])
+                                setDietaryRestrictions([
+                                  ...dietaryRestrictions,
+                                  option.name,
+                                ]);
                               } else {
-                                setDietaryRestrictions(dietaryRestrictions.filter((item) => item !== option.name))
+                                setDietaryRestrictions(
+                                  dietaryRestrictions.filter(
+                                    (item) => item !== option.name,
+                                  ),
+                                );
                               }
                             }}
                           />
-                          <label htmlFor={`mobile-diet-${option.id}`} className="text-sm">
+                          <label
+                            htmlFor={`mobile-diet-${option.id}`}
+                            className="text-sm"
+                          >
                             {option.name}
                           </label>
                         </div>
@@ -843,12 +986,18 @@ export default function ProductsPage() {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-5 w-5 p-0"
+                              >
                                 <HelpCircle className="h-3 w-3" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p className="max-w-xs">{nutrientDescriptions.protein}</p>
+                              <p className="max-w-xs">
+                                {nutrientDescriptions.protein}
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -873,12 +1022,18 @@ export default function ProductsPage() {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-5 w-5 p-0"
+                              >
                                 <HelpCircle className="h-3 w-3" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p className="max-w-xs">{nutrientDescriptions.carbs}</p>
+                              <p className="max-w-xs">
+                                {nutrientDescriptions.carbs}
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -903,12 +1058,18 @@ export default function ProductsPage() {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-5 w-5 p-0"
+                              >
                                 <HelpCircle className="h-3 w-3" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p className="max-w-xs">{nutrientDescriptions.fat}</p>
+                              <p className="max-w-xs">
+                                {nutrientDescriptions.fat}
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -917,7 +1078,14 @@ export default function ProductsPage() {
                         {fatRange[0]} - {fatRange[1]}g
                       </span>
                     </div>
-                    <Slider value={fatRange} min={0} max={50} step={1} onValueChange={setFatRange} className="mt-2" />
+                    <Slider
+                      value={fatRange}
+                      min={0}
+                      max={50}
+                      step={1}
+                      onValueChange={setFatRange}
+                      className="mt-2"
+                    />
                   </div>
                   <div>
                     <div className="flex justify-between items-center">
@@ -926,12 +1094,18 @@ export default function ProductsPage() {
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-5 w-5 p-0"
+                              >
                                 <HelpCircle className="h-3 w-3" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p className="max-w-xs">{nutrientDescriptions.calories}</p>
+                              <p className="max-w-xs">
+                                {nutrientDescriptions.calories}
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -956,19 +1130,32 @@ export default function ProductsPage() {
                 <h3 className="font-medium mb-2">식이 제한</h3>
                 <div className="space-y-2">
                   {dietaryOptions.map((option) => (
-                    <div key={option.id} className="flex items-center space-x-2">
+                    <div
+                      key={option.id}
+                      className="flex items-center space-x-2"
+                    >
                       <Checkbox
                         id={`desktop-diet-${option.id}`}
                         checked={dietaryRestrictions.includes(option.name)}
                         onCheckedChange={(checked) => {
                           if (checked) {
-                            setDietaryRestrictions([...dietaryRestrictions, option.name])
+                            setDietaryRestrictions([
+                              ...dietaryRestrictions,
+                              option.name,
+                            ]);
                           } else {
-                            setDietaryRestrictions(dietaryRestrictions.filter((item) => item !== option.name))
+                            setDietaryRestrictions(
+                              dietaryRestrictions.filter(
+                                (item) => item !== option.name,
+                              ),
+                            );
                           }
                         }}
                       />
-                      <label htmlFor={`desktop-diet-${option.id}`} className="text-sm">
+                      <label
+                        htmlFor={`desktop-diet-${option.id}`}
+                        className="text-sm"
+                      >
                         {option.name}
                       </label>
                     </div>
@@ -997,13 +1184,13 @@ export default function ProductsPage() {
                   variant="outline"
                   className="w-full"
                   onClick={() => {
-                    setProteinRange([0, 50])
-                    setCarbsRange([0, 100])
-                    setFatRange([0, 50])
-                    setCaloriesRange([0, 500])
-                    setDietaryRestrictions([])
-                    setSelectedGoal("all")
-                    setSelectedCategory("all")
+                    setProteinRange([0, 50]);
+                    setCarbsRange([0, 100]);
+                    setFatRange([0, 50]);
+                    setCaloriesRange([0, 500]);
+                    setDietaryRestrictions([]);
+                    setSelectedGoal("all");
+                    setSelectedCategory("all");
                   }}
                 >
                   필터 초기화
@@ -1029,13 +1216,13 @@ export default function ProductsPage() {
                   variant="outline"
                   className="mt-4"
                   onClick={() => {
-                    setProteinRange([0, 50])
-                    setCarbsRange([0, 100])
-                    setFatRange([0, 50])
-                    setCaloriesRange([0, 500])
-                    setDietaryRestrictions([])
-                    setSelectedGoal("all")
-                    setSelectedCategory("all")
+                    setProteinRange([0, 50]);
+                    setCarbsRange([0, 100]);
+                    setFatRange([0, 50]);
+                    setCaloriesRange([0, 500]);
+                    setDietaryRestrictions([]);
+                    setSelectedGoal("all");
+                    setSelectedCategory("all");
                   }}
                 >
                   필터 초기화
@@ -1043,36 +1230,48 @@ export default function ProductsPage() {
               </div>
             ) : (
               sortedProducts.map((product) => (
-                <Card key={product.id} className="overflow-hidden flex flex-col">
+                <Card
+                  key={product.id}
+                  className="overflow-hidden flex flex-col"
+                >
                   <CardContent className="p-0 relative">
                     <img
                       src={product.image || "https://placehold.co/300x200"}
                       alt={product.name}
                       className="w-full h-48 object-cover"
                     />
-                    {selectedGoal !== "all" && product.goalScores[selectedGoal as GoalType] >= 4.5 && (
-                      <div className="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">
-                        추천
-                      </div>
-                    )}
+                    {selectedGoal !== "all" &&
+                      product.goalScores[selectedGoal as GoalType] >= 4.5 && (
+                        <div className="absolute top-2 right-2 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                          추천
+                        </div>
+                      )}
                   </CardContent>
                   <CardHeader className="p-4 pb-2 flex-1">
                     <div className="flex flex-wrap gap-1 mb-2">
                       {product.tags.map((tag, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className="text-xs"
+                        >
                           {tag}
                         </Badge>
                       ))}
                     </div>
                     <CardTitle className="text-lg">{product.name}</CardTitle>
-                    <CardDescription className="line-clamp-2 h-10">{product.description}</CardDescription>
+                    <CardDescription className="line-clamp-2 h-10">
+                      {product.description}
+                    </CardDescription>
                   </CardHeader>
 
                   {/* 영양소 시각화 */}
                   <div className="px-4 space-y-2">
                     <div className="space-y-1">
                       <div className="flex justify-between items-center text-xs">
-                        <span className="font-medium text-green-700">단백질</span>
+                        <span className="font-medium text-green-700">
+                          단백질
+                        </span>
                         <span>{product.protein}g</span>
                       </div>
                       <Progress
@@ -1082,7 +1281,9 @@ export default function ProductsPage() {
                     </div>
                     <div className="space-y-1">
                       <div className="flex justify-between items-center text-xs">
-                        <span className="font-medium text-blue-700">탄수화물</span>
+                        <span className="font-medium text-blue-700">
+                          탄수화물
+                        </span>
                         <span>{product.carbs}g</span>
                       </div>
                       <Progress
@@ -1102,7 +1303,9 @@ export default function ProductsPage() {
                     </div>
                     <div className="space-y-1">
                       <div className="flex justify-between items-center text-xs">
-                        <span className="font-medium text-purple-700">칼로리</span>
+                        <span className="font-medium text-purple-700">
+                          칼로리
+                        </span>
                         <span>{product.calories}kcal</span>
                       </div>
                       <Progress
@@ -1116,23 +1319,36 @@ export default function ProductsPage() {
                   <div className="px-4 pt-2 pb-0">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-1">
-                        <span className="text-xs text-gray-500">단백질 효율</span>
+                        <span className="text-xs text-gray-500">
+                          단백질 효율
+                        </span>
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-5 w-5 p-0"
+                              >
                                 <HelpCircle className="h-3 w-3" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>100kcal당 단백질 함량 (g). 높을수록 효율적인 단백질 공급원입니다.</p>
+                              <p>
+                                100kcal당 단백질 함량 (g). 높을수록 효율적인
+                                단백질 공급원입니다.
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
                       </div>
                       <Badge
-                        variant={product.proteinRatio > 10 ? "default" : "outline"}
-                        className={product.proteinRatio > 10 ? "bg-green-600" : ""}
+                        variant={
+                          product.proteinRatio > 10 ? "default" : "outline"
+                        }
+                        className={
+                          product.proteinRatio > 10 ? "bg-green-600" : ""
+                        }
                       >
                         {product.proteinRatio.toFixed(1)}
                       </Badge>
@@ -1145,7 +1361,11 @@ export default function ProductsPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1">
                           <span className="text-xs text-gray-500">
-                            {fitnessGoals.find((g) => g.id === selectedGoal)?.name} 적합도
+                            {
+                              fitnessGoals.find((g) => g.id === selectedGoal)
+                                ?.name
+                            }{" "}
+                            적합도
                           </span>
                         </div>
                         <div className="flex items-center">
@@ -1153,13 +1373,22 @@ export default function ProductsPage() {
                             <Star
                               key={i}
                               className={`h-3 w-3 ${
-                                i < Math.floor(product.goalScores[selectedGoal as GoalType])
+                                i <
+                                Math.floor(
+                                  product.goalScores[selectedGoal as GoalType],
+                                )
                                   ? "fill-yellow-400 text-yellow-400"
                                   : "text-gray-300"
                               }`}
                             />
                           ))}
-                          <span className="text-xs ml-1">{selectedGoal !== "all" ? product.goalScores[selectedGoal as GoalType].toFixed(1) : ""}</span>
+                          <span className="text-xs ml-1">
+                            {selectedGoal !== "all"
+                              ? product.goalScores[
+                                  selectedGoal as GoalType
+                                ].toFixed(1)
+                              : ""}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -1181,15 +1410,22 @@ export default function ProductsPage() {
                       <PopoverContent className="w-80">
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm">영양 팁</h4>
-                          <p className="text-sm text-gray-600">{product.nutritionTip}</p>
+                          <p className="text-sm text-gray-600">
+                            {product.nutritionTip}
+                          </p>
 
                           <Separator />
 
                           <div>
-                            <h4 className="font-medium text-sm">최적 섭취 시간</h4>
+                            <h4 className="font-medium text-sm">
+                              최적 섭취 시간
+                            </h4>
                             <div className="flex flex-wrap gap-1 mt-1">
                               {product.mealTimes.map((time, index) => (
-                                <div key={index} className="flex items-center text-xs bg-gray-100 rounded px-2 py-1">
+                                <div
+                                  key={index}
+                                  className="flex items-center text-xs bg-gray-100 rounded px-2 py-1"
+                                >
                                   <Clock className="h-3 w-3 mr-1" />
                                   {time === "pre-workout"
                                     ? "운동 전"
@@ -1212,31 +1448,51 @@ export default function ProductsPage() {
                   </div>
 
                   <CardFooter className="p-4 pt-2 flex justify-between items-center">
-                    <span className="font-bold">{product.price.toLocaleString()}원</span>
+                    <span className="font-bold">
+                      {product.price.toLocaleString()}원
+                    </span>
                     <div className="flex gap-2">
                       <Popover>
                         <PopoverTrigger asChild>
-                          <Button variant="outline" size="sm" className="h-9 px-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-9 px-2"
+                          >
                             <Plus className="h-4 w-4" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-56">
                           <div className="space-y-2">
-                            <Button variant="outline" size="sm" className="w-full justify-start">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start"
+                            >
                               <Plus className="h-4 w-4 mr-2" />내 식단에 추가
                             </Button>
-                            <Button variant="outline" size="sm" className="w-full justify-start">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start"
+                            >
                               <Plus className="h-4 w-4 mr-2" />
                               위시리스트에 추가
                             </Button>
-                            <Button variant="outline" size="sm" className="w-full justify-start">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start"
+                            >
                               <Plus className="h-4 w-4 mr-2" />
                               비교 목록에 추가
                             </Button>
                           </div>
                         </PopoverContent>
                       </Popover>
-                      <Button className="bg-green-600 hover:bg-green-700">장바구니</Button>
+                      <Button className="bg-green-600 hover:bg-green-700">
+                        장바구니
+                      </Button>
                     </div>
                   </CardFooter>
                 </Card>
@@ -1258,7 +1514,10 @@ export default function ProductsPage() {
               <Card className="bg-gray-50">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">단백질 보충 추천</CardTitle>
-                  <CardDescription>현재 장바구니에 단백질이 부족합니다. 다음 제품을 추가해보세요.</CardDescription>
+                  <CardDescription>
+                    현재 장바구니에 단백질이 부족합니다. 다음 제품을
+                    추가해보세요.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-3">
@@ -1269,7 +1528,9 @@ export default function ProductsPage() {
                     />
                     <div className="flex-1">
                       <h4 className="font-medium">유기농 닭가슴살</h4>
-                      <p className="text-sm text-gray-500">단백질 26g / 120kcal</p>
+                      <p className="text-sm text-gray-500">
+                        단백질 26g / 120kcal
+                      </p>
                       <div className="flex justify-between items-center mt-2">
                         <span className="font-bold">12,900원</span>
                         <Button variant="outline" size="sm">
@@ -1284,7 +1545,9 @@ export default function ProductsPage() {
               <Card className="bg-gray-50">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">건강한 지방 추천</CardTitle>
-                  <CardDescription>건강한 지방 섭취를 위해 다음 제품을 추가해보세요.</CardDescription>
+                  <CardDescription>
+                    건강한 지방 섭취를 위해 다음 제품을 추가해보세요.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-3">
@@ -1295,7 +1558,9 @@ export default function ProductsPage() {
                     />
                     <div className="flex-1">
                       <h4 className="font-medium">유기농 아보카도</h4>
-                      <p className="text-sm text-gray-500">건강한 지방 15g / 160kcal</p>
+                      <p className="text-sm text-gray-500">
+                        건강한 지방 15g / 160kcal
+                      </p>
                       <div className="flex justify-between items-center mt-2">
                         <span className="font-bold">3,900원</span>
                         <Button variant="outline" size="sm">
@@ -1309,8 +1574,12 @@ export default function ProductsPage() {
 
               <Card className="bg-gray-50">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">비타민 & 미네랄 추천</CardTitle>
-                  <CardDescription>영양 균형을 위해 다음 제품을 추가해보세요.</CardDescription>
+                  <CardTitle className="text-lg">
+                    비타민 & 미네랄 추천
+                  </CardTitle>
+                  <CardDescription>
+                    영양 균형을 위해 다음 제품을 추가해보세요.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-3">
@@ -1321,7 +1590,9 @@ export default function ProductsPage() {
                     />
                     <div className="flex-1">
                       <h4 className="font-medium">블루베리</h4>
-                      <p className="text-sm text-gray-500">항산화제 풍부 / 57kcal</p>
+                      <p className="text-sm text-gray-500">
+                        항산화제 풍부 / 57kcal
+                      </p>
                       <div className="flex justify-between items-center mt-2">
                         <span className="font-bold">6,900원</span>
                         <Button variant="outline" size="sm">
@@ -1337,5 +1608,5 @@ export default function ProductsPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

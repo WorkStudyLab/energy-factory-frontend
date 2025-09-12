@@ -1,52 +1,61 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import { ROUTES } from "@/constants/routes"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { ROUTES } from "@/constants/routes";
 
 export default function LoginPage() {
-  const navigate = useNavigate()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     // 로그인 로직 구현
-    console.log("로그인 시도:", { email, password })
+    console.log("로그인 시도:", { email, password });
     // 로그인 성공 시 마이페이지로 이동
-    navigate(ROUTES.MY_PAGE)
-  }
+    navigate(ROUTES.MY_PAGE);
+  };
 
   const handleGoogleLogin = () => {
     // Google 로그인 로직 구현
-    console.log("Google 로그인 시도")
+    console.log("Google 로그인 시도");
     // 로그인 성공 시 마이페이지로 이동
-    navigate(ROUTES.MY_PAGE)
-  }
+    navigate(ROUTES.MY_PAGE);
+  };
 
   const handleKakaoLogin = () => {
     // Kakao 로그인 로직 구현
-    console.log("Kakao 로그인 시도")
+    console.log("Kakao 로그인 시도");
     // 로그인 성공 시 마이페이지로 이동
-    navigate(ROUTES.MY_PAGE)
-  }
+    navigate(ROUTES.MY_PAGE);
+  };
   return (
     <div className="container flex items-center justify-center min-h-[calc(100vh-16rem)] py-8">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>로그인</CardTitle>
-          <CardDescription>Energy Factory 계정으로 로그인하세요</CardDescription>
+          <CardDescription>
+            Energy Factory 계정으로 로그인하세요
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">이메일</Label>
-              <Input 
-                id="email" 
-                type="email" 
+              <Input
+                id="email"
+                type="email"
                 placeholder="example@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -60,8 +69,8 @@ export default function LoginPage() {
                   비밀번호 찾기
                 </a>
               </div>
-              <Input 
-                id="password" 
+              <Input
+                id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -70,20 +79,24 @@ export default function LoginPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col">
-            <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">로그인</Button>
+            <Button
+              type="submit"
+              className="w-full bg-green-600 hover:bg-green-700"
+            >
+              로그인
+            </Button>
           </CardFooter>
         </form>
-        
-        <CardFooter className="flex flex-col">
 
+        <CardFooter className="flex flex-col">
           <div className="mt-4 text-center text-sm">
             <span className="text-gray-500">계정이 없으신가요?</span>{" "}
             <a
               href="#"
               className="text-green-600 hover:underline"
               onClick={(e) => {
-                e.preventDefault()
-                navigate(ROUTES.SIGNUP)
+                e.preventDefault();
+                navigate(ROUTES.SIGNUP);
               }}
             >
               회원가입
@@ -101,17 +114,17 @@ export default function LoginPage() {
             </div>
 
             <div className="mt-4 space-y-2">
-              <Button 
+              <Button
                 type="button"
-                variant="outline" 
+                variant="outline"
                 className="w-full"
                 onClick={handleGoogleLogin}
               >
                 Google로 로그인
               </Button>
-              <Button 
+              <Button
                 type="button"
-                variant="outline" 
+                variant="outline"
                 className="w-full"
                 onClick={handleKakaoLogin}
               >
@@ -122,5 +135,5 @@ export default function LoginPage() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }

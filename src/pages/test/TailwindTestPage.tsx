@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const TailwindTestPage: React.FC = () => {
   return (
@@ -7,11 +7,13 @@ const TailwindTestPage: React.FC = () => {
         <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">
           🎨 Tailwind CSS 테스트
         </h1>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* 색상 테스트 */}
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">색상 테스트</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              색상 테스트
+            </h2>
             <div className="space-y-2">
               <div className="h-8 bg-red-500 rounded"></div>
               <div className="h-8 bg-green-500 rounded"></div>
@@ -23,7 +25,9 @@ const TailwindTestPage: React.FC = () => {
 
           {/* 버튼 테스트 */}
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">버튼 테스트</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              버튼 테스트
+            </h2>
             <div className="space-y-3">
               <button className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                 Primary Button
@@ -39,7 +43,9 @@ const TailwindTestPage: React.FC = () => {
 
           {/* 텍스트 테스트 */}
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">텍스트 테스트</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              텍스트 테스트
+            </h2>
             <div className="space-y-2">
               <h1 className="text-2xl font-bold text-gray-900">큰 제목</h1>
               <h2 className="text-xl font-semibold text-gray-800">중간 제목</h2>
@@ -51,7 +57,9 @@ const TailwindTestPage: React.FC = () => {
 
           {/* 그리드 테스트 */}
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">그리드 테스트</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              그리드 테스트
+            </h2>
             <div className="grid grid-cols-2 gap-2">
               <div className="h-16 bg-blue-100 rounded flex items-center justify-center">
                 <span className="text-sm">1</span>
@@ -70,7 +78,9 @@ const TailwindTestPage: React.FC = () => {
 
           {/* 애니메이션 테스트 */}
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">애니메이션 테스트</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              애니메이션 테스트
+            </h2>
             <div className="space-y-3">
               <div className="h-8 bg-blue-500 rounded transform hover:scale-105 transition-transform cursor-pointer"></div>
               <div className="h-8 bg-green-500 rounded transform hover:rotate-3 transition-transform cursor-pointer"></div>
@@ -80,7 +90,9 @@ const TailwindTestPage: React.FC = () => {
 
           {/* 반응형 테스트 */}
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">반응형 테스트</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              반응형 테스트
+            </h2>
             <div className="text-sm text-gray-600 space-y-1">
               <p className="block sm:hidden">모바일 화면</p>
               <p className="hidden sm:block md:hidden">태블릿 화면</p>
@@ -95,7 +107,9 @@ const TailwindTestPage: React.FC = () => {
             <span className="text-2xl mr-2">✅</span>
             <div>
               <strong>Tailwind CSS가 정상적으로 작동하고 있습니다!</strong>
-              <p className="text-sm mt-1">위의 모든 스타일이 Tailwind CSS로 적용되었습니다.</p>
+              <p className="text-sm mt-1">
+                위의 모든 스타일이 Tailwind CSS로 적용되었습니다.
+              </p>
             </div>
           </div>
         </div>
