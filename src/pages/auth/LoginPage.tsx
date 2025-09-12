@@ -1,16 +1,14 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { ROUTES } from "@/constants/routes"
 
-// 타입 정의
-interface LoginPageProps {
-  onNavigate?: (page: string) => void
-}
-
-export default function LoginPage({ onNavigate }: LoginPageProps) {
+export default function LoginPage() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
@@ -79,7 +77,7 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
               className="text-green-600 hover:underline"
               onClick={(e) => {
                 e.preventDefault()
-                onNavigate && onNavigate("register")
+                navigate(ROUTES.SIGNUP)
               }}
             >
               회원가입
