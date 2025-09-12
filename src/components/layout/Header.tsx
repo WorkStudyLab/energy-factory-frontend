@@ -144,11 +144,10 @@ export default function Header() {
         </nav>
         <div className="flex items-center gap-4">
           <a
-            href="/order-history"
             className="relative hidden md:block"
             onClick={(e) => {
               e.preventDefault();
-              // onNavigate && onNavigate("orders")
+              navigate(ROUTES.ORDER_HISTORY);
             }}
           >
             <Package className="h-5 w-5" />
@@ -158,7 +157,6 @@ export default function Header() {
             <span className="sr-only">주문 내역</span>
           </a>
           <a
-            href="/cart"
             className="relative"
             onClick={(e) => {
               e.preventDefault();
@@ -173,7 +171,6 @@ export default function Header() {
             <span className="sr-only">장바구니</span>
           </a>
           <a
-            href="/notifications"
             className="relative hidden md:block"
             onClick={(e) => {
               e.preventDefault();
