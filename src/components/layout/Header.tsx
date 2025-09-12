@@ -66,6 +66,16 @@ export default function Header() {
                 >
                   식단 코치
                 </a>
+                <a
+                  href="/order-history"
+                  className="text-lg font-medium hover:underline"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    navigate(ROUTES.ORDER_HISTORY)
+                  }}
+                >
+                  주문 내역
+                </a>
               </nav>
             </SheetContent>
           </Sheet>
@@ -101,7 +111,36 @@ export default function Header() {
           >
             상품
           </a>
-
+          <a
+            href="/nutrition"
+            className="text-sm font-medium hover:text-green-600"
+            onClick={(e) => {
+              e.preventDefault()
+              navigate(ROUTES.NUTRITION)
+            }}
+          >
+            영양계산기
+          </a>
+          <a
+            href="/diet-coach"
+            className="text-sm font-medium hover:text-green-600"
+            onClick={(e) => {
+              e.preventDefault()
+              navigate(ROUTES.DIET_COACH)
+            }}
+          >
+            식단코치
+          </a>
+          <a
+            href="/order-history"
+            className="text-sm font-medium hover:text-green-600"
+            onClick={(e) => {
+              e.preventDefault()
+              navigate(ROUTES.ORDER_HISTORY)
+            }}
+          >
+            주문내역
+          </a>
         </nav>
         <div className="flex items-center gap-4">
           <a

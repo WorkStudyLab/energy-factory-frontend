@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ROUTES } from './constants/routes';
 import HomePage from './pages/home/HomePage';
 import ProductsPage from './pages/products/ProductsPage';
@@ -7,6 +7,9 @@ import CartPage from './pages/cart/CartPage';
 import LoginPage from './pages/auth/LoginPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import SignupPage from './pages/auth/SignupPage';
+import NutritionPage from './pages/nutrition/NutritionPage';
+import DietCoachPage from './pages/diet-coach/DietCoachPage';
+import OrderHistoryPage from './pages/order-history/OrderHistoryPage';
 import TestPage from './pages/test/TestPage';
 import UiTestPage from './pages/test/UiTestPage';
 import ShadcnTestPage from './pages/test/ShadcnTestPage';
@@ -31,6 +34,9 @@ function App() {
             <Route path={ROUTES.LOGIN} element={<LoginPage />} />
             <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
             <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
+            <Route path={ROUTES.NUTRITION} element={<NutritionPage />} />
+            <Route path={ROUTES.DIET_COACH} element={<DietCoachPage />} />
+            <Route path={ROUTES.ORDER_HISTORY} element={<OrderHistoryPage />} />
             <Route path={ROUTES.TEST} element={<TestPage />} />
             <Route path={ROUTES.UI_TEST} element={<UiTestPage />} />
             <Route path={ROUTES.SHADCN_TEST} element={<ShadcnTestPage />} />
