@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./lib/tanstack/queryClient";
 import { ROUTES } from "./constants/routes";
 import HomePage from "./pages/home/HomePage";
 import ProductsPage from "./pages/products/ProductsPage";
@@ -20,39 +22,47 @@ import Footer from "./components/layout/Footer";
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col">
-        <Header />
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <div className="min-h-screen flex flex-col">
+          <Header />
 
-        <main className="flex-1">
-          <Routes>
-            <Route path={ROUTES.HOME} element={<HomePage />} />
-            <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
-            <Route
-              path={ROUTES.PRODUCT_DETAIL}
-              element={<ProductDetailPage />}
-            />
-            <Route path={ROUTES.CART} element={<CartPage />} />
-            <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-            <Route
-              path={ROUTES.FORGOT_PASSWORD}
-              element={<ForgotPasswordPage />}
-            />
-            <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
-            <Route path={ROUTES.NUTRITION} element={<NutritionPage />} />
-            <Route path={ROUTES.DIET_COACH} element={<DietCoachPage />} />
-            <Route path={ROUTES.ORDER_HISTORY} element={<OrderHistoryPage />} />
-            <Route path={ROUTES.MY_PAGE} element={<MyPage />} />
-            <Route path={ROUTES.TEST} element={<TestPage />} />
-            <Route path={ROUTES.UI_TEST} element={<UiTestPage />} />
-            <Route path={ROUTES.SHADCN_TEST} element={<ShadcnTestPage />} />
-            <Route path={ROUTES.TAILWIND_TEST} element={<TailwindTestPage />} />
-          </Routes>
-        </main>
+          <main className="flex-1">
+            <Routes>
+              <Route path={ROUTES.HOME} element={<HomePage />} />
+              <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
+              <Route
+                path={ROUTES.PRODUCT_DETAIL}
+                element={<ProductDetailPage />}
+              />
+              <Route path={ROUTES.CART} element={<CartPage />} />
+              <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+              <Route
+                path={ROUTES.FORGOT_PASSWORD}
+                element={<ForgotPasswordPage />}
+              />
+              <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
+              <Route path={ROUTES.NUTRITION} element={<NutritionPage />} />
+              <Route path={ROUTES.DIET_COACH} element={<DietCoachPage />} />
+              <Route
+                path={ROUTES.ORDER_HISTORY}
+                element={<OrderHistoryPage />}
+              />
+              <Route path={ROUTES.MY_PAGE} element={<MyPage />} />
+              <Route path={ROUTES.TEST} element={<TestPage />} />
+              <Route path={ROUTES.UI_TEST} element={<UiTestPage />} />
+              <Route path={ROUTES.SHADCN_TEST} element={<ShadcnTestPage />} />
+              <Route
+                path={ROUTES.TAILWIND_TEST}
+                element={<TailwindTestPage />}
+              />
+            </Routes>
+          </main>
 
-        <Footer />
-      </div>
-    </Router>
+          <Footer />
+        </div>
+      </Router>
+    </QueryClientProvider>
   );
 }
 
