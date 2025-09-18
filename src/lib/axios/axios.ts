@@ -57,6 +57,11 @@ apiClient.interceptors.response.use(
 
     // 401 에러 처리 (토큰 만료)
     if (error.response?.status === 401) {
+      // 로그인 API 호출 시에는 토큰 갱신 로직을 실행하지 않음
+      if (originalRequest?.url?.includes("/auth/login")) {
+        return Promise.reject(error);
+      }
+
       // 토큰 갱신 로직 (필요시 구현)
       const refreshToken = localStorage.getItem("refreshToken");
 

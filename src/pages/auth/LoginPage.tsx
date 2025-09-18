@@ -13,18 +13,32 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { ROUTES } from "@/constants/routes";
+import { useLogin } from "@/features/auth/hooks/useLogin";
+
+/**
+ * 로그인 페이지
+ *
+ * @todo 카카오 로그인 구현
+ * @todo 구글 로그인 구현
+ *
+ */
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { login, isLoading, isError, error } = useLogin();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // 로그인 로직 구현
-    console.log("로그인 시도:", { email, password });
-    // 로그인 성공 시 마이페이지로 이동
-    navigate(ROUTES.MY_PAGE);
+
+    // 기본 유효성 검사
+    if (!email || !password) {
+      alert("이메일과 비밀번호를 입력해주세요.");
+      return;
+    }
+
+    login({ email, password });
   };
 
   const handleGoogleLogin = () => {
@@ -82,11 +96,28 @@ export default function LoginPage() {
             <Button
               type="submit"
               className="w-full bg-green-600 hover:bg-green-700"
+              disabled={isLoading}
             >
-              로그인
+              {isLoading ? "로그인 중..." : "로그인"}
             </Button>
+            {isError && (
+              <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
+                {error?.response?.data?.message || "로그인에 실패했습니다."}
+              </div>
+            )}
           </CardFooter>
         </form>
+        {/* 테스트용 계정 정보 데이터 표시 */}
+        {/* 개발 상태에서만 표출 */}
+        {import.meta.env.DEV && (
+          <CardFooter className="flex flex-col">
+            <div className="mt-4 text-center text-sm">
+              <div className="text-gray-500">테스트용 계정 정보</div>
+              <div className="text-gray-500"> email: test@example.com </div>
+              <div className="text-gray-500"> password: test </div>
+            </div>
+          </CardFooter>
+        )}
 
         <CardFooter className="flex flex-col">
           <div className="mt-4 text-center text-sm">
