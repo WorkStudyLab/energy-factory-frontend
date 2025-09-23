@@ -8,7 +8,7 @@ import axios, {
 
 // 환경 변수에서 API 기본 URL 가져오기 (기본값 설정)
 const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+  import.meta.env.VITE_API_BASE_URL || "http://13.209.24.80:8080";
 
 // axios 인스턴스 생성
 const apiClient: AxiosInstance = axios.create({
@@ -25,7 +25,11 @@ apiClient.interceptors.request.use(
     // 로컬 스토리지에서 토큰 가져오기
     const token = localStorage.getItem("accessToken");
 
-    if (token && config.headers) {
+    // 임시로 특정 API는 인증 헤더 제외 (테스트용)
+    const noAuthUrls = ['/products', '/users/signup', '/auth/login'];
+    const needsAuth = !noAuthUrls.some(url => config.url?.includes(url));
+    
+    if (token && config.headers && needsAuth) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
