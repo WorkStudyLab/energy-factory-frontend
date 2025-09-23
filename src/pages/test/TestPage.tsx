@@ -22,6 +22,33 @@ const TestPage: React.FC = () => {
       hoverColor: "hover:from-orange-600 hover:to-orange-700",
       route: ROUTES.SHADCN_TEST,
     },
+    {
+      id: "login-api",
+      title: "로그인 API 테스트",
+      description: "사용자 로그인 API 기능 테스트",
+      icon: "🔐",
+      color: "from-green-500 to-green-600",
+      hoverColor: "hover:from-green-600 hover:to-green-700",
+      route: ROUTES.LOGIN_API_TEST,
+    },
+    {
+      id: "signup-api",
+      title: "회원가입 API 테스트",
+      description: "사용자 회원가입 API 기능 테스트",
+      icon: "📝",
+      color: "from-blue-500 to-blue-600",
+      hoverColor: "hover:from-blue-600 hover:to-blue-700",
+      route: ROUTES.SIGNUP_API_TEST,
+    },
+    {
+      id: "products-api",
+      title: "상품 API 테스트",
+      description: "상품 관련 API 기능 테스트",
+      icon: "🛍️",
+      color: "from-pink-500 to-pink-600",
+      hoverColor: "hover:from-pink-600 hover:to-pink-700",
+      route: ROUTES.PRODUCTS_API_TEST,
+    },
   ];
 
   return (
