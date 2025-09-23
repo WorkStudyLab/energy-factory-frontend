@@ -3,25 +3,19 @@ import { useProductsStore } from "@/features/products/stores/useProductsStore";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, AlertCircle } from "lucide-react";
 
 export default function ProductsTestPage() {
-  const { 
-    filters, 
-    setKeyword, 
-    setCategory, 
-    setSort, 
-    setPage, 
-    resetFilters 
-  } = useProductsStore();
+  const { filters, setKeyword, setCategory, setSort, setPage, resetFilters } =
+    useProductsStore();
 
   const { data, isLoading, error, refetch } = useProducts();
 
@@ -43,7 +37,9 @@ export default function ProductsTestPage() {
           <AlertCircle className="h-8 w-8 text-red-500" />
           <p className="mt-2 text-red-500">상품을 불러오는데 실패했습니다.</p>
           <p className="text-gray-500 text-sm mt-1">
-            {error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다."}
+            {error instanceof Error
+              ? error.message
+              : "알 수 없는 오류가 발생했습니다."}
           </p>
           <Button onClick={() => refetch()} className="mt-4">
             다시 시도
@@ -75,15 +71,18 @@ export default function ProductsTestPage() {
                 value={filters.keyword || ""}
               />
             </div>
-            
+
             <div>
               <label className="text-sm font-medium mb-2 block">카테고리</label>
-              <Select value={filters.category || ""} onValueChange={setCategory}>
+              <Select
+                value={filters.category || ""}
+                onValueChange={setCategory}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="카테고리 선택" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">전체</SelectItem>
+                  <SelectItem value="all">전체</SelectItem>
                   <SelectItem value="고기">고기</SelectItem>
                   <SelectItem value="채소">채소</SelectItem>
                   <SelectItem value="과일">과일</SelectItem>
@@ -94,7 +93,10 @@ export default function ProductsTestPage() {
 
             <div>
               <label className="text-sm font-medium mb-2 block">정렬</label>
-              <Select value={filters.sort || "createdAt,desc"} onValueChange={setSort}>
+              <Select
+                value={filters.sort || "createdAt,desc"}
+                onValueChange={setSort}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="정렬 선택" />
                 </SelectTrigger>
@@ -108,7 +110,11 @@ export default function ProductsTestPage() {
             </div>
 
             <div className="flex items-end">
-              <Button onClick={resetFilters} variant="outline" className="w-full">
+              <Button
+                onClick={resetFilters}
+                variant="outline"
+                className="w-full"
+              >
                 필터 초기화
               </Button>
             </div>
@@ -120,16 +126,20 @@ export default function ProductsTestPage() {
           <h3 className="font-medium mb-2">현재 필터 상태</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
             <div>
-              <span className="font-medium">페이지:</span> {(filters.page || 0) + 1}
+              <span className="font-medium">페이지:</span>{" "}
+              {(filters.page || 0) + 1}
             </div>
             <div>
-              <span className="font-medium">페이지 크기:</span> {filters.size || 20}
+              <span className="font-medium">페이지 크기:</span>{" "}
+              {filters.size || 20}
             </div>
             <div>
-              <span className="font-medium">정렬:</span> {filters.sort || "created_desc"}
+              <span className="font-medium">정렬:</span>{" "}
+              {filters.sort || "created_desc"}
             </div>
             <div>
-              <span className="font-medium">카테고리:</span> {filters.category || "전체"}
+              <span className="font-medium">카테고리:</span>{" "}
+              {filters.category || "전체"}
             </div>
           </div>
           {filters.keyword && (
@@ -145,16 +155,20 @@ export default function ProductsTestPage() {
             <h3 className="font-medium mb-2">페이지 정보</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
               <div>
-                <span className="font-medium">현재 페이지:</span> {data.pageInfo.currentPage}
+                <span className="font-medium">현재 페이지:</span>{" "}
+                {data.pageInfo.currentPage}
               </div>
               <div>
-                <span className="font-medium">총 페이지:</span> {data.pageInfo.totalPages}
+                <span className="font-medium">총 페이지:</span>{" "}
+                {data.pageInfo.totalPages}
               </div>
               <div>
-                <span className="font-medium">총 상품:</span> {data.pageInfo.totalElements}
+                <span className="font-medium">총 상품:</span>{" "}
+                {data.pageInfo.totalElements}
               </div>
               <div>
-                <span className="font-medium">페이지 크기:</span> {data.pageInfo.pageSize}
+                <span className="font-medium">페이지 크기:</span>{" "}
+                {data.pageInfo.pageSize}
               </div>
             </div>
           </div>
@@ -216,18 +230,27 @@ export default function ProductsTestPage() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>무게:</span>
-                    <span>{product.weight}{product.weightUnit}</span>
+                    <span>
+                      {product.weight}
+                      {product.weightUnit}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>재고:</span>
-                    <span className={product.stock > 0 ? "text-green-600" : "text-red-600"}>
+                    <span
+                      className={
+                        product.stock > 0 ? "text-green-600" : "text-red-600"
+                      }
+                    >
                       {product.stock > 0 ? `${product.stock}개` : "품절"}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>상태:</span>
-                    <Badge 
-                      variant={product.status === "AVAILABLE" ? "default" : "secondary"}
+                    <Badge
+                      variant={
+                        product.status === "AVAILABLE" ? "default" : "secondary"
+                      }
                       className="text-xs"
                     >
                       {product.status}
