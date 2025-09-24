@@ -33,11 +33,6 @@ export default function SignupPage() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // 회원가입 로직 구현
-    console.log("회원가입 시도:", formData);
-  };
   return (
     <div className="container py-8">
       <div className="mx-auto max-w-3xl">

@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSignup } from "../hooks/useSignup";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { LabelInput } from "./LabelInput";
 import {
   Card,
   CardContent,
@@ -12,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ROUTES } from "@/constants/routes";
 
 interface FormData {
   firstName: string;
@@ -31,6 +28,10 @@ interface SignupRequest {
 }
 /**
  * 회원가입 폼 컴포넌트
+ * @todo 카카오 로그인 구현
+ * @todo 구글 로그인 구현
+ * @todo 비밀번호 유효성 검사 (자릿수, 영문+숫자+특수문자, 비밀번호확인 일치)
+ * @todo 휴대폰 번호 유효성 검사 (010-1234-5678 형식)
  */
 export const SignupForm = (props: {
   formData: FormData;
@@ -64,77 +65,57 @@ export const SignupForm = (props: {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="first-name">이름</Label>
-              <Input
-                id="first-name"
-                value={formData.firstName}
-                onChange={(e) => handleInputChange("firstName", e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="last-name">성</Label>
-              <Input
-                id="last-name"
-                value={formData.lastName}
-                onChange={(e) => handleInputChange("lastName", e.target.value)}
-                required
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">이메일</Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange("email", e.target.value)}
+            <LabelInput
+              id="first-name"
+              label="이름"
+              value={formData.firstName}
+              onChange={(value) => handleInputChange("firstName", value)}
+              required
+            />
+            <LabelInput
+              id="last-name"
+              label="성"
+              value={formData.lastName}
+              onChange={(value) => handleInputChange("lastName", value)}
               required
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">비밀번호</Label>
-            <Input
-              id="password"
-              type="password"
-              value={formData.password}
-              onChange={(e) => handleInputChange("password", e.target.value)}
-              required
-            />
-            <p className="text-sm text-gray-500">
-              8자 이상, 영문, 숫자, 특수문자를 포함해야 합니다
-            </p>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirm-password">비밀번호 확인</Label>
-            <Input
-              id="confirm-password"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={(e) =>
-                handleInputChange("confirmPassword", e.target.value)
-              }
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="phone">연락처</Label>
-            <Input
-              id="phone"
-              value={formData.phone}
-              onChange={(e) => handleInputChange("phone", e.target.value)}
-              required
-            />
-          </div>
+          <LabelInput
+            id="email"
+            label="이메일"
+            type="email"
+            value={formData.email}
+            onChange={(value) => handleInputChange("email", value)}
+            required
+          />
+          <LabelInput
+            id="password"
+            label="비밀번호"
+            type="password"
+            value={formData.password}
+            onChange={(value) => handleInputChange("password", value)}
+            required
+            description="8자 이상, 영문, 숫자, 특수문자를 포함해야 합니다"
+          />
+          <LabelInput
+            id="confirm-password"
+            label="비밀번호 확인"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={(value) => handleInputChange("confirmPassword", value)}
+            required
+          />
+          <LabelInput
+            id="phone"
+            label="연락처"
+            value={formData.phone}
+            onChange={(value) => handleInputChange("phone", value)}
+            required
+          />
         </CardContent>
 
         <CardFooter className="flex justify-between">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => navigate(ROUTES.LOGIN)}
-          >
+          <Button type="button" variant="outline" onClick={() => navigate(-1)}>
             취소
           </Button>
           <Button type="submit" className="bg-green-600 hover:bg-green-700">
