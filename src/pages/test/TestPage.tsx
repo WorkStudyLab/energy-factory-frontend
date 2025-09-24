@@ -49,6 +49,15 @@ const TestPage: React.FC = () => {
       hoverColor: "hover:from-pink-600 hover:to-pink-700",
       route: ROUTES.PRODUCTS_API_TEST,
     },
+    {
+      id: "dialog",
+      title: "다이얼로그 테스트",
+      description: "다양한 다이얼로그 기능 테스트",
+      icon: "💬",
+      color: "from-indigo-500 to-indigo-600",
+      hoverColor: "hover:from-indigo-600 hover:to-indigo-700",
+      route: ROUTES.DIALOG_TEST,
+    },
   ];
 
   return (
