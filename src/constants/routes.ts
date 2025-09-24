@@ -34,6 +34,8 @@ export const ROUTES = {
   PRODUCTS_API_TEST: "/test/products-api",
   SIGNUP_API_TEST: "/test/signup-api",
   LOGIN_API_TEST: "/test/login-api",
+  // 다이얼로그 테스트
+  DIALOG_TEST: "/test/dialog",
 } as const;
 
 // 타입 정의

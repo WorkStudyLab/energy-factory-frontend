@@ -20,6 +20,7 @@ import TailwindTestPage from "./pages/test/TailwindTestPage";
 import ProductsTestPage from "./pages/products/ProductsTestPage";
 import SignupTestPage from "./pages/test/SignupTestPage";
 import LoginTestPage from "./pages/test/LoginTestPage";
+import { DialogTestPage } from "./pages/test/DialogTestPage";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 
@@ -67,10 +68,8 @@ function App() {
                 path={ROUTES.SIGNUP_API_TEST}
                 element={<SignupTestPage />}
               />
-              <Route
-                path={ROUTES.LOGIN_API_TEST}
-                element={<LoginTestPage />}
-              />
+              <Route path={ROUTES.LOGIN_API_TEST} element={<LoginTestPage />} />
+              <Route path={ROUTES.DIALOG_TEST} element={<DialogTestPage />} />
             </Routes>
           </main>
 
