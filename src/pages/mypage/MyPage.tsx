@@ -21,6 +21,7 @@ import {
   Mail,
   Phone,
   Activity,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -66,10 +67,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useNavigate } from "react-router-dom";
 
 export default function MyPage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [editingSection, setEditingSection] = useState<string | null>(null);
+
+  // 인증 관련 훅
+  const { logout } = useAuthStore();
+  const navigate = useNavigate();
 
   // 사용자 정보 상태
   const [userInfo, setUserInfo] = useState({
@@ -299,6 +306,12 @@ export default function MyPage() {
     }));
   };
 
+  // 로그아웃 처리
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <div className="container py-8">
       <div className="flex flex-col gap-6">
@@ -338,20 +351,31 @@ export default function MyPage() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="text-center">
-              <div className="text-xl font-bold text-green-600">
-                {userInfo.stats.totalOrders}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="text-center">
+                <div className="text-xl font-bold text-green-600">
+                  {userInfo.stats.totalOrders}
+                </div>
+                <div className="text-xs text-gray-500">총 주문</div>
               </div>
-              <div className="text-xs text-gray-500">총 주문</div>
-            </div>
-            <Separator orientation="vertical" className="h-8 mx-2" />
-            <div className="text-center">
-              <div className="text-xl font-bold text-blue-600">
-                {(userInfo.stats.totalSpent / 10000).toFixed(0)}만원
+              <Separator orientation="vertical" className="h-8 mx-2" />
+              <div className="text-center">
+                <div className="text-xl font-bold text-blue-600">
+                  {(userInfo.stats.totalSpent / 10000).toFixed(0)}만원
+                </div>
+                <div className="text-xs text-gray-500">총 구매</div>
               </div>
-              <div className="text-xs text-gray-500">총 구매</div>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
+              className="text-red-600 border-red-200 hover:bg-red-50"
+            >
+              <LogOut className="h-4 w-4 mr-1" />
+              로그아웃
+            </Button>
           </div>
         </div>
 

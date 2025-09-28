@@ -1,15 +1,17 @@
-import { useState } from "react";
 import { Bell, Menu, Package, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { NotificationPopoverContent } from "@/components/ui/notification-popover";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function Header() {
   const navigate = useNavigate();
-  const [isLoggedIn] = useState(false);
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white">
@@ -170,26 +172,33 @@ export default function Header() {
             </Badge>
             <span className="sr-only">장바구니</span>
           </a>
-          <a
-            className="relative hidden md:block"
-            onClick={(e) => {
-              e.preventDefault();
-              // 알림 페이지가 있다면 여기에 추가
-            }}
-          >
-            <Bell className="h-5 w-5" />
-            {/* TODO: 실제 알림 개수로 교체 필요 */}
-            <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-green-600">
-              2
-            </Badge>
-            <span className="sr-only">알림</span>
-          </a>
-          {isLoggedIn ? (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative hidden md:flex h-auto w-auto p-1"
+              >
+                <Bell className="h-5 w-5" />
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-green-600">
+                  2
+                </Badge>
+                <span className="sr-only">알림</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              className="w-80 p-0"
+              sideOffset={8}
+            >
+              <NotificationPopoverContent />
+            </PopoverContent>
+          </Popover>
+          {isAuthenticated ? (
             <a
-              href="/profile"
               onClick={(e) => {
                 e.preventDefault();
-                navigate(ROUTES.PROFILE);
+                navigate(ROUTES.MY_PAGE);
               }}
             >
               <Avatar>
