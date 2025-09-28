@@ -4,8 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLogin } from "@/features/auth/hooks/useLogin";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 export default function LoginForm() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login, isLoading, isError, error } = useLogin();
@@ -32,9 +35,13 @@ export default function LoginForm() {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="password">비밀번호</Label>
-            <a href="#" className="text-sm text-green-600 hover:underline">
+            <button
+              type="button"
+              className="text-sm text-green-600 hover:underline"
+              onClick={() => navigate(ROUTES.FORGOT_PASSWORD)}
+            >
               비밀번호 찾기
-            </a>
+            </button>
           </div>
           <Input
             id="password"
