@@ -9,23 +9,32 @@ import { useNavigate } from "react-router-dom";
 
 // 로그인 요청 타입
 interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 
 // 로그인 응답 타입
 interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: {
-    email: string;
-    name: string;
+  code: string;
+  data: {
+    accessToken: string;
+    refreshToken: string;
   };
+  desc: string;
+  status: number;
 }
 
 // 로그인 API 함수
 const loginApi = async (credentials: LoginRequest): Promise<LoginResponse> => {
-  const response = await api.post<LoginResponse>("/auth/login", credentials);
+  const response = await api.post<LoginResponse>(
+    "/api/auth/login",
+    credentials,
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    },
+  );
   return response.data;
 };
 
@@ -37,20 +46,13 @@ export const useLogin = () => {
     mutationFn: loginApi,
     onSuccess: (data) => {
       // 토큰을 localStorage에 저장
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
+      localStorage.setItem("accessToken", data.data.accessToken);
+      localStorage.setItem("refreshToken", data.data.refreshToken);
 
-      // 사용자 정보 저장 (선택사항)
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      console.log("✅ 로그인 성공:", data.user);
-
-      // 홈페이지로 리다이렉트
       navigate("/");
     },
     onError: (error: any) => {
       console.error("❌ 로그인 실패:", error);
-      // 에러는 UI에서 처리하므로 여기서는 로깅만
     },
   });
 

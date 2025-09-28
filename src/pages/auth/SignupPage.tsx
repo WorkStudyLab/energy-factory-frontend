@@ -45,7 +45,6 @@ export default function SignupPage() {
             <p className="text-sm mt-2">
               이미 계정이 있으신가요?{" "}
               <a
-                href="#"
                 className="text-green-600 hover:underline"
                 onClick={(e) => {
                   e.preventDefault();
