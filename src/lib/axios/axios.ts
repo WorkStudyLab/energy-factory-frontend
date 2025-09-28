@@ -5,6 +5,7 @@ import axios, {
   type AxiosError,
   type InternalAxiosRequestConfig,
 } from "axios";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 // 환경 변수에서 API 기본 URL 가져오기 (기본값 설정)
 const BASE_URL =
@@ -22,15 +23,20 @@ const apiClient: AxiosInstance = axios.create({
 // 요청 인터셉터
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // 로컬 스토리지에서 토큰 가져오기
-    const token = localStorage.getItem("accessToken");
+    // auth store에서 토큰 가져오기
+    const { accessToken } = useAuthStore.getState();
 
     // 임시로 특정 API는 인증 헤더 제외 (테스트용)
-    const noAuthUrls = ['/products', '/users/signup', '/auth/login'];
-    const needsAuth = !noAuthUrls.some(url => config.url?.includes(url));
-    
-    if (token && config.headers && needsAuth) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const noAuthUrls = [
+      "/products",
+      "/users/signup",
+      "/auth/login",
+      "/auth/refresh",
+    ];
+    const needsAuth = !noAuthUrls.some((url) => config.url?.includes(url));
+
+    if (accessToken && config.headers && needsAuth) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
 
     // 요청 로깅 (개발 환경에서만)
@@ -66,8 +72,8 @@ apiClient.interceptors.response.use(
         return Promise.reject(error);
       }
 
-      // 토큰 갱신 로직 (필요시 구현)
-      const refreshToken = localStorage.getItem("refreshToken");
+      // 토큰 갱신 로직
+      const { refreshToken, updateTokens, logout } = useAuthStore.getState();
 
       if (refreshToken && originalRequest) {
         try {
@@ -77,7 +83,10 @@ apiClient.interceptors.response.use(
           });
 
           const newAccessToken = refreshResponse.data.accessToken;
-          localStorage.setItem("accessToken", newAccessToken);
+          const newRefreshToken = refreshResponse.data.refreshToken;
+
+          // 새로운 토큰으로 업데이트
+          updateTokens(newAccessToken, newRefreshToken);
 
           // 원래 요청 재시도
           if (originalRequest.headers) {
@@ -86,15 +95,14 @@ apiClient.interceptors.response.use(
 
           return apiClient(originalRequest);
         } catch (refreshError) {
-          // 토큰 갱신 실패시 로그인 페이지로 리다이렉트
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
+          // 토큰 갱신 실패시 로그아웃
+          console.error("토큰 갱신 실패:", refreshError);
+          logout();
           window.location.href = "/login";
         }
       } else {
-        // 리프레시 토큰이 없으면 로그인 페이지로 리다이렉트
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        // 리프레시 토큰이 없으면 로그아웃
+        logout();
         window.location.href = "/login";
       }
     }

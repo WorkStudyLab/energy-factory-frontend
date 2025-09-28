@@ -7,18 +7,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react";
 import type { LoginRequest, LoginResponse, ApiResponse } from "@/types/user";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const loginApi = async (loginData: LoginRequest): Promise<LoginResponse> => {
   // Form data로 전송 (서버에서 form-urlencoded 형식을 기대하는 것 같음)
   const formData = new URLSearchParams();
-  formData.append('username', loginData.username);
-  formData.append('password', loginData.password);
+  formData.append("username", loginData.username);
+  formData.append("password", loginData.password);
 
-  const response = await api.post<ApiResponse<LoginResponse>>("/api/auth/login", formData, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+  const response = await api.post<ApiResponse<LoginResponse>>(
+    "/api/auth/login",
+    formData,
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     },
-  });
+  );
   return response.data.data;
 };
 
@@ -33,28 +38,21 @@ export default function LoginTestPage() {
     mutationFn: loginApi,
     onSuccess: (data) => {
       console.log("✅ 로그인 성공:", data);
-      
-      // 토큰을 localStorage에 저장
-      if (data.accessToken) {
-        localStorage.setItem("accessToken", data.accessToken);
-      }
-      if (data.refreshToken) {
-        localStorage.setItem("refreshToken", data.refreshToken);
-      }
-      
-      alert("로그인 성공! 토큰이 localStorage에 저장되었습니다.");
+
+      alert("로그인 성공! 토큰이 auth store에 저장되었습니다.");
     },
     onError: (error: any) => {
       console.error("❌ 로그인 실패:", error);
     },
   });
 
-  const handleInputChange = (field: keyof LoginRequest) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: e.target.value
-    }));
-  };
+  const handleInputChange =
+    (field: keyof LoginRequest) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: e.target.value,
+      }));
+    };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,14 +67,15 @@ export default function LoginTestPage() {
   };
 
   const clearTokens = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    const { logout } = useAuthStore.getState();
+    logout();
     alert("토큰이 삭제되었습니다.");
   };
 
+  const { accessToken, refreshToken } = useAuthStore();
   const currentTokens = {
-    accessToken: localStorage.getItem("accessToken"),
-    refreshToken: localStorage.getItem("refreshToken"),
+    accessToken,
+    refreshToken,
   };
 
   return (
@@ -99,8 +98,14 @@ export default function LoginTestPage() {
             <div className="space-y-2">
               <div>
                 <span className="font-medium">Access Token:</span>
-                <span className={`ml-2 ${currentTokens.accessToken ? 'text-green-600' : 'text-gray-400'}`}>
-                  {currentTokens.accessToken ? '저장됨' : '없음'}
+                <span
+                  className={`ml-2 ${
+                    currentTokens.accessToken
+                      ? "text-green-600"
+                      : "text-gray-400"
+                  }`}
+                >
+                  {currentTokens.accessToken ? "저장됨" : "없음"}
                 </span>
                 {currentTokens.accessToken && (
                   <div className="text-xs text-gray-500 mt-1 break-all">
@@ -110,8 +115,14 @@ export default function LoginTestPage() {
               </div>
               <div>
                 <span className="font-medium">Refresh Token:</span>
-                <span className={`ml-2 ${currentTokens.refreshToken ? 'text-green-600' : 'text-gray-400'}`}>
-                  {currentTokens.refreshToken ? '저장됨' : '없음'}
+                <span
+                  className={`ml-2 ${
+                    currentTokens.refreshToken
+                      ? "text-green-600"
+                      : "text-gray-400"
+                  }`}
+                >
+                  {currentTokens.refreshToken ? "저장됨" : "없음"}
                 </span>
                 {currentTokens.refreshToken && (
                   <div className="text-xs text-gray-500 mt-1 break-all">
@@ -119,9 +130,9 @@ export default function LoginTestPage() {
                   </div>
                 )}
               </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={clearTokens}
                 className="mt-2"
               >
@@ -144,7 +155,7 @@ export default function LoginTestPage() {
                   id="username"
                   type="text"
                   value={formData.username}
-                  onChange={handleInputChange('username')}
+                  onChange={handleInputChange("username")}
                   placeholder="test@example.com"
                   required
                 />
@@ -157,7 +168,7 @@ export default function LoginTestPage() {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={formData.password}
-                    onChange={handleInputChange('password')}
+                    onChange={handleInputChange("password")}
                     placeholder="password123!"
                     required
                   />
@@ -168,7 +179,11 @@ export default function LoginTestPage() {
                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
               </div>
@@ -187,7 +202,9 @@ export default function LoginTestPage() {
                   disabled={mutation.isPending}
                   className="flex-1"
                 >
-                  {mutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {mutation.isPending && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   로그인 테스트
                 </Button>
               </div>
@@ -202,8 +219,13 @@ export default function LoginTestPage() {
           </CardHeader>
           <CardContent>
             <div className="bg-gray-100 p-4 rounded text-sm space-y-1">
-              <div><span className="font-mono">username:</span> {formData.username}</div>
-              <div><span className="font-mono">password:</span> {"*".repeat(formData.password.length)}</div>
+              <div>
+                <span className="font-mono">username:</span> {formData.username}
+              </div>
+              <div>
+                <span className="font-mono">password:</span>{" "}
+                {"*".repeat(formData.password.length)}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -220,7 +242,9 @@ export default function LoginTestPage() {
             <CardContent>
               <div className="text-red-600">
                 <p className="font-medium">
-                  {mutation.error instanceof Error ? mutation.error.message : "로그인에 실패했습니다."}
+                  {mutation.error instanceof Error
+                    ? mutation.error.message
+                    : "로그인에 실패했습니다."}
                 </p>
                 {mutation.error?.response?.data && (
                   <pre className="bg-red-50 p-4 rounded text-sm overflow-x-auto mt-2">
@@ -243,7 +267,8 @@ export default function LoginTestPage() {
             <CardContent>
               <div className="space-y-2">
                 <div>
-                  <span className="font-medium">Token Type:</span> {mutation.data?.tokenType}
+                  <span className="font-medium">Token Type:</span>{" "}
+                  {mutation.data?.tokenType}
                 </div>
                 <div>
                   <span className="font-medium">Access Token:</span>
@@ -272,26 +297,36 @@ export default function LoginTestPage() {
               <span className="font-medium">Method:</span> POST
             </div>
             <div>
-              <span className="font-medium">URL:</span> http://13.209.24.80:8080/api/auth/login
+              <span className="font-medium">URL:</span>{" "}
+              http://13.209.24.80:8080/api/auth/login
             </div>
             <div>
-              <span className="font-medium">Content-Type:</span> application/x-www-form-urlencoded
+              <span className="font-medium">Content-Type:</span>{" "}
+              application/x-www-form-urlencoded
             </div>
             <div>
               <span className="font-medium">인증:</span> 필요 없음
             </div>
             <div>
-              <span className="font-medium">상태:</span> 
-              <span className={`ml-2 px-2 py-1 rounded text-xs ${
-                mutation.isPending ? 'bg-yellow-100 text-yellow-800' :
-                mutation.isError ? 'bg-red-100 text-red-800' :
-                mutation.isSuccess ? 'bg-green-100 text-green-800' :
-                'bg-gray-100 text-gray-800'
-              }`}>
-                {mutation.isPending ? '요청 중' :
-                 mutation.isError ? '실패' :
-                 mutation.isSuccess ? '성공' :
-                 '대기 중'}
+              <span className="font-medium">상태:</span>
+              <span
+                className={`ml-2 px-2 py-1 rounded text-xs ${
+                  mutation.isPending
+                    ? "bg-yellow-100 text-yellow-800"
+                    : mutation.isError
+                    ? "bg-red-100 text-red-800"
+                    : mutation.isSuccess
+                    ? "bg-green-100 text-green-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {mutation.isPending
+                  ? "요청 중"
+                  : mutation.isError
+                  ? "실패"
+                  : mutation.isSuccess
+                  ? "성공"
+                  : "대기 중"}
               </span>
             </div>
           </CardContent>
@@ -303,10 +338,18 @@ export default function LoginTestPage() {
             <CardTitle>참고 사항</CardTitle>
           </CardHeader>
           <CardContent className="text-sm space-y-2">
-            <div>• 서버에서는 Spring Security의 UsernamePasswordAuthenticationFilter를 사용합니다.</div>
-            <div>• 요청은 application/x-www-form-urlencoded 형식으로 전송됩니다.</div>
+            <div>
+              • 서버에서는 Spring Security의
+              UsernamePasswordAuthenticationFilter를 사용합니다.
+            </div>
+            <div>
+              • 요청은 application/x-www-form-urlencoded 형식으로 전송됩니다.
+            </div>
             <div>• 성공 시 Access Token과 Refresh Token을 받습니다.</div>
-            <div>• 토큰은 자동으로 localStorage에 저장되어 다른 API 호출 시 사용됩니다.</div>
+            <div>
+              • 토큰은 자동으로 localStorage에 저장되어 다른 API 호출 시
+              사용됩니다.
+            </div>
           </CardContent>
         </Card>
       </div>

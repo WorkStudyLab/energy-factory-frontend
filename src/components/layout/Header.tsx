@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Bell, Menu, Package, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -6,10 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function Header() {
   const navigate = useNavigate();
-  const [isLoggedIn] = useState(false);
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white">
@@ -184,12 +184,11 @@ export default function Header() {
             </Badge>
             <span className="sr-only">알림</span>
           </a>
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <a
-              href="/profile"
               onClick={(e) => {
                 e.preventDefault();
-                navigate(ROUTES.PROFILE);
+                navigate(ROUTES.MY_PAGE);
               }}
             >
               <Avatar>

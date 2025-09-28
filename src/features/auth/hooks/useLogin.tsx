@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { api } from "@/lib/axios/axios";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 /**
  * @todo Auth API 요청시 Password 암호화 처리
@@ -41,13 +42,21 @@ const loginApi = async (credentials: LoginRequest): Promise<LoginResponse> => {
 // useLogin hook
 export const useLogin = () => {
   const navigate = useNavigate();
+  const { login } = useAuthStore();
 
   const mutation = useMutation({
     mutationFn: loginApi,
     onSuccess: (data) => {
-      // 토큰을 localStorage에 저장
-      localStorage.setItem("accessToken", data.data.accessToken);
-      localStorage.setItem("refreshToken", data.data.refreshToken);
+      // auth store에 로그인 상태 저장 (토큰은 자동으로 persist됨)
+      login(
+        {
+          id: "", // TODO: 사용자 정보 API 연동 시 실제 값으로 교체
+          email: "",
+          name: "",
+        },
+        data.data.accessToken,
+        data.data.refreshToken,
+      );
 
       navigate("/");
     },
