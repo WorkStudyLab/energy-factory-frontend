@@ -1,7 +1,7 @@
 # Energy Factory Frontend - 프로젝트 현재 상태
 
-> **마지막 업데이트**: 2025-09-23  
-> **현재 스프린트**: API 연동 및 테스트 시스템 구축
+> **마지막 업데이트**: 2025-10-01  
+> **현재 스프린트**: CI/CD 구축 완료 및 S3 배포
 
 ## 🎯 프로젝트 개요
 
@@ -9,6 +9,7 @@
 - **기술 스택**: React + TypeScript + Vite + TanStack Query + Zustand + Tailwind CSS
 - **백엔드 API**: http://13.209.24.80:8080
 - **개발 서버**: http://localhost:5174
+- **프로덕션 URL**: http://energy-factory-frontend-20251001.s3-website.ap-northeast-2.amazonaws.com
 
 ## ✅ 완성된 기능
 
@@ -39,6 +40,13 @@
 - ✅ JWT 토큰 관리 (localStorage 기반)
 - ✅ 인증 헤더 자동 첨부
 - ✅ 토큰 갱신 로직 구조
+
+### 6. CI/CD 및 배포 시스템
+- ✅ **AWS S3 정적 웹 호스팅** 설정
+- ✅ **GitHub Actions** CI/CD 파이프라인 구축
+- ✅ **AWS IAM** 최소 권한 보안 설정
+- ✅ **자동 배포** (main 브랜치 push 시)
+- ✅ **CORS 설정** 완료 (S3 ↔ EC2 통신)
 
 ## 🔄 진행 중인 작업
 
@@ -140,9 +148,10 @@ src/
 ## 🚨 알려진 이슈
 
 ### 해결됨
-- ✅ CORS 문제 → Vite 프록시로 해결
+- ✅ CORS 문제 → Vite 프록시 + 백엔드 설정으로 해결
 - ✅ Spring Boot Pageable 파라미터 형식 불일치 → 수정 완료
 - ✅ 인증 헤더 관리 → axios 인터셉터로 해결
+- ✅ S3 ↔ EC2 CORS 이슈 → Spring Boot CORS 설정으로 해결
 
 ### 현재 이슈 없음
 
@@ -159,9 +168,9 @@ src/
 3. **테스트 코드** 기본 커버리지
 
 ### 장기 목표 (2-3개월)
-1. **프로덕션 배포** 준비
+1. **CloudFront CDN** 설정 및 HTTPS 적용
 2. **모니터링 시스템** 구축
-3. **CI/CD 파이프라인** 구축
+3. **성능 최적화** 고도화
 
 ---
 
