@@ -3,6 +3,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/tanstack/queryClient";
 import { ROUTES } from "./constants/routes";
 import HomePage from "./pages/home/HomePage";
+import LandingPage from "./pages/landing/LandingPage";
 import ProductsPage from "./pages/products/ProductsPage";
 import ProductDetailPage from "./pages/products/ProductDetailPage";
 import CartPage from "./pages/cart/CartPage";
@@ -34,6 +35,7 @@ function App() {
           <main className="flex-1">
             <Routes>
               <Route path={ROUTES.HOME} element={<HomePage />} />
+              <Route path={ROUTES.LANDING} element={<LandingPage />} />
               <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
               <Route
                 path={ROUTES.PRODUCT_DETAIL}

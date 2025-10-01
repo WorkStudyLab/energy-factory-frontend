@@ -2,6 +2,8 @@
 export const ROUTES = {
   // 홈
   HOME: "/",
+  // 랜딩 페이지
+  LANDING: "/landing",
   // 상품
   PRODUCTS: "/products",
   PRODUCT_DETAIL: "/products/:id",

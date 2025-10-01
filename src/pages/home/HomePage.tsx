@@ -1,692 +1,576 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  ArrowRight,
-  Leaf,
   ShoppingBag,
-  ChevronRight,
   Target,
-  Brain,
+  Star,
+  Plus,
+  Eye,
+  BarChart3,
+  Zap,
+  Heart,
+  Apple,
+  ChevronRight,
+  Calendar,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ROUTES } from "@/constants/routes";
 
 export default function HomePage() {
-  const [fitnessGoal, setFitnessGoal] = useState("");
+  const navigate = useNavigate();
 
-  // 목표별 추천 제품
-  const recommendedProducts = {
-    "muscle-gain": [
-      {
-        id: 1,
-        name: "프리미엄 단백질 파우더",
-        price: 45000,
-        image: "https://placehold.co/300x200",
-        protein: 24,
-        calories: 120,
-        tags: ["고단백", "저지방"],
-      },
-      {
-        id: 2,
-        name: "유기농 닭가슴살 10팩",
-        price: 25900,
-        image: "https://placehold.co/300x200",
-        protein: 26,
-        calories: 110,
-        tags: ["고단백", "저지방"],
-      },
-      {
-        id: 3,
-        name: "크레아틴 모노하이드레이트",
-        price: 28000,
-        image: "https://placehold.co/300x200",
-        protein: 0,
-        calories: 0,
-        tags: ["근력 향상", "회복"],
-      },
-    ],
-    "weight-loss": [
-      {
-        id: 4,
-        name: "저칼로리 식사 대체 쉐이크",
-        price: 32000,
-        image: "https://placehold.co/300x200",
-        protein: 15,
-        calories: 180,
-        tags: ["저칼로리", "포만감"],
-      },
-      {
-        id: 5,
-        name: "그린 슈퍼푸드 블렌드",
-        price: 35000,
-        image: "https://placehold.co/300x200",
-        protein: 5,
-        calories: 70,
-        tags: ["디톡스", "항산화"],
-      },
-      {
-        id: 6,
-        name: "MCT 오일",
-        price: 22000,
-        image: "https://placehold.co/300x200",
-        protein: 0,
-        calories: 120,
-        tags: ["케토", "에너지"],
-      },
-    ],
-    health: [
-      {
-        id: 7,
-        name: "종합 비타민 미네랄",
-        price: 29000,
-        image: "https://placehold.co/300x200",
-        protein: 0,
-        calories: 0,
-        tags: ["면역", "영양소"],
-      },
-      {
-        id: 8,
-        name: "오메가3 어유",
-        price: 25000,
-        image: "https://placehold.co/300x200",
-        protein: 0,
-        calories: 0,
-        tags: ["심혈관", "두뇌"],
-      },
-      {
-        id: 9,
-        name: "프로바이오틱스",
-        price: 32000,
-        image: "https://placehold.co/300x200",
-        protein: 0,
-        calories: 0,
-        tags: ["장건강", "면역"],
-      },
-    ],
+  // Navigation helper function
+  const handleNavigate = (page: string) => {
+    switch (page) {
+      case "nutrition":
+        navigate(ROUTES.NUTRITION);
+        break;
+      case "diet-coach":
+        navigate(ROUTES.DIET_COACH);
+        break;
+      case "products":
+        navigate(ROUTES.PRODUCTS);
+        break;
+      case "profile":
+      case "mypage":
+        navigate(ROUTES.MY_PAGE);
+        break;
+      case "order-history":
+        navigate(ROUTES.ORDER_HISTORY);
+        break;
+      default:
+        navigate("/");
+    }
   };
 
-  // 인기 제품
-  const popularProducts = [
+  // Mock user data
+  const userData = {
+    name: "김건강",
+    goal: "근육 증가",
+    dailyCalories: 2450,
+    currentCalories: 1850,
+    dailyProtein: 184,
+    currentProtein: 142,
+    streak: 7, // 연속 목표 달성 일수
+  };
+
+  // 오늘의 영양 목표 달성률
+  const nutritionProgress = {
+    calories: Math.round((userData.currentCalories / userData.dailyCalories) * 100),
+    protein: Math.round((userData.currentProtein / userData.dailyProtein) * 100),
+  };
+
+  // 빠른 액션 버튼들
+  const quickActions = [
+    {
+      id: "nutrition",
+      title: "영양 계산기",
+      description: "오늘의 영양소 계산",
+      icon: <BarChart3 className="h-6 w-6" />,
+      color: "bg-blue-500",
+      page: "nutrition",
+    },
+    {
+      id: "ai-coach",
+      title: "AI 식단 코치",
+      description: "맞춤 식단 상담",
+      icon: <Zap className="h-6 w-6" />,
+      color: "bg-green-500",
+      page: "diet-coach",
+    },
+    {
+      id: "products",
+      title: "상품 둘러보기",
+      description: "영양 중심 쇼핑",
+      icon: <ShoppingBag className="h-6 w-6" />,
+      color: "bg-purple-500",
+      page: "products",
+    },
+    {
+      id: "profile",
+      title: "내 프로필",
+      description: "목표 및 설정 관리",
+      icon: <Target className="h-6 w-6" />,
+      color: "bg-orange-500",
+      page: "mypage",
+    },
+  ];
+
+  // 개인화된 추천 상품 (목표 기반)
+  const recommendedProducts = [
     {
       id: 1,
-      name: "유기농 닭가슴살",
-      price: 12900,
-      image: "https://placehold.co/300x200",
+      name: "프리미엄 단백질 파우더",
+      price: 45000,
+      originalPrice: 52000,
+      image: "https://placehold.co/200x200?text=단백질파우더",
       protein: 24,
-      calories: 110,
-      tags: ["고단백", "저지방"],
+      calories: 120,
+      rating: 4.8,
+      reviews: 1247,
+      tags: ["고단백", "근육증가", "BEST"],
+      discount: 13,
+      reason: "근육 증가 목표에 최적화",
     },
     {
       id: 2,
-      name: "그릭 요거트",
-      price: 4500,
-      image: "https://placehold.co/300x200",
-      protein: 10,
-      calories: 100,
-      tags: ["고단백", "칼슘"],
+      name: "유기농 닭가슴살 10팩",
+      price: 25900,
+      image: "https://placehold.co/200x200?text=닭가슴살",
+      protein: 26,
+      calories: 110,
+      rating: 4.6,
+      reviews: 892,
+      tags: ["고단백", "저지방", "유기농"],
+      reason: "고품질 단백질 공급원",
     },
     {
       id: 3,
-      name: "퀴노아",
-      price: 8900,
-      image: "https://placehold.co/300x200",
-      protein: 8,
-      calories: 120,
-      tags: ["식물성단백질", "복합탄수화물"],
+      name: "크레아틴 모노하이드레이트",
+      price: 28000,
+      image: "https://placehold.co/200x200?text=크레아틴",
+      protein: 0,
+      calories: 0,
+      rating: 4.7,
+      reviews: 634,
+      tags: ["근력향상", "회복", "운동보조"],
+      reason: "운동 성능 향상에 도움",
     },
     {
       id: 4,
-      name: "아보카도 오일",
-      price: 15000,
-      image: "https://placehold.co/300x200",
-      protein: 0,
-      calories: 120,
-      tags: ["건강한지방", "항산화"],
-    },
-    {
-      id: 5,
-      name: "프로틴 바",
-      price: 25000,
-      image: "https://placehold.co/300x200",
-      protein: 20,
-      calories: 200,
-      tags: ["고단백", "간편식"],
+      name: "그릭 요거트",
+      price: 4500,
+      image: "https://placehold.co/200x200?text=그릭요거트",
+      protein: 10,
+      calories: 100,
+      rating: 4.5,
+      reviews: 423,
+      tags: ["고단백", "프로바이오틱스"],
+      reason: "간편한 단백질 보충",
     },
   ];
 
-  // 성공 사례
-  const successStories = [
+  // 최근 본 상품
+  const recentlyViewed = [
+    {
+      id: 5,
+      name: "퀴노아",
+      price: 8900,
+      image: "https://placehold.co/150x150?text=퀴노아",
+      viewedAt: "2시간 전",
+    },
+    {
+      id: 6,
+      name: "아보카도 오일",
+      price: 15000,
+      image: "https://placehold.co/150x150?text=아보카도오일",
+      viewedAt: "어제",
+    },
+    {
+      id: 7,
+      name: "견과류 믹스",
+      price: 9900,
+      image: "https://placehold.co/150x150?text=견과류",
+      viewedAt: "3일 전",
+    },
+  ];
+
+  // 인기 카테고리
+  const popularCategories = [
+    {
+      id: "protein",
+      name: "고단백 식품",
+      icon: <Target className="h-8 w-8" />,
+      count: "120+ 상품",
+      color: "bg-green-100 text-green-700",
+      description: "근육 성장과 회복",
+    },
+    {
+      id: "healthy-fats",
+      name: "건강한 지방",
+      icon: <Heart className="h-8 w-8" />,
+      count: "85+ 상품",
+      color: "bg-red-100 text-red-700",
+      description: "심혈관 건강",
+    },
+    {
+      id: "vitamins",
+      name: "비타민 & 미네랄",
+      icon: <Apple className="h-8 w-8" />,
+      count: "200+ 상품",
+      color: "bg-orange-100 text-orange-700",
+      description: "면역력 강화",
+    },
+    {
+      id: "energy",
+      name: "에너지 부스터",
+      icon: <Zap className="h-8 w-8" />,
+      count: "60+ 상품",
+      color: "bg-yellow-100 text-yellow-700",
+      description: "운동 전 에너지",
+    },
+  ];
+
+  // 오늘의 영양 팁
+  const todaysTip = {
+    title: "운동 후 골든타임을 놓치지 마세요!",
+    content:
+      "운동 후 30분 이내에 단백질을 섭취하면 근육 회복과 성장에 가장 효과적입니다. 프로틴 파우더나 그릭 요거트를 추천합니다.",
+    products: [1, 4], // 관련 상품 ID
+  };
+
+  // 최근 주문
+  const recentOrders = [
+    {
+      id: "ORD-001",
+      date: "2024-01-15",
+      items: ["프리미엄 단백질 파우더", "닭가슴살 10팩"],
+      total: 70900,
+      status: "배송완료",
+    },
+    {
+      id: "ORD-002",
+      date: "2024-01-10",
+      items: ["그릭 요거트", "견과류 믹스", "퀴노아"],
+      total: 23300,
+      status: "배송완료",
+    },
+  ];
+
+  // 특별 할인/프로모션
+  const promotions = [
     {
       id: 1,
-      name: "김건강",
-      goal: "근육 증가",
-      image: "https://placehold.co/100x100",
-      story:
-        "Energy Factory의 고단백 식단과 AI 코치 덕분에 3개월 만에 근육량 5kg 증가에 성공했습니다. 맞춤형 영양 계획이 정말 효과적이었어요!",
-      products: ["프리미엄 단백질 파우더", "닭가슴살", "크레아틴"],
+      title: "신규 회원 특가",
+      description: "첫 주문 시 20% 할인",
+      discount: "20%",
+      code: "WELCOME20",
+      validUntil: "2024-01-31",
+      color: "bg-gradient-to-r from-green-500 to-green-600",
     },
     {
       id: 2,
-      name: "이슬림",
-      goal: "체중 감량",
-      image: "https://placehold.co/100x100",
-      story:
-        "6개월 동안 Energy Factory의 저칼로리 고단백 식단을 따르며 15kg 감량에 성공했습니다. AI 코치의 실시간 피드백이 큰 도움이 되었어요.",
-      products: ["식사 대체 쉐이크", "그린 슈퍼푸드", "프로틴 바"],
-    },
-    {
-      id: 3,
-      name: "박활력",
-      goal: "건강 개선",
-      image: "https://placehold.co/100x100",
-      story:
-        "만성 피로와 소화 문제로 고생했는데, Energy Factory의 균형 잡힌 식단과 영양제 추천으로 건강이 크게 개선되었습니다. 활력이 넘치는 일상을 되찾았어요!",
-      products: ["종합 비타민", "오메가3", "프로바이오틱스"],
-    },
-  ];
-
-  // AI 코치 샘플 대화
-  const aiCoachSamples = [
-    {
-      question: "근육 증가를 위한 단백질 섭취량은 얼마나 되나요?",
-      answer:
-        "체중 1kg당 1.6-2.2g의 단백질 섭취를 권장합니다. 70kg 성인의 경우 하루 112-154g 정도가 적절합니다. 닭가슴살, 계란, 그릭 요거트 등이 좋은 단백질 공급원입니다.",
-    },
-    {
-      question: "운동 전후 식사는 어떻게 해야 할까요?",
-      answer:
-        "운동 전에는 탄수화물과 약간의 단백질이 포함된 식사를 1-2시간 전에 하는 것이 좋습니다. 운동 후에는 30분 이내에 단백질과 탄수화물을 함께 섭취하여 회복을 촉진하세요.",
-    },
-    {
-      question: "체중 감량을 위한 식단 팁이 있을까요?",
-      answer:
-        "칼로리 적자를 만들되 단백질 섭취는 유지하세요. 섬유질이 풍부한 채소와 과일, 단백질 위주의 식단으로 포만감을 유지하면서 체중 감량이 가능합니다.",
+      title: "단백질 특가전",
+      description: "모든 단백질 제품 15% 할인",
+      discount: "15%",
+      code: "PROTEIN15",
+      validUntil: "2024-01-25",
+      color: "bg-gradient-to-r from-blue-500 to-blue-600",
     },
   ];
 
   return (
-    <div className="flex flex-col gap-8 py-8">
-      {/* Hero Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-green-50">
-        <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
-            <div className="space-y-4">
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                당신의 운동 목표에 맞는 식단, Energy Factory와 함께
-              </h1>
-              <p className="max-w-[600px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                운동 목표에 맞는 영양소 계산과 식단 계획을 바탕으로 식재료를
-                구매할 수 있는 통합 쇼핑 플랫폼입니다.
-              </p>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Button
-                  className="bg-green-600 hover:bg-green-700"
-                  // onClick={() => onNavigate && onNavigate("register")}
-                >
-                  시작하기
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline" // onClick={() => onNavigate && onNavigate("products")}
-                >
-                  상품 둘러보기
-                </Button>
-              </div>
+    <div className="container py-6">
+      <div className="flex flex-col gap-6">
+        {/* 개인화된 인사말 */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold">안녕하세요, {userData.name}님! 👋</h1>
+            <p className="text-gray-600 mt-1">
+              오늘도 <span className="font-medium text-green-600">{userData.goal}</span> 목표를 향해 함께 달려봐요
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+              <Calendar className="h-4 w-4" />
+              <span>{userData.streak}일 연속 달성</span>
             </div>
-            <img
-              src="https://placehold.co/600x400"
-              alt="건강한 식단"
-              className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full lg:order-last"
-            />
           </div>
         </div>
-      </section>
 
-      {/* 개인화된 목표 기반 추천 섹션 */}
-      <section className="w-full py-12 md:py-16 bg-white">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center mb-8">
-            <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">
-                맞춤형 추천
+        {/* 오늘의 영양 목표 진행률 */}
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg">오늘의 영양 목표</CardTitle>
+              <Button variant="outline" size="sm" onClick={() => handleNavigate("nutrition")}>
+                상세 보기
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">칼로리</span>
+                  <span className="text-sm text-gray-500">
+                    {userData.currentCalories} / {userData.dailyCalories} kcal
+                  </span>
+                </div>
+                <Progress value={nutritionProgress.calories} className="h-2" />
+                <p className="text-xs text-gray-500">
+                  {nutritionProgress.calories >= 100
+                    ? "목표 달성! 🎉"
+                    : `${100 - nutritionProgress.calories}% 더 필요해요`}
+                </p>
               </div>
-              <h2 className="text-3xl font-bold tracking-tighter">
-                내 목표에 맞는 제품 찾기
-              </h2>
-              <p className="max-w-[700px] text-gray-500">
-                운동 목표를 선택하면 그에 맞는 최적의 제품을 추천해 드립니다.
-              </p>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">단백질</span>
+                  <span className="text-sm text-gray-500">
+                    {userData.currentProtein} / {userData.dailyProtein} g
+                  </span>
+                </div>
+                <Progress value={nutritionProgress.protein} className="h-2" />
+                <p className="text-xs text-gray-500">
+                  {nutritionProgress.protein >= 100
+                    ? "목표 달성! 🎉"
+                    : `${Math.ceil(userData.dailyProtein - userData.currentProtein)}g 더 필요해요`}
+                </p>
+              </div>
             </div>
-            <div className="w-full max-w-md">
-              <Select value={fitnessGoal} onValueChange={setFitnessGoal}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="운동 목표를 선택하세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="muscle-gain">근육 증가</SelectItem>
-                  <SelectItem value="weight-loss">체중 감량</SelectItem>
-                  <SelectItem value="health">전반적인 건강 개선</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          {fitnessGoal && (
-            <div className="mt-8">
-              <h3 className="text-xl font-bold mb-4 text-center">
-                {fitnessGoal === "muscle-gain"
-                  ? "근육 증가"
-                  : fitnessGoal === "weight-loss"
-                    ? "체중 감량"
-                    : "건강 개선"}
-                을 위한 추천 제품
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {recommendedProducts[
-                  fitnessGoal as keyof typeof recommendedProducts
-                ].map((product: any) => (
-                  <Card key={product.id} className="overflow-hidden">
-                    <CardContent className="p-0">
-                      <img
-                        src={product.image || "/placeholder.svg"}
-                        alt={product.name}
-                        className="w-full h-48 object-cover"
-                      />
-                    </CardContent>
-                    <CardHeader className="p-4 pb-0">
-                      <div className="flex flex-wrap gap-1 mb-2">
-                        {product.tags.map((tag: any, index: any) => (
-                          <Badge
-                            key={index}
-                            variant="secondary"
-                            className="text-xs"
-                          >
-                            {tag}
-                          </Badge>
-                        ))}
+        {/* 빠른 액션 버튼들 */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {quickActions.map((action) => (
+            <Card
+              key={action.id}
+              className="cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => handleNavigate(action.page)}
+            >
+              <CardContent className="p-4 text-center">
+                <div
+                  className={`${action.color} text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3`}
+                >
+                  {action.icon}
+                </div>
+                <h3 className="font-medium text-sm mb-1">{action.title}</h3>
+                <p className="text-xs text-gray-500">{action.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* 특별 할인/프로모션 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {promotions.map((promo) => (
+            <Card key={promo.id} className="overflow-hidden">
+              <div className={`${promo.color} text-white p-4`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-bold text-lg">{promo.title}</h3>
+                    <p className="text-sm opacity-90">{promo.description}</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold">{promo.discount}</div>
+                    <div className="text-xs opacity-90">할인</div>
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center justify-between">
+                  <div className="bg-white bg-opacity-20 px-2 py-1 rounded text-xs font-mono">{promo.code}</div>
+                  <div className="text-xs opacity-90">{promo.validUntil}까지</div>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* 메인 콘텐츠 탭 */}
+        <Tabs defaultValue="recommended" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="recommended">맞춤 추천</TabsTrigger>
+            <TabsTrigger value="categories">인기 카테고리</TabsTrigger>
+            <TabsTrigger value="recent">최근 본 상품</TabsTrigger>
+            <TabsTrigger value="orders">주문 내역</TabsTrigger>
+          </TabsList>
+
+          {/* 맞춤 추천 상품 */}
+          <TabsContent value="recommended" className="mt-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-xl font-bold">당신을 위한 맞춤 추천</h2>
+                <p className="text-gray-500 text-sm">{userData.goal} 목표에 최적화된 상품들</p>
+              </div>
+              <Button variant="outline" onClick={() => handleNavigate("products")}>
+                전체 보기 <ChevronRight className="ml-1 h-4 w-4" />
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {recommendedProducts.map((product) => (
+                <Card key={product.id} className="overflow-hidden group hover:shadow-lg transition-shadow">
+                  <CardContent className="p-0 relative">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-200"
+                    />
+                    {product.discount && (
+                      <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                        -{product.discount}%
                       </div>
-                      <CardTitle className="text-lg">{product.name}</CardTitle>
-                      <CardDescription>
-                        {product.protein > 0 &&
-                          `단백질: ${product.protein}g · `}
-                        {product.calories > 0 &&
-                          `칼로리: ${product.calories}kcal`}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardFooter className="p-4 pt-0 flex justify-between items-center">
-                      <span className="font-bold">
-                        {product.price.toLocaleString()}원
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="sm" // onClick={() => onNavigate && onNavigate("cart")}
-                      >
-                        장바구니
-                      </Button>
-                    </CardFooter>
+                    )}
+                    <div className="absolute top-2 right-2 flex gap-1">
+                      {product.tags.slice(0, 2).map((tag, index) => (
+                        <Badge key={index} variant="secondary" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                  <CardHeader className="p-3 pb-2">
+                    <CardTitle className="text-sm line-clamp-2 h-10">{product.name}</CardTitle>
+                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      <span>{product.rating}</span>
+                      <span>({product.reviews})</span>
+                    </div>
+                    <p className="text-xs text-green-600 font-medium">{product.reason}</p>
+                  </CardHeader>
+                  <CardFooter className="p-3 pt-0 flex justify-between items-center">
+                    <div>
+                      {product.originalPrice && (
+                        <span className="text-xs text-gray-400 line-through">
+                          {product.originalPrice.toLocaleString()}원
+                        </span>
+                      )}
+                      <div className="font-bold">{product.price.toLocaleString()}원</div>
+                    </div>
+                    <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* 인기 카테고리 */}
+          <TabsContent value="categories" className="mt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold">인기 카테고리</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {popularCategories.map((category) => (
+                <Card
+                  key={category.id}
+                  className="cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => handleNavigate("products")}
+                >
+                  <CardContent className="p-6 text-center">
+                    <div
+                      className={`${category.color} rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4`}
+                    >
+                      {category.icon}
+                    </div>
+                    <h3 className="font-bold mb-1">{category.name}</h3>
+                    <p className="text-sm text-gray-500 mb-2">{category.description}</p>
+                    <Badge variant="outline" className="text-xs">
+                      {category.count}
+                    </Badge>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* 최근 본 상품 */}
+          <TabsContent value="recent" className="mt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold">최근 본 상품</h2>
+              <Button variant="outline" size="sm">
+                <Eye className="h-4 w-4 mr-1" />
+                전체 보기
+              </Button>
+            </div>
+            {recentlyViewed.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {recentlyViewed.map((product) => (
+                  <Card key={product.id} className="cursor-pointer hover:shadow-md transition-shadow">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                        <div className="flex-1">
+                          <h4 className="font-medium text-sm line-clamp-2">{product.name}</h4>
+                          <p className="text-xs text-gray-500 mt-1">{product.viewedAt}</p>
+                          <div className="font-bold text-sm mt-1">{product.price.toLocaleString()}원</div>
+                        </div>
+                      </div>
+                    </CardContent>
                   </Card>
                 ))}
               </div>
-              <div className="flex justify-center mt-6">
-                <Button
-                  variant="outline"
-                  className="flex items-center"
-                  // onClick={() => onNavigate && onNavigate("products")}
-                >
-                  더 많은 제품 보기
-                  <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <Eye className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                <p>최근 본 상품이 없습니다</p>
               </div>
+            )}
+          </TabsContent>
+
+          {/* 주문 내역 */}
+          <TabsContent value="orders" className="mt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold">최근 주문</h2>
+              <Button variant="outline" size="sm" onClick={() => handleNavigate("order-history")}>
+                전체 보기
+              </Button>
             </div>
-          )}
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">
-                주요 기능
-              </div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                Energy Factory의 특별한 기능
-              </h2>
-              <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                운동 목표 달성을 위한 맞춤형 식단 계획과 영양소 계산, 그리고
-                쉽고 편리한 쇼핑까지
-              </p>
-            </div>
-          </div>
-          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 mt-8">
-            <Card className="flex flex-col items-center text-center">
-              <CardHeader>
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                  <Target className="h-8 w-8 text-green-600" />
-                </div>
-                <CardTitle className="mt-4">목표 기반 영양 계산</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  근육 증가, 체중 감량 등 개인 목표에 맞는 영양소 섭취량을
-                  자동으로 계산해 드립니다.
-                </CardDescription>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  variant="link" // onClick={() => onNavigate && onNavigate("nutrition")}
-                >
-                  영양 계산기 사용하기
-                </Button>
-              </CardFooter>
-            </Card>
-            <Card className="flex flex-col items-center text-center">
-              <CardHeader>
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                  <Brain className="h-8 w-8 text-green-600" />
-                </div>
-                <CardTitle className="mt-4">AI 식단 코치</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  LLM 기반 AI가 개인 맞춤형 식단을 제안하고 영양 관련 질문에
-                  답변해 드립니다.
-                </CardDescription>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  variant="link" // onClick={() => onNavigate && onNavigate("diet-coach")}
-                >
-                  AI 코치와 대화하기
-                </Button>
-              </CardFooter>
-            </Card>
-            <Card className="flex flex-col items-center text-center">
-              <CardHeader>
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                  <Leaf className="h-8 w-8 text-green-600" />
-                </div>
-                <CardTitle className="mt-4">영양소 중심 카테고리</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  고단백, 건강한 지방, 복합 탄수화물 등 영양소 기반으로 상품을
-                  쉽게 찾을 수 있습니다.
-                </CardDescription>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  variant="link" // onClick={() => onNavigate && onNavigate("products")}
-                >
-                  카테고리 둘러보기
-                </Button>
-              </CardFooter>
-            </Card>
-            <Card className="flex flex-col items-center text-center">
-              <CardHeader>
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                  <ShoppingBag className="h-8 w-8 text-green-600" />
-                </div>
-                <CardTitle className="mt-4">스마트 장바구니</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  장바구니에 담긴 상품의 총 영양소를 계산하고 목표 달성을 위한
-                  추천 상품을 제안합니다.
-                </CardDescription>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  variant="link" // onClick={() => onNavigate && onNavigate("cart")}
-                >
-                  장바구니 체험하기
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* AI 코치 샘플 섹션 */}
-      <section className="w-full py-12 md:py-24 bg-green-50">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center mb-8">
-            <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">
-                AI 코치
-              </div>
-              <h2 className="text-3xl font-bold tracking-tighter">
-                AI 식단 코치와의 대화
-              </h2>
-              <p className="max-w-[700px] text-gray-500">
-                Energy Factory의 AI 코치는 영양과 운동에 관한 모든 질문에
-                전문적인 답변을 제공합니다.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {aiCoachSamples.map((sample: any, index: any) => (
-              <Card key={index} className="bg-white">
-                <CardHeader>
-                  <CardTitle className="text-lg">
-                    Q: {sample.question}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">{sample.answer}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <div className="flex justify-center mt-8">
-            <Button
-              className="bg-green-600 hover:bg-green-700" // onClick={() => onNavigate && onNavigate("diet-coach")}
-            >
-              AI 코치와 상담하기
-              <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* 인기 상품 섹션 */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-white">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">
-                베스트셀러
-              </div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                인기 상품
-              </h2>
-              <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Energy Factory 회원들이 가장 많이 구매한 건강한 식재료
-              </p>
-            </div>
-          </div>
-          <Carousel className="w-full max-w-5xl mx-auto mt-8">
-            <CarouselContent>
-              {popularProducts.map((product) => (
-                <CarouselItem
-                  key={product.id}
-                  className="md:basis-1/2 lg:basis-1/3"
-                >
-                  <Card className="overflow-hidden">
-                    <CardContent className="p-0">
-                      <img
-                        src={product.image || "/placeholder.svg"}
-                        alt={product.name}
-                        className="w-full h-48 object-cover"
-                      />
-                    </CardContent>
-                    <CardHeader className="p-4">
-                      <div className="flex flex-wrap gap-1 mb-2">
-                        {product.tags.map((tag, index) => (
-                          <Badge
-                            key={index}
-                            variant="secondary"
-                            className="text-xs"
-                          >
-                            {tag}
+            <div className="space-y-4">
+              {recentOrders.map((order) => (
+                <Card key={order.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium">{order.id}</span>
+                          <Badge variant={order.status === "배송완료" ? "default" : "secondary"} className="text-xs">
+                            {order.status}
                           </Badge>
-                        ))}
+                        </div>
+                        <p className="text-sm text-gray-600 mb-1">{order.items.join(", ")}</p>
+                        <p className="text-xs text-gray-500">{order.date}</p>
                       </div>
-                      <CardTitle className="text-lg">{product.name}</CardTitle>
-                      <CardDescription>
-                        {product.protein > 0 &&
-                          `단백질: ${product.protein}g · `}
-                        {product.calories > 0 &&
-                          `칼로리: ${product.calories}kcal`}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardFooter className="p-4 pt-0 flex justify-between">
-                      <span className="font-bold">
-                        {product.price.toLocaleString()}원
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="sm" // onClick={() => onNavigate && onNavigate("cart")}
-                      >
-                        장바구니
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
-          <div className="flex justify-center mt-8">
-            <Button
-              variant="outline"
-              className="flex items-center"
-              // onClick={() => onNavigate && onNavigate("products")}
-            >
-              모든 상품 보기
-              <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* 성공 사례 섹션 */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <div className="inline-block rounded-lg bg-green-100 px-3 py-1 text-sm text-green-600">
-                성공 사례
-              </div>
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                고객 성공 스토리
-              </h2>
-              <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Energy Factory와 함께 목표를 달성한 실제 고객들의 이야기
-              </p>
-            </div>
-          </div>
-          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3 lg:gap-12 mt-8">
-            {successStories.map((story) => (
-              <Card key={story.id} className="relative overflow-hidden">
-                <CardHeader>
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={story.image || "/placeholder.svg"}
-                      alt={story.name}
-                      className="rounded-full h-16 w-16 object-cover"
-                    />
-                    <div>
-                      <CardTitle className="text-lg">{story.name}</CardTitle>
-                      <Badge className="mt-1 bg-green-600">{story.goal}</Badge>
+                      <div className="text-right">
+                        <div className="font-bold">{order.total.toLocaleString()}원</div>
+                        <Button variant="outline" size="sm" className="mt-2 bg-transparent">
+                          재주문
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-gray-600">{story.story}</p>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">
-                      주로 사용한 제품:
-                    </p>
-                    <ul className="text-sm text-gray-600 mt-1">
-                      {story.products.map((product, index) => (
-                        <li key={index} className="flex items-center">
-                          <ChevronRight className="h-3 w-3 text-green-600 mr-1" />
-                          {product}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
 
-      {/* CTA Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-green-600 text-white">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                지금 바로 시작하세요
-              </h2>
-              <p className="max-w-[900px] md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Energy Factory와 함께 건강한 식단 관리와 쇼핑을 한 번에
-                해결하세요.
-              </p>
+        {/* 오늘의 영양 팁 */}
+        <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <div className="bg-green-500 text-white rounded-full p-2">
+                <Apple className="h-5 w-5" />
+              </div>
+              <CardTitle className="text-lg">오늘의 영양 팁</CardTitle>
             </div>
-            <div className="flex flex-col gap-4 min-[400px]:flex-row">
+          </CardHeader>
+          <CardContent>
+            <h3 className="font-medium mb-2">{todaysTip.title}</h3>
+            <p className="text-gray-600 text-sm mb-4">{todaysTip.content}</p>
+            <div className="flex gap-2">
               <Button
-                className="bg-white text-green-600 hover:bg-gray-100"
-                // onClick={() => onNavigate && onNavigate("register")}
+                size="sm"
+                className="bg-green-600 hover:bg-green-700"
+                onClick={() => handleNavigate("diet-coach")}
               >
-                무료 회원가입
+                AI 코치에게 더 물어보기
               </Button>
-              <Button
-                variant="outline"
-                className="border-white text-white hover:bg-green-700"
-                // onClick={() => onNavigate && onNavigate("products")}
-              >
-                상품 둘러보기
-              </Button>
-              <Button
-                variant="outline"
-                className="border-white text-white hover:bg-green-700"
-                // onClick={() => onNavigate && onNavigate("diet-coach")}
-              >
-                AI 코치와 상담하기
+              <Button variant="outline" size="sm" onClick={() => handleNavigate("products")}>
+                관련 상품 보기
               </Button>
             </div>
-          </div>
-        </div>
-      </section>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

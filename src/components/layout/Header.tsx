@@ -37,6 +37,16 @@ export default function Header() {
                   홈
                 </a>
                 <a
+                  href="/landing"
+                  className="text-lg font-medium hover:underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(ROUTES.LANDING);
+                  }}
+                >
+                  랜딩페이지
+                </a>
+                <a
                   href="/products"
                   className="text-lg font-medium hover:underline"
                   onClick={(e) => {
@@ -102,6 +112,16 @@ export default function Header() {
             }}
           >
             홈
+          </a>
+          <a
+            href="/landing"
+            className="text-sm font-medium hover:text-green-600"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate(ROUTES.LANDING);
+            }}
+          >
+            랜딩페이지
           </a>
           <a
             href="/products"
