@@ -1,6 +1,4 @@
-import {
-  HelpCircle,
-} from "lucide-react";
+import { HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -17,7 +15,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
 
 interface ProductFilterProps {
   showFilters: boolean;
@@ -97,7 +94,7 @@ export function ProductFilter({
       onDietaryRestrictionsChange([...dietaryRestrictions, optionName]);
     } else {
       onDietaryRestrictionsChange(
-        dietaryRestrictions.filter((item) => item !== optionName)
+        dietaryRestrictions.filter((item) => item !== optionName),
       );
     }
   };
@@ -141,18 +138,12 @@ export function ProductFilter({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-5 w-5 p-0"
-                      >
+                      <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
                         <HelpCircle className="h-3 w-3" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="max-w-xs">
-                        {nutrientDescriptions.protein}
-                      </p>
+                      <p className="max-w-xs">{nutrientDescriptions.protein}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -177,18 +168,12 @@ export function ProductFilter({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-5 w-5 p-0"
-                      >
+                      <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
                         <HelpCircle className="h-3 w-3" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="max-w-xs">
-                        {nutrientDescriptions.carbs}
-                      </p>
+                      <p className="max-w-xs">{nutrientDescriptions.carbs}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -213,18 +198,12 @@ export function ProductFilter({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-5 w-5 p-0"
-                      >
+                      <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
                         <HelpCircle className="h-3 w-3" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="max-w-xs">
-                        {nutrientDescriptions.fat}
-                      </p>
+                      <p className="max-w-xs">{nutrientDescriptions.fat}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -249,11 +228,7 @@ export function ProductFilter({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-5 w-5 p-0"
-                      >
+                      <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
                         <HelpCircle className="h-3 w-3" />
                       </Button>
                     </TooltipTrigger>
@@ -285,10 +260,7 @@ export function ProductFilter({
         <h3 className="font-medium mb-2">식이 제한</h3>
         <div className="space-y-2">
           {dietaryOptions.map((option) => (
-            <div
-              key={option.id}
-              className="flex items-center space-x-2"
-            >
+            <div key={option.id} className="flex items-center space-x-2">
               <Checkbox
                 id={`desktop-diet-${option.id}`}
                 checked={dietaryRestrictions.includes(option.name)}
@@ -296,10 +268,7 @@ export function ProductFilter({
                   handleDietaryChange(option.name, !!checked)
                 }
               />
-              <label
-                htmlFor={`desktop-diet-${option.id}`}
-                className="text-sm"
-              >
+              <label htmlFor={`desktop-diet-${option.id}`} className="text-sm">
                 {option.name}
               </label>
             </div>
