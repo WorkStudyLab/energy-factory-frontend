@@ -10,7 +10,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 
 // 로그인 요청 타입
 interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -19,6 +19,7 @@ interface LoginResponse {
   code: string;
   data: {
     accessToken: string;
+    tokenType: string;
     refreshToken: string;
   };
   desc: string;
@@ -32,7 +33,7 @@ const loginApi = async (credentials: LoginRequest): Promise<LoginResponse> => {
     credentials,
     {
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
     },
   );

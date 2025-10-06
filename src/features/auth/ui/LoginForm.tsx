@@ -9,26 +9,26 @@ import { ROUTES } from "@/constants/routes";
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, isLoading, isError, error } = useLogin();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    login({ username, password });
+    login({ email, password });
   };
 
   return (
     <form onSubmit={handleLogin}>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="username">이메일</Label>
+          <Label htmlFor="email">이메일</Label>
           <Input
-            id="username"
+            id="email"
             type="email"
             placeholder="example@email.com"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -62,7 +62,7 @@ export default function LoginForm() {
         </Button>
         {isError && (
           <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded text-red-600 text-sm">
-            {error?.response?.data?.message || "로그인에 실패했습니다."}
+            {error?.response?.data?.desc || "로그인에 실패했습니다."}
           </div>
         )}
       </CardFooter>
