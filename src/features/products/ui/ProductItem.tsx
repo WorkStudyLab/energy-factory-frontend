@@ -9,14 +9,20 @@ interface ProductItemProps {
 }
 
 export function ProductItem({ product, onAddToCart }: ProductItemProps) {
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 카드 클릭 이벤트 방지
     if (onAddToCart && product.stock > 0) {
       onAddToCart(product.id);
     }
   };
 
+  const handleCardClick = () => {
+    // 새 탭에서 상품 상세 페이지 열기
+    window.open(`/products/${product.id}`, '_blank');
+  };
+
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow" onClick={handleCardClick}>
       <CardContent className="p-0">
         <img
           // @todo server - 실제 URL 추가 필요
