@@ -43,8 +43,8 @@ export function ProductItem({ product, onAddToCart }: ProductItemProps) {
   const recommendationBadge = getRecommendationBadge(product.category, product.name);
 
   // 단위당 가격 계산 함수
-  const getUnitPrice = (price: number, weight: number, category: string) => {
-    // 카테고리별 최적 단위 결정
+  const getUnitPrice = (price: number, weight: number) => {
+    // 최적 단위 결정
     let unit: number;
     let label: string;
     
@@ -63,7 +63,7 @@ export function ProductItem({ product, onAddToCart }: ProductItemProps) {
     return { price: unitPrice, label };
   };
 
-  const unitPriceInfo = getUnitPrice(product.price, product.weight, product.category);
+  const unitPriceInfo = getUnitPrice(product.price, product.weight);
 
   // 임시 영양팁 데이터 (실제로는 서버에서 가져와야 함)
   const mockNutritionTip = {
