@@ -25,9 +25,7 @@ export function ProductItem({ product, onAddToCart }: ProductItemProps) {
     <Card className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow" onClick={handleCardClick}>
       <CardContent className="p-0">
         <img
-          // @todo server - 실제 URL 추가 필요
-          //   src={product.imageUrl || "https://placehold.co/300x200"}
-          src={"https://placehold.co/300x200"}
+          src={product.imageUrl || "https://placehold.co/300x200"}
           alt={product.name}
           className="w-full h-48 object-cover"
           onError={(e) => {
