@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ShoppingCart,
@@ -27,7 +27,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ROUTES } from "@/constants/routes";
 import { useProductDetail } from "@/features/products/hooks/useProductDetail";
-import type { ProductVariant } from "@/types/product";
+import type {
+  ProductVariant,
+  ProductDetail,
+  CookingMethod,
+  VitaminMineral,
+  Review,
+  QnA,
+  ComplementaryProduct
+} from "@/types/product";
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -38,6 +46,13 @@ export default function ProductDetailPage() {
   const [selectedVariant, setSelectedVariant] = useState("500g");
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  // 페이지 타이틀 설정
+  useEffect(() => {
+    if (product) {
+      document.title = `${product.name}`;
+    }
+  }, [product]);
 
   // 로딩 상태
   if (isLoading) {
@@ -353,8 +368,20 @@ export default function ProductDetailPage() {
   );
 }
 
+// 탭 컴포넌트 Props 타입
+interface ProductDetailTabsProps {
+  product: ProductDetail;
+  maxNutrients: {
+    protein: number;
+    carbs: number;
+    fat: number;
+    calories: number;
+  };
+  goalNames: Record<string, string>;
+}
+
 // 탭 컴포넌트 (분리)
-function ProductDetailTabs({ product, maxNutrients, goalNames }: any) {
+function ProductDetailTabs({ product, maxNutrients, goalNames }: ProductDetailTabsProps) {
   return (
     <div className="mt-12">
       <Tabs defaultValue="description" className="w-full">
@@ -398,7 +425,7 @@ function ProductDetailTabs({ product, maxNutrients, goalNames }: any) {
               <div>
                 <h3 className="font-semibold text-lg mb-3">조리 방법</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {product.cookingMethods.map((method: any, index: number) => (
+                  {product.cookingMethods.map((method: CookingMethod, index: number) => (
                     <Card key={index}>
                       <CardHeader className="pb-3">
                         <CardTitle className="text-base">{method.name}</CardTitle>
@@ -471,7 +498,7 @@ function ProductDetailTabs({ product, maxNutrients, goalNames }: any) {
 }
 
 // 영양 정보 탭 컴포넌트
-function NutritionTab({ product, maxNutrients, goalNames }: any) {
+function NutritionTab({ product, maxNutrients, goalNames }: ProductDetailTabsProps) {
   return (
     <Card>
       <CardHeader>
@@ -565,7 +592,7 @@ function NutritionTab({ product, maxNutrients, goalNames }: any) {
         <div>
           <h3 className="font-semibold mb-4">비타민 & 미네랄</h3>
           <div className="space-y-3">
-            {product.vitaminsAndMinerals.map((item: any, index: number) => (
+            {product.vitaminsAndMinerals.map((item: VitaminMineral, index: number) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex justify-between mb-1">
@@ -589,7 +616,7 @@ function NutritionTab({ product, maxNutrients, goalNames }: any) {
         <div>
           <h3 className="font-semibold mb-4">피트니스 목표별 적합도</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {Object.entries(product.goalScores).map(([goal, score]: [string, any]) => (
+            {Object.entries(product.goalScores).map(([goal, score]: [string, number]) => (
               <div key={goal} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <span className="font-medium">{goalNames[goal]}</span>
                 <div className="flex items-center gap-1">
@@ -613,7 +640,7 @@ function NutritionTab({ product, maxNutrients, goalNames }: any) {
 }
 
 // 리뷰 탭 컴포넌트
-function ReviewsTab({ product }: any) {
+function ReviewsTab({ product }: { product: ProductDetail }) {
   return (
     <Card>
       <CardHeader>
@@ -632,7 +659,7 @@ function ReviewsTab({ product }: any) {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {product.reviews.map((review: any) => (
+        {product.reviews.map((review: Review) => (
           <div key={review.id} className="border-b pb-6 last:border-0 last:pb-0">
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -684,7 +711,7 @@ function ReviewsTab({ product }: any) {
 }
 
 // Q&A 탭 컴포넌트
-function QnaTab({ product }: any) {
+function QnaTab({ product }: { product: ProductDetail }) {
   return (
     <Card>
       <CardHeader>
@@ -698,7 +725,7 @@ function QnaTab({ product }: any) {
       </CardHeader>
       <CardContent>
         <Accordion type="single" collapsible className="w-full">
-          {product.qna.map((item: any) => (
+          {product.qna.map((item: QnA) => (
             <AccordionItem key={item.id} value={`item-${item.id}`}>
               <AccordionTrigger className="text-left">
                 <span className="font-medium">Q. {item.question}</span>
@@ -718,7 +745,7 @@ function QnaTab({ product }: any) {
 }
 
 // 추천 상품 탭 컴포넌트
-function RecommendationsTab({ product }: any) {
+function RecommendationsTab({ product }: { product: ProductDetail }) {
   return (
     <Card>
       <CardHeader>
@@ -727,7 +754,7 @@ function RecommendationsTab({ product }: any) {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {product.complementaryProducts.map((item: any) => (
+          {product.complementaryProducts.map((item: ComplementaryProduct) => (
             <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
               <CardContent className="p-0">
                 <img
