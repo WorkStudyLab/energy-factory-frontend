@@ -7,10 +7,9 @@ import type { ProductFilters } from "@/types/product";
 
 interface ProductListProps {
   customFilters?: ProductFilters;
-  onAddToCart?: (productId: number) => void;
 }
 
-export function ProductList({ customFilters, onAddToCart }: ProductListProps) {
+export function ProductList({ customFilters }: ProductListProps) {
   const { resetFilters } = useProductsStore();
   const { data, isLoading, error, refetch } = useProducts(customFilters);
 
@@ -58,7 +57,6 @@ export function ProductList({ customFilters, onAddToCart }: ProductListProps) {
         <ProductItem
           key={product.id}
           product={product}
-          onAddToCart={onAddToCart}
         />
       ))}
     </div>

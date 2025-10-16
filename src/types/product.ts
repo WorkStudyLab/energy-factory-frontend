@@ -26,6 +26,8 @@ export interface Product {
   weightUnit: string;
   stock: number;
   status: string;
+  averageRating: number;
+  reviewCount: number;
   tags: string[];  // 목록에서는 string 배열
 }
 
