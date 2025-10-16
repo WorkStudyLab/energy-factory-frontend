@@ -30,7 +30,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ProductsPage() {
-  const [showFilters, setShowFilters] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedGoal, setSelectedGoal] = useState<string>("all");
   const [proteinRange, setProteinRange] = useState([0, 50]);
