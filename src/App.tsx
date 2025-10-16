@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/tanstack/queryClient";
 import { ROUTES } from "./constants/routes";
-import HomePage from "./pages/home/HomePage";
 import LandingPage from "./pages/landing/LandingPage";
 import ProductsPage from "./pages/products/ProductsPage";
 import ProductDetailPage from "./pages/products/ProductDetailPage";
