@@ -56,47 +56,6 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
       freeShippingThreshold: 30000,
       estimatedDays: "1-2",
     },
-    cookingMethods: [
-      {
-        name: "조리법 1",
-        time: "10분",
-        description: "간단하게 조리하는 방법입니다.",
-      },
-    ],
-    nutritionTips: [
-      "영양소를 최대한 보존하려면 살짝만 조리하세요.",
-      "다양한 채소와 함께 섭취하면 영양 균형이 좋습니다.",
-    ],
-    complementaryProducts: [
-      {
-        id: 2,
-        name: "관련 상품 1",
-        price: 5900,
-        image: "https://placehold.co/100x100?text=관련1",
-        reason: "함께 구매하면 좋은 상품",
-      },
-    ],
-    reviews: [
-      {
-        id: 1,
-        author: "구매자A",
-        rating: 5,
-        date: "2024-01-15",
-        verified: true,
-        content: "정말 신선하고 좋아요!",
-        helpful: 12,
-        goal: "건강 관리",
-        images: [],
-      },
-    ],
-    qna: [
-      {
-        id: 1,
-        question: "보관 방법이 어떻게 되나요?",
-        answer: serverData.storage || "냉장 보관을 권장합니다.",
-        date: "2024-01-10",
-      },
-    ],
   };
 
   // 서버 데이터와 Mock 데이터 병합

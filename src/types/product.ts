@@ -99,11 +99,6 @@ export interface ProductDetail extends Product {
   variants: ProductVariant[];
   shipping: ShippingInfo;
   storage: string;
-  cookingMethods: CookingMethod[];
-  nutritionTips: string[];
-  complementaryProducts: ComplementaryProduct[];
-  reviews: Review[];
-  qna: QnA[];
 }
 
 export interface NutritionInfo {
@@ -135,37 +130,4 @@ export interface ShippingInfo {
   fee: number;
   freeShippingThreshold: number;
   estimatedDays: string;
-}
-
-export interface CookingMethod {
-  name: string;
-  time: string;
-  description: string;
-}
-
-export interface ComplementaryProduct {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  reason: string;
-}
-
-export interface Review {
-  id: number;
-  author: string;
-  rating: number;
-  date: string;
-  verified: boolean;
-  content: string;
-  helpful: number;
-  goal: string;
-  images: string[];
-}
-
-export interface QnA {
-  id: number;
-  question: string;
-  answer: string;
-  date: string;
 }

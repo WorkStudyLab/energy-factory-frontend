@@ -6,8 +6,6 @@ import {
   Share2,
   Star,
   ChevronLeft,
-  Info,
-  Check,
   TrendingUp,
   Clock,
   Zap,
@@ -22,19 +20,13 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ROUTES } from "@/constants/routes";
 import { useProductDetail } from "@/features/products/hooks/useProductDetail";
 import type {
   ProductVariant,
   ProductDetail,
-  CookingMethod,
   VitaminMineral,
-  Review,
-  QnA,
-  ComplementaryProduct
 } from "@/types/product";
 
 export default function ProductDetailPage() {
@@ -384,113 +376,14 @@ interface ProductDetailTabsProps {
 function ProductDetailTabs({ product, maxNutrients, goalNames }: ProductDetailTabsProps) {
   return (
     <div className="mt-12">
-      <Tabs defaultValue="description" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="description">상세정보</TabsTrigger>
+      <Tabs defaultValue="nutrition" className="w-full">
+        <TabsList className="grid w-full grid-cols-1">
           <TabsTrigger value="nutrition">영양정보</TabsTrigger>
-          <TabsTrigger value="reviews">리뷰 ({product.reviewCount})</TabsTrigger>
-          <TabsTrigger value="qna">Q&A</TabsTrigger>
-          <TabsTrigger value="recommendations">추천</TabsTrigger>
         </TabsList>
-
-        {/* 상세 정보 탭 */}
-        <TabsContent value="description" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>상품 상세 정보</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="prose max-w-none">
-                <p className="whitespace-pre-line">{product.description}</p>
-              </div>
-
-              <Separator />
-
-              {/* 특징 */}
-              <div>
-                <h3 className="font-semibold text-lg mb-3">주요 특징</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {product.features.map((feature: string, index: number) => (
-                    <div key={index} className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
-                      <Check className="h-5 w-5 text-green-600 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* 조리 방법 */}
-              <div>
-                <h3 className="font-semibold text-lg mb-3">조리 방법</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {product.cookingMethods.map((method: CookingMethod, index: number) => (
-                    <Card key={index}>
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-base">{method.name}</CardTitle>
-                        <CardDescription className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {method.time}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm text-gray-600">{method.description}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* 보관 방법 */}
-              <div>
-                <h3 className="font-semibold text-lg mb-3">보관 방법</h3>
-                <div className="flex items-start gap-2 bg-blue-50 p-4 rounded-lg">
-                  <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm">{product.storage}</p>
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* 영양 팁 */}
-              <div>
-                <h3 className="font-semibold text-lg mb-3">영양 전문가 조언</h3>
-                <div className="space-y-3">
-                  {product.nutritionTips.map((tip: string, index: number) => (
-                    <div key={index} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
-                      <div className="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-sm font-medium">
-                        {index + 1}
-                      </div>
-                      <p className="text-sm">{tip}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         {/* 영양 정보 탭 */}
         <TabsContent value="nutrition" className="mt-6">
           <NutritionTab product={product} maxNutrients={maxNutrients} goalNames={goalNames} />
-        </TabsContent>
-
-        {/* 리뷰 탭 */}
-        <TabsContent value="reviews" className="mt-6">
-          <ReviewsTab product={product} />
-        </TabsContent>
-
-        {/* Q&A 탭 */}
-        <TabsContent value="qna" className="mt-6">
-          <QnaTab product={product} />
-        </TabsContent>
-
-        {/* 추천 상품 탭 */}
-        <TabsContent value="recommendations" className="mt-6">
-          <RecommendationsTab product={product} />
         </TabsContent>
       </Tabs>
     </div>
@@ -639,147 +532,3 @@ function NutritionTab({ product, maxNutrients, goalNames }: ProductDetailTabsPro
   );
 }
 
-// 리뷰 탭 컴포넌트
-function ReviewsTab({ product }: { product: ProductDetail }) {
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>고객 리뷰</CardTitle>
-            <CardDescription>{product.reviewCount.toLocaleString()}개의 리뷰</CardDescription>
-          </div>
-          <div className="text-center">
-            <div className="flex items-center gap-1">
-              <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
-              <span className="text-3xl font-bold">{product.rating}</span>
-            </div>
-            <div className="text-sm text-gray-500">5점 만점</div>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {product.reviews.map((review: Review) => (
-          <div key={review.id} className="border-b pb-6 last:border-0 last:pb-0">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarFallback>{review.author[0]}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{review.author}</span>
-                    {review.verified && (
-                      <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">
-                        구매 확인
-                      </Badge>
-                    )}
-                    <Badge variant="secondary" className="text-xs">
-                      {review.goal}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="flex">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${
-                            i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-sm text-gray-500">{review.date}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <p className="text-gray-700 mb-3">{review.content}</p>
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" className="text-gray-500">
-                도움이 돼요 ({review.helpful})
-              </Button>
-            </div>
-          </div>
-        ))}
-        <div className="flex justify-center pt-4">
-          <Button variant="outline">더 보기</Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-// Q&A 탭 컴포넌트
-function QnaTab({ product }: { product: ProductDetail }) {
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>자주 묻는 질문</CardTitle>
-            <CardDescription>궁금한 점을 질문해보세요</CardDescription>
-          </div>
-          <Button>질문하기</Button>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Accordion type="single" collapsible className="w-full">
-          {product.qna.map((item: QnA) => (
-            <AccordionItem key={item.id} value={`item-${item.id}`}>
-              <AccordionTrigger className="text-left">
-                <span className="font-medium">Q. {item.question}</span>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-gray-700">A. {item.answer}</p>
-                  <p className="text-sm text-gray-500 mt-2">{item.date}</p>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </CardContent>
-    </Card>
-  );
-}
-
-// 추천 상품 탭 컴포넌트
-function RecommendationsTab({ product }: { product: ProductDetail }) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>함께 구매하면 좋은 상품</CardTitle>
-        <CardDescription>영양 균형을 위한 추천 조합</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {product.complementaryProducts.map((item: ComplementaryProduct) => (
-            <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-              <CardContent className="p-0">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-40 object-cover"
-                />
-              </CardContent>
-              <CardHeader className="p-4">
-                <CardTitle className="text-base">{item.name}</CardTitle>
-                <CardDescription className="flex items-center gap-1 text-green-600">
-                  <Check className="h-3 w-3" />
-                  {item.reason}
-                </CardDescription>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="font-bold">{item.price.toLocaleString()}원</span>
-                  <Button size="sm" variant="outline">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
