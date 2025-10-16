@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/tanstack/queryClient";
 import { ROUTES } from "./constants/routes";
@@ -34,7 +34,7 @@ function App() {
 
           <main className="flex-1">
             <Routes>
-              <Route path={ROUTES.HOME} element={<HomePage />} />
+              <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.PRODUCTS} replace />} />
               <Route path={ROUTES.LANDING} element={<LandingPage />} />
               <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
               <Route

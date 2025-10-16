@@ -1,4 +1,4 @@
-import { Bell, Menu, Package, ShoppingCart } from "lucide-react";
+import { Bell, Menu, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -27,26 +27,6 @@ export default function Header() {
             <SheetContent side="left" className="w-[300px] sm:w-[400px]">
               <nav className="flex flex-col gap-4 mt-8">
                 <a
-                  href="/"
-                  className="text-lg font-medium hover:underline"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate(ROUTES.HOME);
-                  }}
-                >
-                  홈
-                </a>
-                <a
-                  href="/landing"
-                  className="text-lg font-medium hover:underline"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate(ROUTES.LANDING);
-                  }}
-                >
-                  랜딩페이지
-                </a>
-                <a
                   href="/products"
                   className="text-lg font-medium hover:underline"
                   onClick={(e) => {
@@ -55,26 +35,6 @@ export default function Header() {
                   }}
                 >
                   상품
-                </a>
-                <a
-                  href="/nutrition"
-                  className="text-lg font-medium hover:underline"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate(ROUTES.NUTRITION);
-                  }}
-                >
-                  영양 계산기
-                </a>
-                <a
-                  href="/diet-coach"
-                  className="text-lg font-medium hover:underline"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate(ROUTES.DIET_COACH);
-                  }}
-                >
-                  식단 코치
                 </a>
                 <a
                   href="/order-history"
@@ -90,11 +50,11 @@ export default function Header() {
             </SheetContent>
           </Sheet>
           <a
-            href="/"
+            href="/products"
             className="flex items-center gap-2"
             onClick={(e) => {
               e.preventDefault();
-              navigate(ROUTES.HOME);
+              navigate(ROUTES.PRODUCTS);
             }}
           >
             <span className="font-bold text-xl text-green-600">
@@ -104,26 +64,6 @@ export default function Header() {
         </div>
         <nav className="hidden md:flex items-center gap-6">
           <a
-            href="/"
-            className="text-sm font-medium hover:text-green-600"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(ROUTES.HOME);
-            }}
-          >
-            홈
-          </a>
-          <a
-            href="/landing"
-            className="text-sm font-medium hover:text-green-600"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(ROUTES.LANDING);
-            }}
-          >
-            랜딩페이지
-          </a>
-          <a
             href="/products"
             className="text-sm font-medium hover:text-green-600"
             onClick={(e) => {
@@ -132,26 +72,6 @@ export default function Header() {
             }}
           >
             상품
-          </a>
-          <a
-            href="/nutrition"
-            className="text-sm font-medium hover:text-green-600"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(ROUTES.NUTRITION);
-            }}
-          >
-            영양계산기
-          </a>
-          <a
-            href="/diet-coach"
-            className="text-sm font-medium hover:text-green-600"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(ROUTES.DIET_COACH);
-            }}
-          >
-            식단코치
           </a>
           <a
             href="/order-history"
@@ -165,19 +85,6 @@ export default function Header() {
           </a>
         </nav>
         <div className="flex items-center gap-4">
-          <a
-            className="relative hidden md:block"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(ROUTES.ORDER_HISTORY);
-            }}
-          >
-            <Package className="h-5 w-5" />
-            <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-green-600">
-              2
-            </Badge>
-            <span className="sr-only">주문 내역</span>
-          </a>
           <a
             className="relative"
             onClick={(e) => {
