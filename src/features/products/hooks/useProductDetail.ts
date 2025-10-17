@@ -17,36 +17,12 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
       "https://placehold.co/600x600?text=이미지3",
       "https://placehold.co/600x600?text=영양성분표",
     ],
-    nutrition: {
-      calories: 150,
-      protein: parseFloat(serverData.nutrients?.find(n => n.name === "단백질")?.value || "20"),
-      carbs: parseFloat(serverData.nutrients?.find(n => n.name === "탄수화물")?.value || "10"),
-      fat: parseFloat(serverData.nutrients?.find(n => n.name === "지방")?.value || "5"),
-      saturatedFat: 2,
-      transFat: 0,
-      cholesterol: 50,
-      sodium: 200,
-      fiber: 3,
-      sugars: 2,
-    },
-    vitaminsAndMinerals: [
-      { name: "비타민 B12", amount: "2.4μg", daily: 100 },
-      { name: "철분", amount: "18mg", daily: 100 },
-      { name: "아연", amount: "11mg", daily: 100 },
-    ],
     features: [
       "신선한 재료",
       "당일 배송",
       "품질 보증",
       "HACCP 인증",
     ],
-    goalScores: {
-      "muscle-gain": 4.5,
-      "weight-loss": 3.8,
-      energy: 4.0,
-      recovery: 4.2,
-      health: 4.3,
-    },
     variants: [
       { name: `${serverData.weight}${serverData.weightUnit}`, price: serverData.price, stock: serverData.stock },
       { name: `${serverData.weight * 2}${serverData.weightUnit}`, price: serverData.price * 1.8, stock: Math.floor(serverData.stock / 2) },
@@ -56,6 +32,26 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
       freeShippingThreshold: 30000,
       estimatedDays: "1-2",
     },
+  };
+
+  // 영양정보 처리 (API 데이터 우선, 없으면 기본값)
+  const nutrition = serverData.nutrition || {
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0,
+  };
+
+  // 비타민/미네랄 처리 (API 데이터 우선, 없으면 빈 배열)
+  const vitaminsAndMinerals = serverData.vitaminsAndMinerals || [];
+
+  // 목표별 점수 처리 (API 데이터 우선, 없으면 기본값)
+  const goalScores = serverData.goalScores || {
+    "muscle-gain": 0,
+    "weight-loss": 0,
+    energy: 0,
+    recovery: 0,
+    health: 0,
   };
 
   // 서버 데이터와 Mock 데이터 병합
@@ -71,11 +67,14 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
     weightUnit: serverData.weightUnit,
     stock: serverData.stock,
     status: serverData.status,
-    averageRating: 0.0, // Product 타입에서 요구하는 필드
-    reviewCount: mockEnhancements.reviewCount,
+    averageRating: serverData.averageRating,
+    reviewCount: serverData.reviewCount,
     tags: serverData.tags?.map(t => t.name) || [],
     description: serverData.description || "상품 설명이 준비 중입니다.",
     storage: serverData.storage || "냉장 보관",
+    nutrition,
+    vitaminsAndMinerals,
+    goalScores,
   };
 };
 

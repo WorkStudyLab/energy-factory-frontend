@@ -430,77 +430,107 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
             <div className="p-4">
               <h3 className="font-semibold mb-4">상세 영양 정보</h3>
               <div className="grid grid-cols-2 gap-3">
-                <div className="flex justify-between p-2 bg-gray-50 rounded">
-                  <span className="text-sm text-gray-600">포화지방</span>
-                  <span className="text-sm font-medium">{product.nutrition.saturatedFat}g</span>
-                </div>
-                <div className="flex justify-between p-2 bg-gray-50 rounded">
-                  <span className="text-sm text-gray-600">트랜스지방</span>
-                  <span className="text-sm font-medium">{product.nutrition.transFat}g</span>
-                </div>
-                <div className="flex justify-between p-2 bg-gray-50 rounded">
-                  <span className="text-sm text-gray-600">콜레스테롤</span>
-                  <span className="text-sm font-medium">{product.nutrition.cholesterol}mg</span>
-                </div>
-                <div className="flex justify-between p-2 bg-gray-50 rounded">
-                  <span className="text-sm text-gray-600">나트륨</span>
-                  <span className="text-sm font-medium">{product.nutrition.sodium}mg</span>
-                </div>
-                <div className="flex justify-between p-2 bg-gray-50 rounded">
-                  <span className="text-sm text-gray-600">식이섬유</span>
-                  <span className="text-sm font-medium">{product.nutrition.fiber}g</span>
-                </div>
-                <div className="flex justify-between p-2 bg-gray-50 rounded">
-                  <span className="text-sm text-gray-600">당류</span>
-                  <span className="text-sm font-medium">{product.nutrition.sugars}g</span>
-                </div>
+                {product.nutrition.saturatedFat !== undefined && (
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-sm text-gray-600">포화지방</span>
+                    <span className="text-sm font-medium">{product.nutrition.saturatedFat}g</span>
+                  </div>
+                )}
+                {product.nutrition.transFat !== undefined && (
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-sm text-gray-600">트랜스지방</span>
+                    <span className="text-sm font-medium">{product.nutrition.transFat}g</span>
+                  </div>
+                )}
+                {product.nutrition.cholesterol !== undefined && (
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-sm text-gray-600">콜레스테롤</span>
+                    <span className="text-sm font-medium">{product.nutrition.cholesterol}mg</span>
+                  </div>
+                )}
+                {product.nutrition.sodium !== undefined && (
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-sm text-gray-600">나트륨</span>
+                    <span className="text-sm font-medium">{product.nutrition.sodium}mg</span>
+                  </div>
+                )}
+                {product.nutrition.fiber !== undefined && (
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-sm text-gray-600">식이섬유</span>
+                    <span className="text-sm font-medium">{product.nutrition.fiber}g</span>
+                  </div>
+                )}
+                {product.nutrition.sugars !== undefined && (
+                  <div className="flex justify-between p-2 bg-gray-50 rounded">
+                    <span className="text-sm text-gray-600">당류</span>
+                    <span className="text-sm font-medium">{product.nutrition.sugars}g</span>
+                  </div>
+                )}
               </div>
+              {!product.nutrition.saturatedFat &&
+               !product.nutrition.transFat &&
+               !product.nutrition.cholesterol &&
+               !product.nutrition.sodium &&
+               !product.nutrition.fiber &&
+               !product.nutrition.sugars && (
+                <p className="text-sm text-gray-500 text-center py-4">상세 영양 정보가 없습니다.</p>
+              )}
             </div>
 
             {/* 비타민 & 미네랄 */}
             <div className="p-4">
               <h3 className="font-semibold mb-4">비타민 & 미네랄</h3>
-              <div className="space-y-3">
-                {product.vitaminsAndMinerals.map((item: VitaminMineral, index: number) => (
-                  <div key={index}>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium">{item.name}</span>
-                      <span className="text-xs text-gray-600">{item.amount}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Progress value={item.daily} className="h-1.5 flex-1" />
-                      <span className="text-xs text-gray-500 w-10 text-right">{item.daily}%</span>
-                    </div>
+              {product.vitaminsAndMinerals.length > 0 ? (
+                <>
+                  <div className="space-y-3">
+                    {product.vitaminsAndMinerals.map((item: VitaminMineral, index: number) => (
+                      <div key={index}>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm font-medium">{item.name}</span>
+                          <span className="text-xs text-gray-600">{item.amount}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Progress value={item.daily} className="h-1.5 flex-1" />
+                          <span className="text-xs text-gray-500 w-10 text-right">{item.daily}%</span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <p className="text-xs text-gray-500 mt-4">* 일일 권장 섭취량 대비 비율</p>
+                  <p className="text-xs text-gray-500 mt-4">* 일일 권장 섭취량 대비 비율</p>
+                </>
+              ) : (
+                <p className="text-sm text-gray-500 text-center py-4">비타민 & 미네랄 정보가 없습니다.</p>
+              )}
             </div>
 
             {/* 피트니스 목표별 척도 */}
             <div className="p-4">
               <h3 className="font-semibold mb-4">피트니스 목표별 척도</h3>
-              <div className="space-y-3">
-                {Object.entries(product.goalScores).map(([goal, score]) => {
-                  const numScore = score as number;
-                  return (
-                    <div key={goal} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                      <span className="text-sm font-medium">{goalNames[goal]}</span>
-                      <div className="flex items-center gap-1">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-3.5 w-3.5 ${
-                              i < Math.floor(numScore) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                        <span className="ml-1 text-sm font-bold">{numScore.toFixed(1)}</span>
+              {Object.keys(product.goalScores).length > 0 ? (
+                <div className="space-y-3">
+                  {Object.entries(product.goalScores).map(([goal, score]) => {
+                    const numScore = score as number;
+                    return (
+                      <div key={goal} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                        <span className="text-sm font-medium">{goalNames[goal] || goal}</span>
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`h-3.5 w-3.5 ${
+                                i < Math.floor(numScore) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                              }`}
+                            />
+                          ))}
+                          <span className="ml-1 text-sm font-bold">{numScore.toFixed(1)}</span>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500 text-center py-4">피트니스 목표별 정보가 없습니다.</p>
+              )}
             </div>
           </div>
         </CardContent>

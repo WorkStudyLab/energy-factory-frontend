@@ -47,8 +47,27 @@ export interface ProductServerDetail {
   storage: string;
   createdAt: string;
   updatedAt: string;
+  averageRating: number;
+  reviewCount: number;
   tags: Tag[] | null;
-  nutrients: Nutrient[] | null;
+  nutrition?: {
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    saturatedFat?: number;
+    transFat?: number;
+    cholesterol?: number;
+    sodium?: number;
+    fiber?: number;
+    sugars?: number;
+  };
+  vitaminsAndMinerals?: Array<{
+    name: string;
+    amount: string;
+    daily: number;
+  }>;
+  goalScores?: Record<string, number>;
 }
 
 export interface PageInfo {
@@ -106,12 +125,12 @@ export interface NutritionInfo {
   protein: number;
   carbs: number;
   fat: number;
-  saturatedFat: number;
-  transFat: number;
-  cholesterol: number;
-  sodium: number;
-  fiber: number;
-  sugars: number;
+  saturatedFat?: number;
+  transFat?: number;
+  cholesterol?: number;
+  sodium?: number;
+  fiber?: number;
+  sugars?: number;
 }
 
 export interface VitaminMineral {
