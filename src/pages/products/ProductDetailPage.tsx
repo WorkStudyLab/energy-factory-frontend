@@ -18,9 +18,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
 import { ROUTES } from "@/constants/routes";
 import { useProductDetail } from "@/features/products/hooks/useProductDetail";
 import type {
@@ -354,181 +354,157 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {/* 상세 정보 탭 - 파일이 너무 길어서 다음 부분에 계속 */}
-      <ProductDetailTabs product={product} maxNutrients={maxNutrients} goalNames={goalNames} />
+      {/* 영양 성분 정보 카드 */}
+      <NutritionInfoCard product={product} goalNames={goalNames} />
     </div>
   );
 }
 
-// 탭 컴포넌트 Props 타입
-interface ProductDetailTabsProps {
-  product: ProductDetail;
-  maxNutrients: {
-    protein: number;
-    carbs: number;
-    fat: number;
-    calories: number;
-  };
-  goalNames: Record<string, string>;
-}
+// 영양 정보 카드 컴포넌트
+function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
+  // 탄단지 데이터 준비 (칼로리 기준)
+  const macroData = [
+    { name: "단백질", value: product.nutrition.protein * 4, grams: product.nutrition.protein, color: "#22c55e" },
+    { name: "탄수화물", value: product.nutrition.carbs * 4, grams: product.nutrition.carbs, color: "#3b82f6" },
+    { name: "지방", value: product.nutrition.fat * 9, grams: product.nutrition.fat, color: "#f59e0b" },
+  ];
 
-// 탭 컴포넌트 (분리)
-function ProductDetailTabs({ product, maxNutrients, goalNames }: ProductDetailTabsProps) {
+  const totalCalories = macroData.reduce((sum, item) => sum + item.value, 0);
+
   return (
     <div className="mt-12">
-      <Tabs defaultValue="nutrition" className="w-full">
-        <TabsList className="grid w-full grid-cols-1">
-          <TabsTrigger value="nutrition">영양정보</TabsTrigger>
-        </TabsList>
+      <Card>
+        <CardHeader>
+          <CardTitle>영양 성분 정보</CardTitle>
+          <CardDescription>100g 기준</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 주요 영양소 (원형 그래프) */}
+            <div className="p-4">
+              <h3 className="font-semibold mb-4">주요 영양소</h3>
+              <div className="flex flex-col items-center">
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={macroData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={80}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {macroData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
 
-        {/* 영양 정보 탭 */}
-        <TabsContent value="nutrition" className="mt-6">
-          <NutritionTab product={product} maxNutrients={maxNutrients} goalNames={goalNames} />
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
-}
-
-// 영양 정보 탭 컴포넌트
-function NutritionTab({ product, maxNutrients, goalNames }: ProductDetailTabsProps) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>영양 성분 정보</CardTitle>
-        <CardDescription>100g 기준</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* 주요 영양소 시각화 */}
-        <div>
-          <h3 className="font-semibold mb-4">주요 영양소</h3>
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="font-medium text-green-700">단백질</span>
-                <span className="font-bold">{product.nutrition.protein}g</span>
-              </div>
-              <Progress
-                value={(product.nutrition.protein / maxNutrients.protein) * 100}
-                className="h-2"
-              />
-            </div>
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="font-medium text-blue-700">탄수화물</span>
-                <span className="font-bold">{product.nutrition.carbs}g</span>
-              </div>
-              <Progress
-                value={(product.nutrition.carbs / maxNutrients.carbs) * 100}
-                className="h-2"
-              />
-            </div>
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="font-medium text-amber-700">지방</span>
-                <span className="font-bold">{product.nutrition.fat}g</span>
-              </div>
-              <Progress
-                value={(product.nutrition.fat / maxNutrients.fat) * 100}
-                className="h-2"
-              />
-            </div>
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="font-medium text-purple-700">칼로리</span>
-                <span className="font-bold">{product.nutrition.calories}kcal</span>
-              </div>
-              <Progress
-                value={(product.nutrition.calories / maxNutrients.calories) * 100}
-                className="h-2"
-              />
-            </div>
-          </div>
-        </div>
-
-        <Separator />
-
-        {/* 상세 영양 정보 */}
-        <div>
-          <h3 className="font-semibold mb-4">상세 영양 정보</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex justify-between p-3 bg-gray-50 rounded">
-              <span className="text-gray-600">포화지방</span>
-              <span className="font-medium">{product.nutrition.saturatedFat}g</span>
-            </div>
-            <div className="flex justify-between p-3 bg-gray-50 rounded">
-              <span className="text-gray-600">트랜스지방</span>
-              <span className="font-medium">{product.nutrition.transFat}g</span>
-            </div>
-            <div className="flex justify-between p-3 bg-gray-50 rounded">
-              <span className="text-gray-600">콜레스테롤</span>
-              <span className="font-medium">{product.nutrition.cholesterol}mg</span>
-            </div>
-            <div className="flex justify-between p-3 bg-gray-50 rounded">
-              <span className="text-gray-600">나트륨</span>
-              <span className="font-medium">{product.nutrition.sodium}mg</span>
-            </div>
-            <div className="flex justify-between p-3 bg-gray-50 rounded">
-              <span className="text-gray-600">식이섬유</span>
-              <span className="font-medium">{product.nutrition.fiber}g</span>
-            </div>
-            <div className="flex justify-between p-3 bg-gray-50 rounded">
-              <span className="text-gray-600">당류</span>
-              <span className="font-medium">{product.nutrition.sugars}g</span>
-            </div>
-          </div>
-        </div>
-
-        <Separator />
-
-        {/* 비타민 & 미네랄 */}
-        <div>
-          <h3 className="font-semibold mb-4">비타민 & 미네랄</h3>
-          <div className="space-y-3">
-            {product.vitaminsAndMinerals.map((item: VitaminMineral, index: number) => (
-              <div key={index} className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex justify-between mb-1">
-                    <span className="font-medium">{item.name}</span>
-                    <span className="text-sm text-gray-600">{item.amount}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Progress value={item.daily} className="h-1.5 flex-1" />
-                    <span className="text-xs text-gray-500 w-12 text-right">{item.daily}%</span>
-                  </div>
+                {/* 총 칼로리 표시 */}
+                <div className="text-center mb-4">
+                  <div className="text-sm text-gray-600">총 칼로리</div>
+                  <div className="text-2xl font-bold text-purple-600">{product.nutrition.calories}kcal</div>
                 </div>
-              </div>
-            ))}
-          </div>
-          <p className="text-xs text-gray-500 mt-4">* 일일 권장 섭취량 대비 비율</p>
-        </div>
 
-        <Separator />
-
-        {/* 목표별 적합도 */}
-        <div>
-          <h3 className="font-semibold mb-4">피트니스 목표별 적합도</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {Object.entries(product.goalScores).map(([goal, score]: [string, number]) => (
-              <div key={goal} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span className="font-medium">{goalNames[goal]}</span>
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-4 w-4 ${
-                        i < Math.floor(score) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-                      }`}
-                    />
+                {/* 범례 */}
+                <div className="w-full space-y-2">
+                  {macroData.map((item, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                        <span className="text-sm font-medium">{item.name}</span>
+                      </div>
+                      <div className="text-sm">
+                        <span className="font-bold">{item.grams}g</span>
+                        <span className="text-gray-500 ml-1">
+                          ({((item.value / totalCalories) * 100).toFixed(0)}%)
+                        </span>
+                      </div>
+                    </div>
                   ))}
-                  <span className="ml-1 font-bold">{score.toFixed(1)}</span>
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* 상세 영양 정보 */}
+            <div className="p-4">
+              <h3 className="font-semibold mb-4">상세 영양 정보</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex justify-between p-2 bg-gray-50 rounded">
+                  <span className="text-sm text-gray-600">포화지방</span>
+                  <span className="text-sm font-medium">{product.nutrition.saturatedFat}g</span>
+                </div>
+                <div className="flex justify-between p-2 bg-gray-50 rounded">
+                  <span className="text-sm text-gray-600">트랜스지방</span>
+                  <span className="text-sm font-medium">{product.nutrition.transFat}g</span>
+                </div>
+                <div className="flex justify-between p-2 bg-gray-50 rounded">
+                  <span className="text-sm text-gray-600">콜레스테롤</span>
+                  <span className="text-sm font-medium">{product.nutrition.cholesterol}mg</span>
+                </div>
+                <div className="flex justify-between p-2 bg-gray-50 rounded">
+                  <span className="text-sm text-gray-600">나트륨</span>
+                  <span className="text-sm font-medium">{product.nutrition.sodium}mg</span>
+                </div>
+                <div className="flex justify-between p-2 bg-gray-50 rounded">
+                  <span className="text-sm text-gray-600">식이섬유</span>
+                  <span className="text-sm font-medium">{product.nutrition.fiber}g</span>
+                </div>
+                <div className="flex justify-between p-2 bg-gray-50 rounded">
+                  <span className="text-sm text-gray-600">당류</span>
+                  <span className="text-sm font-medium">{product.nutrition.sugars}g</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 비타민 & 미네랄 */}
+            <div className="p-4">
+              <h3 className="font-semibold mb-4">비타민 & 미네랄</h3>
+              <div className="space-y-3">
+                {product.vitaminsAndMinerals.map((item: VitaminMineral, index: number) => (
+                  <div key={index}>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm font-medium">{item.name}</span>
+                      <span className="text-xs text-gray-600">{item.amount}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Progress value={item.daily} className="h-1.5 flex-1" />
+                      <span className="text-xs text-gray-500 w-10 text-right">{item.daily}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-500 mt-4">* 일일 권장 섭취량 대비 비율</p>
+            </div>
+
+            {/* 피트니스 목표별 척도 */}
+            <div className="p-4">
+              <h3 className="font-semibold mb-4">피트니스 목표별 척도</h3>
+              <div className="space-y-3">
+                {Object.entries(product.goalScores).map(([goal, score]: [string, number]) => (
+                  <div key={goal} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                    <span className="text-sm font-medium">{goalNames[goal]}</span>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-3.5 w-3.5 ${
+                            i < Math.floor(score) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                          }`}
+                        />
+                      ))}
+                      <span className="ml-1 text-sm font-bold">{score.toFixed(1)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
