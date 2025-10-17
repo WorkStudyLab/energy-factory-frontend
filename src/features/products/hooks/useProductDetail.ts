@@ -4,19 +4,17 @@ import { api } from "@/lib/axios/axios";
 
 // 서버 데이터를 UI용 데이터로 변환
 const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail => {
+  // 이미지 처리 (서버 데이터 우선, 없으면 기본 이미지)
+  const images = serverData.images && serverData.images.length > 0
+    ? serverData.images
+    : [serverData.imageUrl || "https://placehold.co/600x600?text=상품이미지"];
+
   // 기본 Mock 데이터 (서버에서 제공하지 않는 필드들)
   const mockEnhancements = {
     originalPrice: serverData.price * 1.2,
     discount: 20,
     rating: 4.5,
-    reviewCount: 123,
     soldCount: 456,
-    images: [
-      serverData.imageUrl || "https://placehold.co/600x600?text=상품이미지",
-      "https://placehold.co/600x600?text=이미지2",
-      "https://placehold.co/600x600?text=이미지3",
-      "https://placehold.co/600x600?text=영양성분표",
-    ],
     features: [
       "신선한 재료",
       "당일 배송",
@@ -63,6 +61,7 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
     price: serverData.price,
     category: serverData.category,
     imageUrl: serverData.imageUrl || "https://placehold.co/600x600?text=상품이미지",
+    images,
     weight: serverData.weight,
     weightUnit: serverData.weightUnit,
     stock: serverData.stock,

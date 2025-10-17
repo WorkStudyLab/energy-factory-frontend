@@ -38,6 +38,7 @@ export interface ProductServerDetail {
   price: number;
   category: string;
   imageUrl: string;
+  images: string[];
   brand: string;
   weight: number;
   weightUnit: string;
