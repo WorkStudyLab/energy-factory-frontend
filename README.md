@@ -3,6 +3,9 @@
 ## 프로젝트 개요
 Energy Factory는 건강 관리와 영양 관련 제품을 판매하는 이커머스 플랫폼입니다. 사용자들에게 영양 정보, 다이어트 코칭, 제품 구매 등의 기능을 제공합니다.
 
+## 배포 주소
+- **Production**: http://energy-factory-frontend-20251001.s3-website.ap-northeast-2.amazonaws.com/products
+
 ## 기술 스택
 - **프레임워크**: React 19 + TypeScript
 - **빌드 도구**: Vite

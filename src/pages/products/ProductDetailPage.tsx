@@ -20,14 +20,14 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { ROUTES } from "@/constants/routes";
 import { useProductDetail } from "@/features/products/hooks/useProductDetail";
 import type {
   ProductVariant,
-  ProductDetail,
   VitaminMineral,
 } from "@/types/product";
+import type { ProductDetail } from "@/types/product";
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -79,14 +79,6 @@ export default function ProductDetailPage() {
   // 선택된 옵션의 가격
   const selectedVariantData = product.variants.find((v: ProductVariant) => v.name === selectedVariant);
   const currentPrice = selectedVariantData?.price || product.price;
-
-  // 영양소 최대값 (프로그레스 바용)
-  const maxNutrients = {
-    protein: 30,
-    carbs: 50,
-    fat: 20,
-    calories: 300,
-  };
 
   // 수량 조절
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
@@ -360,6 +352,12 @@ export default function ProductDetailPage() {
   );
 }
 
+// 영양 정보 카드 Props 타입
+interface NutritionInfoCardProps {
+  product: ProductDetail;
+  goalNames: Record<string, string>;
+}
+
 // 영양 정보 카드 컴포넌트
 function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
   // 탄단지 데이터 준비 (칼로리 기준)
@@ -483,22 +481,25 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
             <div className="p-4">
               <h3 className="font-semibold mb-4">피트니스 목표별 척도</h3>
               <div className="space-y-3">
-                {Object.entries(product.goalScores).map(([goal, score]: [string, number]) => (
-                  <div key={goal} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                    <span className="text-sm font-medium">{goalNames[goal]}</span>
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-3.5 w-3.5 ${
-                            i < Math.floor(score) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-                          }`}
-                        />
-                      ))}
-                      <span className="ml-1 text-sm font-bold">{score.toFixed(1)}</span>
+                {Object.entries(product.goalScores).map(([goal, score]) => {
+                  const numScore = score as number;
+                  return (
+                    <div key={goal} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                      <span className="text-sm font-medium">{goalNames[goal]}</span>
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-3.5 w-3.5 ${
+                              i < Math.floor(numScore) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                            }`}
+                          />
+                        ))}
+                        <span className="ml-1 text-sm font-bold">{numScore.toFixed(1)}</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
