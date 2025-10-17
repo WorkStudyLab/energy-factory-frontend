@@ -9,10 +9,32 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
     ? serverData.images
     : [serverData.imageUrl || "https://placehold.co/600x600?text=상품이미지"];
 
+  // Variants 처리 (서버 데이터 우선)
+  const variants = serverData.variants && serverData.variants.length > 0
+    ? serverData.variants.map(v => ({
+        name: v.name,
+        price: v.price,
+        stock: v.stock,
+      }))
+    : [
+        { name: `${serverData.weight}${serverData.weightUnit}`, price: serverData.price, stock: serverData.stock || 0 },
+      ];
+
+  // 배송 정보 처리 (서버 데이터 우선)
+  const shipping = serverData.shipping
+    ? {
+        fee: serverData.shipping.fee,
+        freeShippingThreshold: serverData.shipping.freeShippingThreshold || 30000,
+        estimatedDays: serverData.shipping.estimatedDays || "2-3일",
+      }
+    : {
+        fee: 3000,
+        freeShippingThreshold: 30000,
+        estimatedDays: "2-3일",
+      };
+
   // 기본 Mock 데이터 (서버에서 제공하지 않는 필드들)
   const mockEnhancements = {
-    originalPrice: serverData.price * 1.2,
-    discount: 20,
     rating: 4.5,
     soldCount: 456,
     features: [
@@ -21,15 +43,6 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
       "품질 보증",
       "HACCP 인증",
     ],
-    variants: [
-      { name: `${serverData.weight}${serverData.weightUnit}`, price: serverData.price, stock: serverData.stock },
-      { name: `${serverData.weight * 2}${serverData.weightUnit}`, price: serverData.price * 1.8, stock: Math.floor(serverData.stock / 2) },
-    ],
-    shipping: {
-      fee: 3000,
-      freeShippingThreshold: 30000,
-      estimatedDays: "1-2",
-    },
   };
 
   // 영양정보 처리 (API 데이터 우선, 없으면 기본값)
@@ -64,13 +77,17 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
     images,
     weight: serverData.weight,
     weightUnit: serverData.weightUnit,
-    stock: serverData.stock,
+    stock: serverData.stock || 0,
     status: serverData.status,
     averageRating: serverData.averageRating,
     reviewCount: serverData.reviewCount,
     tags: serverData.tags?.map(t => t.name) || [],
     description: serverData.description || "상품 설명이 준비 중입니다.",
     storage: serverData.storage || "냉장 보관",
+    originalPrice: serverData.originalPrice ?? undefined,
+    discount: serverData.discount ?? undefined,
+    variants,
+    shipping,
     nutrition,
     vitaminsAndMinerals,
     goalScores,

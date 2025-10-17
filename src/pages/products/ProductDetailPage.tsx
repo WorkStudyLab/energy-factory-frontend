@@ -35,9 +35,16 @@ export default function ProductDetailPage() {
   const { data: product, isLoading, error } = useProductDetail(id);
   
   const [quantity, setQuantity] = useState(1);
-  const [selectedVariant, setSelectedVariant] = useState("500g");
+  const [selectedVariant, setSelectedVariant] = useState<string>("");
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  // 상품 데이터가 로드되면 첫 번째 옵션을 기본값으로 설정
+  useEffect(() => {
+    if (product && product.variants.length > 0 && !selectedVariant) {
+      setSelectedVariant(product.variants[0].name);
+    }
+  }, [product, selectedVariant]);
 
   // 페이지 타이틀 설정
   useEffect(() => {

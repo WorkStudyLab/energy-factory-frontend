@@ -43,7 +43,7 @@ export interface ProductServerDetail {
   weight: number;
   weightUnit: string;
   description: string;
-  stock: number;
+  stock?: number;
   status: string;
   storage: string;
   createdAt: string;
@@ -51,6 +51,19 @@ export interface ProductServerDetail {
   averageRating: number;
   reviewCount: number;
   tags: Tag[] | null;
+  originalPrice?: number | null;
+  discount?: number | null;
+  variants?: Array<{
+    id: number;
+    name: string;
+    price: number;
+    stock: number;
+  }>;
+  shipping?: {
+    fee: number;
+    freeShippingThreshold?: number;
+    estimatedDays?: string;
+  };
   nutrition?: {
     calories: number;
     protein: number;
