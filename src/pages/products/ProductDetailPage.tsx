@@ -33,7 +33,9 @@ export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: product, isLoading, error } = useProductDetail(id);
-  
+
+  console.log(product);
+
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<string>("");
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -213,8 +215,6 @@ export default function ProductDetailPage() {
                 <span className="font-medium">{product.rating}</span>
                 <span className="text-gray-500">({product.reviewCount.toLocaleString()})</span>
               </div>
-              <Separator orientation="vertical" className="h-4" />
-              <span className="text-gray-500">{product.soldCount.toLocaleString()}개 판매</span>
             </div>
           </div>
 
@@ -325,15 +325,20 @@ export default function ProductDetailPage() {
             <div className="flex items-center gap-2">
               <Truck className="h-4 w-4 text-gray-600" />
               <span>
-                배송비: {product.shipping.fee === 0 ? "무료" : `${product.shipping.fee.toLocaleString()}원`}
-                {product.shipping.fee > 0 &&
-                  ` (${product.shipping.freeShippingThreshold.toLocaleString()}원 이상 무료)`}
+                {product.shipping.fee === 0
+                  ? "무료배송"
+                  : product.shipping.freeShippingThreshold
+                    ? `배송비: ${product.shipping.fee.toLocaleString()}원 (${product.shipping.freeShippingThreshold.toLocaleString()}원 이상 무료)`
+                    : `배송비: ${product.shipping.fee.toLocaleString()}원`
+                }
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-gray-600" />
-              <span>배송 예정: {product.shipping.estimatedDays}일 이내</span>
-            </div>
+            {product.shipping.estimatedDays && (
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-gray-600" />
+                <span>배송 예정: {product.shipping.estimatedDays} 이내</span>
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <Shield className="h-4 w-4 text-gray-600" />
               <span>100% 정품 보증 · 안전 거래</span>

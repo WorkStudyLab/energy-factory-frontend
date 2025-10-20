@@ -33,18 +33,6 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
         estimatedDays: "2-3일",
       };
 
-  // 기본 Mock 데이터 (서버에서 제공하지 않는 필드들)
-  const mockEnhancements = {
-    rating: 4.5,
-    soldCount: 456,
-    features: [
-      "신선한 재료",
-      "당일 배송",
-      "품질 보증",
-      "HACCP 인증",
-    ],
-  };
-
   // 영양정보 처리 (API 데이터 우선, 없으면 기본값)
   const nutrition = serverData.nutrition || {
     calories: 0,
@@ -67,7 +55,6 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
 
   // 서버 데이터와 Mock 데이터 병합
   return {
-    ...mockEnhancements,
     id: serverData.id,
     name: serverData.name,
     brand: serverData.brand,
@@ -80,6 +67,7 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
     stock: serverData.stock || 0,
     status: serverData.status,
     averageRating: serverData.averageRating,
+    rating: serverData.averageRating,  // rating은 averageRating과 동일
     reviewCount: serverData.reviewCount,
     tags: serverData.tags?.map(t => t.name) || [],
     description: serverData.description || "상품 설명이 준비 중입니다.",

@@ -120,16 +120,11 @@ export interface ProductFilters {
 
 // 상품 상세 타입 정의
 export interface ProductDetail extends Product {
-  originalPrice?: number;
-  discount?: number;
-  rating: number;
-  reviewCount: number;
-  soldCount: number;
+  rating: number;  // averageRating과 동일
   description: string;
   images: string[];
   nutrition: NutritionInfo;
   vitaminsAndMinerals: VitaminMineral[];
-  features: string[];
   goalScores: Record<string, number>;
   variants: ProductVariant[];
   shipping: ShippingInfo;
@@ -163,6 +158,6 @@ export interface ProductVariant {
 
 export interface ShippingInfo {
   fee: number;
-  freeShippingThreshold: number;
-  estimatedDays: string;
+  freeShippingThreshold?: number;  // 무료 배송 기준 금액 (옵셔널)
+  estimatedDays?: string;  // 배송 예정일 (옵셔널)
 }
