@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Minus, Plus, ShoppingBag, Trash2, TrendingUp } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,10 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 // 타입 정의
 interface CartItem {
@@ -27,15 +25,15 @@ interface CartItem {
   calories: number;
 }
 
-interface RecommendedProduct {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  protein: number;
-  fat: number;
-  calories: number;
-}
+// interface RecommendedProduct {
+//   id: number;
+//   name: string;
+//   price: number;
+//   image: string;
+//   protein: number;
+//   fat: number;
+//   calories: number;
+// }
 
 export default function CartPage() {
   // Mock cart items
@@ -75,27 +73,27 @@ export default function CartPage() {
     },
   ]);
 
-  // Mock recommended products
-  const recommendedProducts: RecommendedProduct[] = [
-    {
-      id: 4,
-      name: "아보카도",
-      price: 3900,
-      image: "https://placehold.co/60x60",
-      protein: 2,
-      fat: 15,
-      calories: 160,
-    },
-    {
-      id: 5,
-      name: "견과류 믹스",
-      price: 9900,
-      image: "https://placehold.co/60x60",
-      protein: 6,
-      fat: 14,
-      calories: 170,
-    },
-  ];
+  // // Mock recommended products
+  // const recommendedProducts: RecommendedProduct[] = [
+  //   {
+  //     id: 4,
+  //     name: "아보카도",
+  //     price: 3900,
+  //     image: "https://placehold.co/60x60",
+  //     protein: 2,
+  //     fat: 15,
+  //     calories: 160,
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "견과류 믹스",
+  //     price: 9900,
+  //     image: "https://placehold.co/60x60",
+  //     protein: 6,
+  //     fat: 14,
+  //     calories: 170,
+  //   },
+  // ];
 
   // Calculate totals
   const subtotal = cartItems.reduce(
@@ -118,33 +116,6 @@ export default function CartPage() {
     { protein: 0, carbs: 0, fat: 0, calories: 0 },
   );
 
-  // Nutrition goals (mock data)
-  const nutritionGoals = {
-    protein: 184,
-    carbs: 245,
-    fat: 82,
-    calories: 2450,
-  };
-
-  // Calculate percentages
-  const nutritionPercentages = {
-    protein: Math.min(
-      100,
-      Math.round((nutritionTotals.protein / nutritionGoals.protein) * 100),
-    ),
-    carbs: Math.min(
-      100,
-      Math.round((nutritionTotals.carbs / nutritionGoals.carbs) * 100),
-    ),
-    fat: Math.min(
-      100,
-      Math.round((nutritionTotals.fat / nutritionGoals.fat) * 100),
-    ),
-    calories: Math.min(
-      100,
-      Math.round((nutritionTotals.calories / nutritionGoals.calories) * 100),
-    ),
-  };
 
   // Handle quantity change
   const updateQuantity = (id: number, newQuantity: number) => {
@@ -271,126 +242,142 @@ export default function CartPage() {
               <CardHeader>
                 <CardTitle>영양소 요약</CardTitle>
                 <CardDescription>
-                  장바구니 상품의 총 영양소와 목표 대비 달성률
+                  장바구니 상품의 총 영양소 구성 비율
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <Badge className="bg-green-600">단백질</Badge>
-                      <span>
-                        {nutritionTotals.protein}g / {nutritionGoals.protein}g
-                      </span>
-                    </div>
-                    <span className="text-sm font-medium">
-                      {nutritionPercentages.protein}%
-                    </span>
+              <CardContent className="space-y-6">
+                {/* 원형 그래프 */}
+                <div className="flex flex-col items-center">
+                  <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
+                      <Pie
+                        data={(() => {
+                          const totalCalories = (nutritionTotals.carbs * 4) + (nutritionTotals.protein * 4) + (nutritionTotals.fat * 9);
+                          return [
+                            { name: "탄수화물", value: nutritionTotals.carbs * 4, color: "#3b82f6", percentage: totalCalories > 0 ? Math.round((nutritionTotals.carbs * 4 / totalCalories) * 100) : 0 },
+                            { name: "단백질", value: nutritionTotals.protein * 4, color: "#22c55e", percentage: totalCalories > 0 ? Math.round((nutritionTotals.protein * 4 / totalCalories) * 100) : 0 },
+                            { name: "지방", value: nutritionTotals.fat * 9, color: "#f59e0b", percentage: totalCalories > 0 ? Math.round((nutritionTotals.fat * 9 / totalCalories) * 100) : 0 },
+                          ];
+                        })()}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={0}
+                        outerRadius={90}
+                        paddingAngle={2}
+                        dataKey="value"
+                        label={({ name, percentage }) => `${name}\n${percentage}%`}
+                        labelLine={true}
+                      >
+                        {[
+                          { name: "탄수화물", value: nutritionTotals.carbs * 4, color: "#3b82f6" },
+                          { name: "단백질", value: nutritionTotals.protein * 4, color: "#22c55e" },
+                          { name: "지방", value: nutritionTotals.fat * 9, color: "#f59e0b" },
+                        ].map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+
+                  {/* 범례 */}
+                  <div className="w-full flex justify-center gap-6 mt-4">
+                    {[
+                      { name: "탄수화물", color: "#3b82f6" },
+                      { name: "단백질", color: "#22c55e" },
+                      { name: "지방", color: "#f59e0b" },
+                    ].map((item, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                        <span className="text-sm font-medium">{item.name}</span>
+                      </div>
+                    ))}
                   </div>
-                  <Progress
-                    value={nutritionPercentages.protein}
-                    className="h-2"
-                  />
                 </div>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <Badge className="bg-blue-600">탄수화물</Badge>
-                      <span>
-                        {nutritionTotals.carbs}g / {nutritionGoals.carbs}g
-                      </span>
-                    </div>
-                    <span className="text-sm font-medium">
-                      {nutritionPercentages.carbs}%
+
+                <Separator />
+
+                {/* 영양소 상세 */}
+                <div className="flex justify-around">
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-sm font-medium text-gray-700">탄수화물</span>
+                    <span className="text-lg font-bold">{nutritionTotals.carbs}g</span>
+                    <span className="text-xs text-gray-500">
+                      ({Math.round(((nutritionTotals.carbs * 4) / ((nutritionTotals.carbs * 4) + (nutritionTotals.protein * 4) + (nutritionTotals.fat * 9))) * 100)}%)
                     </span>
                   </div>
-                  <Progress
-                    value={nutritionPercentages.carbs}
-                    className="h-2"
-                  />
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-sm font-medium text-gray-700">단백질</span>
+                    <span className="text-lg font-bold">{nutritionTotals.protein}g</span>
+                    <span className="text-xs text-gray-500">
+                      ({Math.round(((nutritionTotals.protein * 4) / ((nutritionTotals.carbs * 4) + (nutritionTotals.protein * 4) + (nutritionTotals.fat * 9))) * 100)}%)
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-sm font-medium text-gray-700">지방</span>
+                    <span className="text-lg font-bold">{nutritionTotals.fat}g</span>
+                    <span className="text-xs text-gray-500">
+                      ({Math.round(((nutritionTotals.fat * 9) / ((nutritionTotals.carbs * 4) + (nutritionTotals.protein * 4) + (nutritionTotals.fat * 9))) * 100)}%)
+                    </span>
+                  </div>
                 </div>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <Badge className="bg-amber-600">지방</Badge>
-                      <span>
-                        {nutritionTotals.fat}g / {nutritionGoals.fat}g
-                      </span>
-                    </div>
-                    <span className="text-sm font-medium">
-                      {nutritionPercentages.fat}%
-                    </span>
-                  </div>
-                  <Progress value={nutritionPercentages.fat} className="h-2" />
-                </div>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <Badge className="bg-purple-600">칼로리</Badge>
-                      <span>
-                        {nutritionTotals.calories}kcal /{" "}
-                        {nutritionGoals.calories}kcal
-                      </span>
-                    </div>
-                    <span className="text-sm font-medium">
-                      {nutritionPercentages.calories}%
-                    </span>
-                  </div>
-                  <Progress
-                    value={nutritionPercentages.calories}
-                    className="h-2"
-                  />
+
+                <Separator />
+
+                {/* 총 칼로리 */}
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-sm font-medium text-gray-700">총 칼로리</span>
+                  <span className="text-2xl font-bold text-purple-600">{nutritionTotals.calories}kcal</span>
                 </div>
               </CardContent>
             </Card>
 
             {/* Recommended Products */}
-            <Card>
-              <CardHeader>
-                <CardTitle>추천 상품</CardTitle>
-                <CardDescription>
-                  영양 목표 달성을 위한 추천 상품
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-green-600">
-                    <TrendingUp className="h-4 w-4" />
-                    <span className="text-sm font-medium">
-                      단백질 섭취량을 높이기 위한 추천 상품
-                    </span>
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {recommendedProducts.map((product) => (
-                      <div
-                        key={product.id}
-                        className="flex gap-4 items-center border rounded-lg p-3"
-                      >
-                        <img
-                          src={product.image || "https://placehold.co/60x60"}
-                          alt={product.name}
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                        <div className="flex-1">
-                          <h4 className="font-medium">{product.name}</h4>
-                          <p className="text-sm text-gray-500">
-                            단백질 {product.protein}g / {product.calories} kcal
-                          </p>
-                          <div className="flex justify-between items-center mt-2">
-                            <span className="font-bold">
-                              {product.price.toLocaleString()}원
-                            </span>
-                            <Button variant="outline" size="sm">
-                              추가
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {/*<Card>*/}
+            {/*  <CardHeader>*/}
+            {/*    <CardTitle>추천 상품</CardTitle>*/}
+            {/*    <CardDescription>*/}
+            {/*      영양 목표 달성을 위한 추천 상품*/}
+            {/*    </CardDescription>*/}
+            {/*  </CardHeader>*/}
+            {/*  <CardContent>*/}
+            {/*    <div className="space-y-4">*/}
+            {/*      <div className="flex items-center gap-2 text-green-600">*/}
+            {/*        <TrendingUp className="h-4 w-4" />*/}
+            {/*        <span className="text-sm font-medium">*/}
+            {/*          단백질 섭취량을 높이기 위한 추천 상품*/}
+            {/*        </span>*/}
+            {/*      </div>*/}
+            {/*      <div className="grid gap-4 md:grid-cols-2">*/}
+            {/*        {recommendedProducts.map((product) => (*/}
+            {/*          <div*/}
+            {/*            key={product.id}*/}
+            {/*            className="flex gap-4 items-center border rounded-lg p-3"*/}
+            {/*          >*/}
+            {/*            <img*/}
+            {/*              src={product.image || "https://placehold.co/60x60"}*/}
+            {/*              alt={product.name}*/}
+            {/*              className="w-16 h-16 object-cover rounded"*/}
+            {/*            />*/}
+            {/*            <div className="flex-1">*/}
+            {/*              <h4 className="font-medium">{product.name}</h4>*/}
+            {/*              <p className="text-sm text-gray-500">*/}
+            {/*                단백질 {product.protein}g / {product.calories} kcal*/}
+            {/*              </p>*/}
+            {/*              <div className="flex justify-between items-center mt-2">*/}
+            {/*                <span className="font-bold">*/}
+            {/*                  {product.price.toLocaleString()}원*/}
+            {/*                </span>*/}
+            {/*                <Button variant="outline" size="sm">*/}
+            {/*                  추가*/}
+            {/*                </Button>*/}
+            {/*              </div>*/}
+            {/*            </div>*/}
+            {/*          </div>*/}
+            {/*        ))}*/}
+            {/*      </div>*/}
+            {/*    </div>*/}
+            {/*  </CardContent>*/}
+            {/*</Card>*/}
           </div>
 
           {/* Order Summary */}
@@ -429,16 +416,6 @@ export default function CartPage() {
                 <Button className="w-full bg-green-600 hover:bg-green-700">
                   결제하기
                 </Button>
-
-                <div className="space-y-2">
-                  <div className="text-sm text-gray-500">
-                    쿠폰 또는 할인 코드가 있으신가요?
-                  </div>
-                  <div className="flex gap-2">
-                    <Input placeholder="할인 코드 입력" />
-                    <Button variant="outline">적용</Button>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>
