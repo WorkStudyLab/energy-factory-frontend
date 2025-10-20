@@ -47,7 +47,14 @@ export function ProductItem({ product }: ProductItemProps) {
             e.currentTarget.src = "https://placehold.co/300x200";
           }}
         />
-        
+
+        {/* 할인 배지 */}
+        {product.discount != null && product.discount > 0 && (
+          <Badge className="absolute top-3 left-3 bg-red-500 text-white text-sm px-2.5 py-1">
+            -{product.discount}%
+          </Badge>
+        )}
+
         {/* 품절일 때만 이미지 위에 표시 */}
         {product.stock <= 0 && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -99,6 +106,21 @@ export function ProductItem({ product }: ProductItemProps) {
 
         {/* 가격 정보 */}
         <div className="space-y-1">
+          {/* 원가 및 할인율 */}
+          {product.originalPrice != null &&
+           product.originalPrice > 0 &&
+           product.discount != null &&
+           product.discount > 0 && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-400 line-through">
+                {product.originalPrice.toLocaleString()}원
+              </span>
+              <Badge className="bg-red-500 text-white text-xs px-1.5 py-0.5">
+                {product.discount}%
+              </Badge>
+            </div>
+          )}
+          {/* 현재 가격 */}
           <div className="text-2xl font-bold text-green-600">
             {product.price.toLocaleString()}원
           </div>

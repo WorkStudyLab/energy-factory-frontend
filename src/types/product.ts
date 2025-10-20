@@ -29,6 +29,8 @@ export interface Product {
   averageRating: number;
   reviewCount: number;
   tags: string[];  // 목록에서는 string 배열
+  originalPrice?: number;  // 할인 전 원가
+  discount?: number;  // 할인율 (%)
 }
 
 // 실제 서버 응답 구조에 맞춘 상품 상세
