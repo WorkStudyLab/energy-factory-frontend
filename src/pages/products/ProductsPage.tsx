@@ -281,7 +281,7 @@ export default function ProductsPage() {
           {/* 제품 그리드 */}
           <div className={`${showFilters ? "md:col-span-3" : "md:col-span-4"}`}>
             <ProductList
-              customFilters={{
+              filters={{
                 category:
                   selectedCategory !== "all" ? selectedCategory : undefined,
                 keyword: undefined, // 검색 기능은 나중에 구현
@@ -290,6 +290,16 @@ export default function ProductsPage() {
                 sort: sortOption,
                 page: 0,
                 size: 20,
+              }}
+              onResetFilters={() => {
+                setSelectedCategory("all");
+                setSelectedGoal("all");
+                setProteinRange([0, 50]);
+                setCarbsRange([0, 100]);
+                setFatRange([0, 50]);
+                setCaloriesRange([0, 500]);
+                setDietaryRestrictions([]);
+                setSortOption("createdAt,desc");
               }}
             />
           </div>

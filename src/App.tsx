@@ -17,7 +17,6 @@ import TestPage from "./pages/test/TestPage";
 import UiTestPage from "./pages/test/UiTestPage";
 import ShadcnTestPage from "./pages/test/ShadcnTestPage";
 import TailwindTestPage from "./pages/test/TailwindTestPage";
-import ProductsTestPage from "./pages/products/ProductsTestPage";
 import SignupTestPage from "./pages/test/SignupTestPage";
 import LoginTestPage from "./pages/test/LoginTestPage";
 import { DialogTestPage } from "./pages/test/DialogTestPage";
@@ -60,10 +59,6 @@ function App() {
               <Route
                 path={ROUTES.TAILWIND_TEST}
                 element={<TailwindTestPage />}
-              />
-              <Route
-                path={ROUTES.PRODUCTS_API_TEST}
-                element={<ProductsTestPage />}
               />
               <Route
                 path={ROUTES.SIGNUP_API_TEST}

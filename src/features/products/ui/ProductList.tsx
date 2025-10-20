@@ -1,17 +1,16 @@
 import { ProductItem } from "./ProductItem";
 import { useProducts } from "../hooks/useProducts";
-import { useProductsStore } from "../stores/useProductsStore";
 import { Button } from "@/components/ui/button";
 import { Loader2, AlertCircle } from "lucide-react";
 import type { ProductFilters } from "@/types/product";
 
 interface ProductListProps {
-  customFilters?: ProductFilters;
+  filters?: ProductFilters;
+  onResetFilters?: () => void;
 }
 
-export function ProductList({ customFilters }: ProductListProps) {
-  const { resetFilters } = useProductsStore();
-  const { data, isLoading, error, refetch } = useProducts(customFilters);
+export function ProductList({ filters, onResetFilters }: ProductListProps) {
+  const { data, isLoading, error, refetch } = useProducts(filters);
 
   if (isLoading) {
     return (
@@ -44,9 +43,11 @@ export function ProductList({ customFilters }: ProductListProps) {
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <p className="text-lg font-medium">검색 결과가 없습니다</p>
         <p className="text-gray-500 mt-1">다른 검색어나 필터를 사용해보세요.</p>
-        <Button onClick={resetFilters} variant="outline" className="mt-4">
-          필터 초기화
-        </Button>
+        {onResetFilters && (
+          <Button onClick={onResetFilters} variant="outline" className="mt-4">
+            필터 초기화
+          </Button>
+        )}
       </div>
     );
   }
