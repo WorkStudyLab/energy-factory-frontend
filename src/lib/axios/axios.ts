@@ -18,26 +18,13 @@ const apiClient: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, // 쿠키를 자동으로 포함
 });
 
 // 요청 인터셉터
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // auth store에서 토큰 가져오기
-    const { accessToken } = useAuthStore.getState();
-
-    // 임시로 특정 API는 인증 헤더 제외 (테스트용)
-    const noAuthUrls = [
-      "/products",
-      "/users/signup",
-      "/auth/login",
-      "/auth/refresh",
-    ];
-    const needsAuth = !noAuthUrls.some((url) => config.url?.includes(url));
-
-    if (accessToken && config.headers && needsAuth) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
+    // HttpOnly 쿠키가 자동으로 전송되므로 Authorization 헤더 설정 불필요
 
     // 요청 로깅 (개발 환경에서만)
     if (import.meta.env.DEV) {
@@ -72,36 +59,24 @@ apiClient.interceptors.response.use(
         return Promise.reject(error);
       }
 
-      // 토큰 갱신 로직
-      const { refreshToken, updateTokens, logout } = useAuthStore.getState();
+      // 토큰 갱신 로직 (쿠키 기반)
+      const { logout } = useAuthStore.getState();
 
-      if (refreshToken && originalRequest) {
-        try {
-          // 토큰 갱신 API 호출
-          const refreshResponse = await axios.post(`${BASE_URL}/auth/refresh`, {
-            refreshToken,
-          });
+      try {
+        // 토큰 갱신 API 호출 (쿠키가 자동으로 전송됨)
+        await axios.post(
+          `${BASE_URL}/auth/refresh`,
+          {},
+          { withCredentials: true },
+        );
 
-          const newAccessToken = refreshResponse.data.accessToken;
-          const newRefreshToken = refreshResponse.data.refreshToken;
-
-          // 새로운 토큰으로 업데이트
-          updateTokens(newAccessToken, newRefreshToken);
-
-          // 원래 요청 재시도
-          if (originalRequest.headers) {
-            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          }
-
+        // 토큰 갱신 성공 시 원래 요청 재시도
+        if (originalRequest) {
           return apiClient(originalRequest);
-        } catch (refreshError) {
-          // 토큰 갱신 실패시 로그아웃
-          console.error("토큰 갱신 실패:", refreshError);
-          logout();
-          window.location.href = "/login";
         }
-      } else {
-        // 리프레시 토큰이 없으면 로그아웃
+      } catch (refreshError) {
+        // 토큰 갱신 실패시 로그아웃
+        console.error("토큰 갱신 실패:", refreshError);
         logout();
         window.location.href = "/login";
       }

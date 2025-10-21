@@ -59,6 +59,14 @@ export const useAuthStore = create<AuthStore>()(
           localStorage.removeItem("auth-store");
           sessionStorage.removeItem("auth-store");
 
+          // 서버에 로그아웃 요청하여 쿠키 제거
+          const BASE_URL =
+            import.meta.env.VITE_API_BASE_URL || "http://13.209.24.80:8080";
+          fetch(`${BASE_URL}/api/auth/logout`, {
+            method: "POST",
+            credentials: "include",
+          }).catch((err) => console.error("로그아웃 요청 실패:", err));
+
           set(
             {
               ...initialState,
@@ -108,9 +116,8 @@ export const useAuthStore = create<AuthStore>()(
         name: "auth-store",
         partialize: (state) => ({
           user: state.user,
-          accessToken: state.accessToken,
-          refreshToken: state.refreshToken,
           isAuthenticated: state.isAuthenticated,
+          // 토큰은 HttpOnly 쿠키에 저장되므로 localStorage에 저장하지 않음
         }),
       },
     ),

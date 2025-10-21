@@ -48,15 +48,16 @@ export const useLogin = () => {
   const mutation = useMutation({
     mutationFn: loginApi,
     onSuccess: (data) => {
-      // auth store에 로그인 상태 저장 (토큰은 자동으로 persist됨)
+      // 토큰은 HttpOnly 쿠키로 자동 저장되므로 별도 저장 불필요
+      // 로그인 상태만 저장
       login(
         {
           id: "", // TODO: 사용자 정보 API 연동 시 실제 값으로 교체
           email: "",
           name: "",
         },
-        data.data.accessToken,
-        data.data.refreshToken,
+        "", // 토큰은 쿠키에 저장됨
+        "", // 토큰은 쿠키에 저장됨
       );
 
       navigate("/");
