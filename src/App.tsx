@@ -22,6 +22,7 @@ import LoginTestPage from "./pages/test/LoginTestPage";
 import { DialogTestPage } from "./pages/test/DialogTestPage";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import { Toaster } from "./components/ui/toaster";
 
 function App() {
   return (
@@ -71,6 +72,7 @@ function App() {
 
           <Footer />
         </div>
+        <Toaster />
       </Router>
     </QueryClientProvider>
   );

@@ -1,5 +1,6 @@
 import { Minus, Plus, ShoppingBag, Trash2, AlertCircle, Loader2, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { useCart } from "@/features/cart/hooks/useCart";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -18,6 +20,16 @@ import { ROUTES } from "@/constants/routes";
 export default function CartPage() {
   const { isAuthenticated } = useAuthStore();
   const { data: cart, isLoading, error, refetch } = useCart();
+
+  // 체크박스 상태 관리
+  const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
+
+  // 장바구니 데이터가 로드되면 모든 항목을 선택 상태로 초기화
+  useEffect(() => {
+    if (cart?.items) {
+      setSelectedItems(new Set(cart.items.map(item => item.id)));
+    }
+  }, [cart?.items]);
 
   // 로그인하지 않은 경우
   if (!isAuthenticated) {
@@ -76,6 +88,30 @@ export default function CartPage() {
 
   const cartItems = cart.items;
 
+  // 전체 선택 상태 확인
+  const isAllSelected = cartItems.length > 0 && selectedItems.size === cartItems.length;
+  const isSomeSelected = selectedItems.size > 0 && selectedItems.size < cartItems.length;
+
+  // 전체 선택/해제 핸들러
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedItems(new Set(cartItems.map(item => item.id)));
+    } else {
+      setSelectedItems(new Set());
+    }
+  };
+
+  // 개별 항목 선택/해제 핸들러
+  const handleSelectItem = (itemId: number, checked: boolean) => {
+    const newSelected = new Set(selectedItems);
+    if (checked) {
+      newSelected.add(itemId);
+    } else {
+      newSelected.delete(itemId);
+    }
+    setSelectedItems(newSelected);
+  };
+
   // Calculate nutrition totals (영양소 데이터가 있는 경우에만)
   const hasNutritionData = cartItems.some(item => item.nutrition);
   const nutritionTotals = hasNutritionData
@@ -104,6 +140,23 @@ export default function CartPage() {
     console.log("TODO: Remove item API", { id });
   };
 
+  // 선택된 항목들만 필터링
+  const selectedCartItems = cartItems.filter(item => selectedItems.has(item.id));
+
+  // 선택된 항목 기준 금액 계산
+  const selectedTotalPrice = selectedCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const selectedTotalDiscount = selectedCartItems.reduce((sum, item) => {
+    const finalPrice = item.finalPrice ?? item.price;
+    const discountAmount = item.price * item.quantity - finalPrice * item.quantity;
+    return sum + discountAmount;
+  }, 0);
+  const selectedFinalPrice = selectedTotalPrice - selectedTotalDiscount;
+
+  // 배송비 계산 (무료배송 기준 금액 사용)
+  const freeShippingThreshold = cart.freeShippingThreshold || 30000;
+  const selectedShippingFee = selectedFinalPrice >= freeShippingThreshold ? 0 : (cart.shippingFee || 3000);
+  const selectedOrderTotal = selectedFinalPrice + selectedShippingFee;
+
   return (
     <div className="container py-8">
       <div className="flex flex-col gap-6">
@@ -119,7 +172,20 @@ export default function CartPage() {
             {/* Cart Items */}
             <Card>
               <CardHeader>
-                <CardTitle>장바구니 상품 ({cartItems.length})</CardTitle>
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    id="select-all"
+                    checked={isAllSelected}
+                    onCheckedChange={handleSelectAll}
+                  />
+                  <label
+                    htmlFor="select-all"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                  >
+                    전체 선택
+                  </label>
+                  <CardTitle className="flex-1">장바구니 상품 ({cartItems.length})</CardTitle>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 {cartItems.length === 0 ? (
@@ -142,6 +208,12 @@ export default function CartPage() {
                         key={item.id}
                         className="flex items-start gap-4 py-4 border-b last:border-0"
                       >
+                        <Checkbox
+                          id={`item-${item.id}`}
+                          checked={selectedItems.has(item.id)}
+                          onCheckedChange={(checked) => handleSelectItem(item.id, checked as boolean)}
+                          className="mt-1"
+                        />
                         <img
                           src={item.imageUrl || "https://placehold.co/80x80"}
                           alt={item.productName}
@@ -165,13 +237,13 @@ export default function CartPage() {
                           )}
                         </div>
                         <div className="flex flex-col items-end gap-2">
-                          {item.discountRate > 0 && (
+                          {(item.discountRate ?? 0) > 0 && (
                             <div className="text-sm text-gray-400 line-through">
-                              {item.price.toLocaleString()}원
+                              {(item.price * item.quantity).toLocaleString()}원
                             </div>
                           )}
                           <p className="font-bold">
-                            {item.finalPrice.toLocaleString()}원
+                            {((item.finalPrice ?? item.price) * item.quantity).toLocaleString()}원
                           </p>
                           <div className="flex items-center border rounded">
                             <Button
@@ -376,26 +448,29 @@ export default function CartPage() {
                 <CardTitle>주문 요약</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="text-sm text-gray-500 mb-2">
+                  선택된 상품: {selectedItems.size}개
+                </div>
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>상품 금액</span>
-                    <span>{cart.totalPrice.toLocaleString()}원</span>
+                    <span>{selectedTotalPrice.toLocaleString()}원</span>
                   </div>
-                  {cart.totalDiscount > 0 && (
+                  {selectedTotalDiscount > 0 && (
                     <div className="flex justify-between text-red-500">
                       <span>할인 금액</span>
-                      <span>-{cart.totalDiscount.toLocaleString()}원</span>
+                      <span>-{selectedTotalDiscount.toLocaleString()}원</span>
                     </div>
                   )}
                   <div className="flex justify-between">
                     <span>배송비</span>
                     <span>
-                      {cart.shippingFee > 0 ? `${cart.shippingFee.toLocaleString()}원` : "무료"}
+                      {selectedShippingFee > 0 ? `${selectedShippingFee.toLocaleString()}원` : "무료"}
                     </span>
                   </div>
-                  {cart.shippingFee > 0 && (
+                  {selectedShippingFee > 0 && selectedFinalPrice < freeShippingThreshold && (
                     <div className="text-sm text-gray-500">
-                      {(30000 - (cart.totalPrice - cart.totalDiscount)).toLocaleString()}원 더 구매 시 무료 배송
+                      {(freeShippingThreshold - selectedFinalPrice).toLocaleString()}원 더 구매 시 무료 배송
                     </div>
                   )}
                 </div>
@@ -404,7 +479,7 @@ export default function CartPage() {
 
                 <div className="flex justify-between font-bold text-lg">
                   <span>총 결제 금액</span>
-                  <span>{cart.finalPrice.toLocaleString()}원</span>
+                  <span>{selectedOrderTotal.toLocaleString()}원</span>
                 </div>
 
                 <Button className="w-full bg-green-600 hover:bg-green-700">

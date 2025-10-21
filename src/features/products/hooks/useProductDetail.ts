@@ -12,12 +12,13 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
   // Variants 처리 (서버 데이터 우선)
   const variants = serverData.variants && serverData.variants.length > 0
     ? serverData.variants.map(v => ({
+        id: v.id,
         name: v.name,
         price: v.price,
         stock: v.stock,
       }))
     : [
-        { name: `${serverData.weight}${serverData.weightUnit}`, price: serverData.price, stock: serverData.stock || 0 },
+        { id: serverData.id, name: `${serverData.weight}${serverData.weightUnit}`, price: serverData.price, stock: serverData.stock || 0 },
       ];
 
   // 배송 정보 처리 (서버 데이터 우선)

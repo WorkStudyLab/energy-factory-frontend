@@ -14,14 +14,18 @@ import {
   Plus,
   Minus,
 } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { useToast } from "@/hooks/use-toast";
 import { ROUTES } from "@/constants/routes";
 import { useProductDetail } from "@/features/products/hooks/useProductDetail";
+import { CartApiService } from "@/features/cart/services/cartApiService";
+import { useAuthStore } from "@/stores/useAuthStore";
 import type {
   ProductVariant,
   VitaminMineral,
@@ -32,12 +36,35 @@ export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: product, isLoading, error } = useProductDetail(id);
-
+  const { isAuthenticated } = useAuthStore();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<string>("");
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  // 장바구니 추가 mutation
+  const addToCartMutation = useMutation({
+    mutationFn: CartApiService.addToCart,
+    onSuccess: () => {
+      // 장바구니 데이터 캐시 무효화 (다시 조회하도록)
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      toast({
+        title: "장바구니에 추가되었습니다",
+        description: `${product?.name} ${quantity}개가 장바구니에 담겼습니다.`,
+      });
+    },
+    onError: (error) => {
+      console.error("장바구니 추가 실패:", error);
+      toast({
+        title: "장바구니 추가 실패",
+        description: "다시 시도해주세요.",
+        variant: "destructive",
+      });
+    },
+  });
 
   // 상품 데이터가 로드되면 첫 번째 옵션을 기본값으로 설정
   useEffect(() => {
@@ -93,18 +120,130 @@ export default function ProductDetailPage() {
 
   // 장바구니 추가
   const handleAddToCart = () => {
-    console.log("장바구니 추가:", { 
-      product: product.name, 
-      quantity, 
-      variant: selectedVariant 
-    });
-    // TODO: 실제 장바구니 추가 로직 구현
+    // 로그인 확인
+    if (!isAuthenticated) {
+      toast({
+        title: "로그인이 필요합니다",
+        description: "장바구니를 사용하려면 로그인해주세요.",
+        variant: "destructive",
+      });
+      navigate(ROUTES.LOGIN);
+      return;
+    }
+
+    // 옵션 선택 확인
+    if (!selectedVariant) {
+      toast({
+        title: "옵션을 선택해주세요",
+        description: "상품 옵션을 선택한 후 장바구니에 담아주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // 선택된 variant 정보 찾기
+    const selectedVariantData = product?.variants.find(
+      (v) => v.name === selectedVariant
+    );
+
+    console.log("선택된 variant:", selectedVariantData);
+    console.log("전체 variants:", product?.variants);
+
+    if (!selectedVariantData) {
+      toast({
+        title: "유효하지 않은 옵션입니다",
+        description: "다시 선택해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!selectedVariantData.id) {
+      toast({
+        title: "옵션 ID가 없습니다",
+        description: "상품 데이터에 문제가 있습니다.",
+        variant: "destructive",
+      });
+      console.error("Variant ID is missing:", selectedVariantData);
+      return;
+    }
+
+    const requestData = {
+      productId: Number(id),
+      variantId: selectedVariantData.id,
+      quantity,
+    };
+
+    console.log("장바구니 추가 요청:", requestData);
+
+    // API 호출
+    addToCartMutation.mutate(requestData);
   };
 
   // 바로 구매
   const handleBuyNow = () => {
-    handleAddToCart();
-    navigate(ROUTES.CART);
+    // 로그인 확인
+    if (!isAuthenticated) {
+      toast({
+        title: "로그인이 필요합니다",
+        description: "구매하려면 로그인해주세요.",
+        variant: "destructive",
+      });
+      navigate(ROUTES.LOGIN);
+      return;
+    }
+
+    // 옵션 선택 확인
+    if (!selectedVariant) {
+      toast({
+        title: "옵션을 선택해주세요",
+        description: "상품 옵션을 선택한 후 구매해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // 선택된 variant 정보 찾기
+    const selectedVariantData = product?.variants.find(
+      (v) => v.name === selectedVariant
+    );
+
+    if (!selectedVariantData) {
+      toast({
+        title: "유효하지 않은 옵션입니다",
+        description: "다시 선택해주세요.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!selectedVariantData.id) {
+      toast({
+        title: "옵션 ID가 없습니다",
+        description: "상품 데이터에 문제가 있습니다.",
+        variant: "destructive",
+      });
+      console.error("Variant ID is missing:", selectedVariantData);
+      return;
+    }
+
+    const requestData = {
+      productId: Number(id),
+      variantId: selectedVariantData.id,
+      quantity,
+    };
+
+    console.log("바로 구매 요청:", requestData);
+
+    // API 호출 후 장바구니 페이지로 이동
+    addToCartMutation.mutate(
+      requestData,
+      {
+        onSuccess: () => {
+          navigate(ROUTES.CART);
+        },
+      }
+    );
   };
 
   // 위시리스트 토글
@@ -345,12 +484,23 @@ export default function ProductDetailPage() {
 
           {/* 구매 버튼 */}
           <div className="flex gap-3">
-            <Button variant="outline" size="lg" className="flex-1 bg-transparent" onClick={handleAddToCart}>
+            <Button
+              variant="outline"
+              size="lg"
+              className="flex-1 bg-transparent"
+              onClick={handleAddToCart}
+              disabled={addToCartMutation.isPending}
+            >
               <ShoppingCart className="h-5 w-5 mr-2" />
-              장바구니
+              {addToCartMutation.isPending ? "추가 중..." : "장바구니"}
             </Button>
-            <Button size="lg" className="flex-1 bg-green-600 hover:bg-green-700" onClick={handleBuyNow}>
-              바로 구매
+            <Button
+              size="lg"
+              className="flex-1 bg-green-600 hover:bg-green-700"
+              onClick={handleBuyNow}
+              disabled={addToCartMutation.isPending}
+            >
+              {addToCartMutation.isPending ? "처리 중..." : "바로 구매"}
             </Button>
           </div>
         </div>
