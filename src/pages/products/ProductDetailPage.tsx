@@ -33,7 +33,6 @@ export default function ProductDetailPage() {
   const navigate = useNavigate();
   const { data: product, isLoading, error } = useProductDetail(id);
 
-  console.log(product);
 
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState<string>("");
@@ -141,9 +140,9 @@ export default function ProductDetailPage() {
   return (
     <div className="container py-6">
       {/* 뒤로 가기 버튼 */}
-      <Button 
-        variant="ghost" 
-        className="mb-4" 
+      <Button
+        variant="ghost"
+        className="mb-4"
         onClick={() => navigate(ROUTES.PRODUCTS)}
       >
         <ChevronLeft className="h-4 w-4 mr-1" />
@@ -159,7 +158,7 @@ export default function ProductDetailPage() {
               alt={product.name}
               className="w-full h-full object-cover"
             />
-            {product.discount && product.discount > 0 && (
+            {(product.discount ?? 0) > 0 && (
               <Badge className="absolute top-4 left-4 bg-red-500 text-white text-lg px-3 py-1">
                 -{product.discount}%
               </Badge>
@@ -228,14 +227,14 @@ export default function ProductDetailPage() {
 
           {/* 가격 */}
           <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="flex items-center gap-3 mb-2">
-              {product.originalPrice && (
-                <span className="text-lg text-gray-400 line-through">{product.originalPrice.toLocaleString()}원</span>
-              )}
-              {product.discount && product.discount > 0 && (
+            {(product.discount ?? 0) > 0 && (
+              <div className="flex items-center gap-3 mb-2">
+                {(product.originalPrice ?? 0) > 0 && (
+                  <span className="text-lg text-gray-400 line-through">{(product.originalPrice ?? 0).toLocaleString()}원</span>
+                )}
                 <Badge className="bg-red-500 text-white text-lg">{product.discount}%</Badge>
-              )}
-            </div>
+              </div>
+            )}
             <div className="text-3xl font-bold">{currentPrice.toLocaleString()}원</div>
             <div className="text-sm text-gray-500 mt-1">총 {(currentPrice * quantity).toLocaleString()}원</div>
           </div>
