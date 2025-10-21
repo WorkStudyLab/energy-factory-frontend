@@ -90,7 +90,6 @@ export default function CartPage() {
 
   // 전체 선택 상태 확인
   const isAllSelected = cartItems.length > 0 && selectedItems.size === cartItems.length;
-  const isSomeSelected = selectedItems.size > 0 && selectedItems.size < cartItems.length;
 
   // 전체 선택/해제 핸들러
   const handleSelectAll = (checked: boolean) => {
