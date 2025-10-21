@@ -47,7 +47,7 @@ export const useLogin = () => {
 
   const mutation = useMutation({
     mutationFn: loginApi,
-    onSuccess: (data) => {
+    onSuccess: () => {
       // 토큰은 HttpOnly 쿠키로 자동 저장되므로 별도 저장 불필요
       // 로그인 상태만 저장
       login(
