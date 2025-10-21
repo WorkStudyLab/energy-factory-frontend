@@ -372,13 +372,31 @@ interface NutritionInfoCardProps {
 // 영양 정보 카드 컴포넌트
 function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
   // 탄단지 데이터 준비 (칼로리 기준)
-  const macroData = [
-    { name: "단백질", value: product.nutrition.protein * 4, grams: product.nutrition.protein, color: "#22c55e" },
-    { name: "탄수화물", value: product.nutrition.carbs * 4, grams: product.nutrition.carbs, color: "#3b82f6" },
-    { name: "지방", value: product.nutrition.fat * 9, grams: product.nutrition.fat, color: "#f59e0b" },
-  ];
+  const totalCalories = (product.nutrition.protein * 4) + (product.nutrition.carbs * 4) + (product.nutrition.fat * 9);
 
-  const totalCalories = macroData.reduce((sum, item) => sum + item.value, 0);
+  const macroData = [
+    {
+      name: "단백질",
+      value: product.nutrition.protein * 4,
+      grams: product.nutrition.protein,
+      color: "#22c55e",
+      percentage: totalCalories > 0 ? Math.round((product.nutrition.protein * 4 / totalCalories) * 100) : 0
+    },
+    {
+      name: "탄수화물",
+      value: product.nutrition.carbs * 4,
+      grams: product.nutrition.carbs,
+      color: "#3b82f6",
+      percentage: totalCalories > 0 ? Math.round((product.nutrition.carbs * 4 / totalCalories) * 100) : 0
+    },
+    {
+      name: "지방",
+      value: product.nutrition.fat * 9,
+      grams: product.nutrition.fat,
+      color: "#f59e0b",
+      percentage: totalCalories > 0 ? Math.round((product.nutrition.fat * 9 / totalCalories) * 100) : 0
+    },
+  ];
 
   return (
     <div className="mt-12">
@@ -393,16 +411,18 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
             <div className="p-4">
               <h3 className="font-semibold mb-4">주요 영양소</h3>
               <div className="flex flex-col items-center">
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
                     <Pie
                       data={macroData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={50}
-                      outerRadius={80}
+                      innerRadius={0}
+                      outerRadius={90}
                       paddingAngle={2}
                       dataKey="value"
+                      label={({ name, percentage }) => `${name}\n${percentage}%`}
+                      labelLine={true}
                     >
                       {macroData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
@@ -412,7 +432,7 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
                 </ResponsiveContainer>
 
                 {/* 총 칼로리 표시 */}
-                <div className="text-center mb-4">
+                <div className="text-center mt-4 mb-4">
                   <div className="text-sm text-gray-600">총 칼로리</div>
                   <div className="text-2xl font-bold text-purple-600">{product.nutrition.calories}kcal</div>
                 </div>
@@ -428,7 +448,7 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
                       <div className="text-sm">
                         <span className="font-bold">{item.grams}g</span>
                         <span className="text-gray-500 ml-1">
-                          ({((item.value / totalCalories) * 100).toFixed(0)}%)
+                          ({item.percentage}%)
                         </span>
                       </div>
                     </div>
