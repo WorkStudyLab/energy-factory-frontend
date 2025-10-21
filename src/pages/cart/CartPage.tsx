@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Trash2, AlertCircle, Loader2, LogIn } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,125 +11,97 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-
-// 타입 정의
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-  protein: number;
-  carbs: number;
-  fat: number;
-  calories: number;
-}
-
-// interface RecommendedProduct {
-//   id: number;
-//   name: string;
-//   price: number;
-//   image: string;
-//   protein: number;
-//   fat: number;
-//   calories: number;
-// }
+import { useCart } from "@/features/cart/hooks/useCart";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { ROUTES } from "@/constants/routes";
 
 export default function CartPage() {
-  // Mock cart items
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "유기농 닭가슴살",
-      price: 12900,
-      quantity: 2,
-      image: "https://placehold.co/80x80",
-      protein: 24,
-      carbs: 0,
-      fat: 1.5,
-      calories: 110,
-    },
-    {
-      id: 2,
-      name: "그릭 요거트",
-      price: 4500,
-      quantity: 1,
-      image: "https://placehold.co/80x80",
-      protein: 10,
-      carbs: 5,
-      fat: 0.5,
-      calories: 100,
-    },
-    {
-      id: 3,
-      name: "퀴노아",
-      price: 8900,
-      quantity: 1,
-      image: "https://placehold.co/80x80",
-      protein: 8,
-      carbs: 21,
-      fat: 3.5,
-      calories: 120,
-    },
-  ]);
+  const { isAuthenticated } = useAuthStore();
+  const { data: cart, isLoading, error, refetch } = useCart();
 
-  // // Mock recommended products
-  // const recommendedProducts: RecommendedProduct[] = [
-  //   {
-  //     id: 4,
-  //     name: "아보카도",
-  //     price: 3900,
-  //     image: "https://placehold.co/60x60",
-  //     protein: 2,
-  //     fat: 15,
-  //     calories: 160,
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "견과류 믹스",
-  //     price: 9900,
-  //     image: "https://placehold.co/60x60",
-  //     protein: 6,
-  //     fat: 14,
-  //     calories: 170,
-  //   },
-  // ];
+  // 로그인하지 않은 경우
+  if (!isAuthenticated) {
+    return (
+      <div className="container py-8">
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <LogIn className="h-16 w-16 text-gray-300 mb-4" />
+          <h2 className="text-2xl font-bold mb-2">로그인이 필요합니다</h2>
+          <p className="text-gray-500 mb-6">
+            장바구니를 이용하려면 로그인이 필요합니다
+          </p>
+          <Link to={ROUTES.LOGIN}>
+            <Button className="bg-green-600 hover:bg-green-700">
+              로그인하러 가기
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
-  // Calculate totals
-  const subtotal = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0,
-  );
-  const shipping = subtotal > 30000 ? 0 : 3000;
-  const total = subtotal + shipping;
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <div className="container py-8">
+        <div className="flex flex-col items-center justify-center py-16">
+          <Loader2 className="h-12 w-12 text-green-600 animate-spin mb-4" />
+          <p className="text-gray-500">장바구니를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
 
-  // Calculate nutrition totals
-  const nutritionTotals = cartItems.reduce(
-    (totals, item) => {
-      return {
-        protein: totals.protein + item.protein * item.quantity,
-        carbs: totals.carbs + item.carbs * item.quantity,
-        fat: totals.fat + item.fat * item.quantity,
-        calories: totals.calories + item.calories * item.quantity,
-      };
-    },
-    { protein: 0, carbs: 0, fat: 0, calories: 0 },
-  );
+  // 에러 발생
+  if (error) {
+    return (
+      <div className="container py-8">
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
+          <h2 className="text-2xl font-bold mb-2">장바구니를 불러올 수 없습니다</h2>
+          <p className="text-gray-500 mb-6">
+            {error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다"}
+          </p>
+          <Button onClick={() => refetch()} className="bg-green-600 hover:bg-green-700">
+            다시 시도하기
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
+  // 장바구니 데이터가 없는 경우 (안전장치)
+  if (!cart) {
+    return null;
+  }
 
-  // Handle quantity change
+  const cartItems = cart.items;
+
+  // Calculate nutrition totals (영양소 데이터가 있는 경우에만)
+  const hasNutritionData = cartItems.some(item => item.nutrition);
+  const nutritionTotals = hasNutritionData
+    ? cartItems.reduce(
+        (totals, item) => {
+          if (!item.nutrition) return totals;
+          return {
+            protein: totals.protein + item.nutrition.protein * item.quantity,
+            carbs: totals.carbs + item.nutrition.carbs * item.quantity,
+            fat: totals.fat + item.nutrition.fat * item.quantity,
+            calories: totals.calories + item.nutrition.calories * item.quantity,
+          };
+        },
+        { protein: 0, carbs: 0, fat: 0, calories: 0 },
+      )
+    : { protein: 0, carbs: 0, fat: 0, calories: 0 };
+
+  // TODO: 수량 변경 API 구현 (현재는 GET만 구현)
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) return;
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item,
-      ),
-    );
+    console.log("TODO: Update quantity API", { id, newQuantity });
   };
 
-  // Handle item removal
+  // TODO: 아이템 삭제 API 구현 (현재는 GET만 구현)
   const removeItem = (id: number) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+    console.log("TODO: Remove item API", { id });
   };
 
   return (
@@ -171,22 +143,35 @@ export default function CartPage() {
                         className="flex items-start gap-4 py-4 border-b last:border-0"
                       >
                         <img
-                          src={item.image || "https://placehold.co/80x80"}
-                          alt={item.name}
+                          src={item.imageUrl || "https://placehold.co/80x80"}
+                          alt={item.productName}
                           className="w-20 h-20 object-cover rounded"
                         />
                         <div className="flex-1 space-y-1">
-                          <h3 className="font-medium">{item.name}</h3>
-                          <div className="text-sm text-gray-500 space-y-1">
-                            <p>단백질: {item.protein}g</p>
-                            <p>탄수화물: {item.carbs}g</p>
-                            <p>지방: {item.fat}g</p>
-                            <p>칼로리: {item.calories}kcal</p>
-                          </div>
+                          <h3 className="font-medium">{item.productName}</h3>
+                          <p className="text-sm text-gray-400">{item.variantName}</p>
+                          {item.nutrition ? (
+                            <div className="text-sm text-gray-500 space-y-1">
+                              <p>단백질: {item.nutrition.protein}g</p>
+                              <p>탄수화물: {item.nutrition.carbs}g</p>
+                              <p>지방: {item.nutrition.fat}g</p>
+                              <p>칼로리: {item.nutrition.calories}kcal</p>
+                            </div>
+                          ) : (
+                            <p className="text-sm text-gray-400">영양소 정보 없음</p>
+                          )}
+                          {!item.isAvailable && (
+                            <p className="text-sm text-red-500">품절된 상품입니다</p>
+                          )}
                         </div>
                         <div className="flex flex-col items-end gap-2">
+                          {item.discountRate > 0 && (
+                            <div className="text-sm text-gray-400 line-through">
+                              {item.price.toLocaleString()}원
+                            </div>
+                          )}
                           <p className="font-bold">
-                            {(item.price * item.quantity).toLocaleString()}원
+                            {item.finalPrice.toLocaleString()}원
                           </p>
                           <div className="flex items-center border rounded">
                             <Button
@@ -196,6 +181,7 @@ export default function CartPage() {
                               onClick={() =>
                                 updateQuantity(item.id, item.quantity - 1)
                               }
+                              disabled={!item.isAvailable}
                             >
                               <Minus className="h-3 w-3" />
                               <span className="sr-only">감소</span>
@@ -210,6 +196,7 @@ export default function CartPage() {
                               onClick={() =>
                                 updateQuantity(item.id, item.quantity + 1)
                               }
+                              disabled={!item.isAvailable || item.quantity >= item.stock}
                             >
                               <Plus className="h-3 w-3" />
                               <span className="sr-only">증가</span>
@@ -237,15 +224,16 @@ export default function CartPage() {
               </CardFooter>
             </Card>
 
-            {/* Nutrition Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle>영양소 요약</CardTitle>
-                <CardDescription>
-                  장바구니 상품의 총 영양소 구성 비율
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+            {/* Nutrition Summary - 영양소 데이터가 있을 때만 표시 */}
+            {hasNutritionData && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>영양소 요약</CardTitle>
+                  <CardDescription>
+                    장바구니 상품의 총 영양소 구성 비율
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
                 {/* 원형 그래프 */}
                 <div className="flex flex-col items-center">
                   <ResponsiveContainer width="100%" height={250}>
@@ -329,7 +317,8 @@ export default function CartPage() {
                   <span className="text-2xl font-bold text-purple-600">{nutritionTotals.calories}kcal</span>
                 </div>
               </CardContent>
-            </Card>
+              </Card>
+            )}
 
             {/* Recommended Products */}
             {/*<Card>*/}
@@ -390,18 +379,23 @@ export default function CartPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>상품 금액</span>
-                    <span>{subtotal.toLocaleString()}원</span>
+                    <span>{cart.totalPrice.toLocaleString()}원</span>
                   </div>
+                  {cart.totalDiscount > 0 && (
+                    <div className="flex justify-between text-red-500">
+                      <span>할인 금액</span>
+                      <span>-{cart.totalDiscount.toLocaleString()}원</span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span>배송비</span>
                     <span>
-                      {shipping > 0 ? `${shipping.toLocaleString()}원` : "무료"}
+                      {cart.shippingFee > 0 ? `${cart.shippingFee.toLocaleString()}원` : "무료"}
                     </span>
                   </div>
-                  {shipping > 0 && (
+                  {cart.shippingFee > 0 && (
                     <div className="text-sm text-gray-500">
-                      {(30000 - subtotal).toLocaleString()}원 더 구매 시 무료
-                      배송
+                      {(30000 - (cart.totalPrice - cart.totalDiscount)).toLocaleString()}원 더 구매 시 무료 배송
                     </div>
                   )}
                 </div>
@@ -410,7 +404,7 @@ export default function CartPage() {
 
                 <div className="flex justify-between font-bold text-lg">
                   <span>총 결제 금액</span>
-                  <span>{total.toLocaleString()}원</span>
+                  <span>{cart.finalPrice.toLocaleString()}원</span>
                 </div>
 
                 <Button className="w-full bg-green-600 hover:bg-green-700">
