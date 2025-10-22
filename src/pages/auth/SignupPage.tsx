@@ -4,22 +4,28 @@ import { SignupForm } from "@/features/auth/ui/SignupForm";
 import { ROUTES } from "@/constants/routes";
 
 interface FormData {
-  firstName: string;
-  lastName: string;
+  name: string;
+  birthYear: string;
+  birthMonth: string;
+  birthDay: string;
   email: string;
   password: string;
   confirmPassword: string;
+  address: string;
   phone: string;
 }
 
 export default function SignupPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
+    name: "",
+    birthYear: "",
+    birthMonth: "",
+    birthDay: "",
     email: "",
     password: "",
     confirmPassword: "",
+    address: "",
     phone: "",
   });
 
@@ -34,26 +40,23 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="container py-8">
-      <div className="mx-auto max-w-3xl">
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2 text-center">
-            <h1 className="text-3xl font-bold">회원가입</h1>
-            <p className="text-gray-500">
+    <div className="min-h-screen bg-neutral-50 flex items-center justify-center py-16 px-4">
+      <div className="w-full max-w-[640px]">
+        <div className="flex flex-col gap-10">
+          <div className="flex flex-col gap-3 text-center">
+            <h1 className="text-2xl font-semibold text-neutral-900">회원가입</h1>
+            <p className="text-base text-neutral-600">
               Energy Factory 계정을 만들어 건강한 쇼핑을 시작하세요
             </p>
-            <p className="text-sm mt-2">
-              이미 계정이 있으신가요?{" "}
-              <a
-                className="text-green-600 hover:underline"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate(ROUTES.LOGIN);
-                }}
+            <div className="flex items-center justify-center gap-1 text-sm">
+              <span className="text-neutral-600">이미 계정이 있으신가요?</span>
+              <button
+                className="font-semibold text-[#00a63e] underline hover:text-[#008c36]"
+                onClick={() => navigate(ROUTES.LOGIN)}
               >
                 로그인하기
-              </a>
-            </p>
+              </button>
+            </div>
           </div>
 
           <SignupForm

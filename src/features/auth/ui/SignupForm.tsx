@@ -3,6 +3,14 @@ import { useSignup } from "../hooks/useSignup";
 import { Button } from "@/components/ui/button";
 import { LabelInput } from "./LabelInput";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import {
   Card,
   CardContent,
   CardDescription,
@@ -12,11 +20,14 @@ import {
 } from "@/components/ui/card";
 
 interface FormData {
-  firstName: string;
-  lastName: string;
+  name: string;
+  birthYear: string;
+  birthMonth: string;
+  birthDay: string;
   email: string;
   password: string;
   confirmPassword: string;
+  address: string;
   phone: string;
 }
 
@@ -45,7 +56,7 @@ export const SignupForm = (props: {
     e.preventDefault();
 
     const signupData: SignupRequest = {
-      name: `${formData.firstName} ${formData.lastName}`.trim(),
+      name: formData.name,
       email: formData.email,
       password: formData.password,
       phoneNumber: formData.phone,
@@ -54,38 +65,95 @@ export const SignupForm = (props: {
     signup(signupData);
   };
 
+  // 년도 옵션 생성 (현재 년도부터 100년 전까지)
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
+  const months = Array.from({ length: 12 }, (_, i) => i + 1);
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
+
   return (
     <form onSubmit={handleSubmit}>
-      <Card>
+      <Card className="border-neutral-200">
         <CardHeader>
-          <CardTitle>기본 정보</CardTitle>
-          <CardDescription>
-            계정 생성에 필요한 기본 정보를 입력해주세요
+          <CardTitle className="text-base text-neutral-900">기본 정보</CardTitle>
+          <CardDescription className="text-sm text-neutral-600">
+            계정 생성을 위해서 아래 정보를 입력해주세요
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <LabelInput
-              id="first-name"
-              label="이름"
-              value={formData.firstName}
-              onChange={(value) => handleInputChange("firstName", value)}
-              required
-            />
-            <LabelInput
-              id="last-name"
-              label="성"
-              value={formData.lastName}
-              onChange={(value) => handleInputChange("lastName", value)}
-              required
-            />
+        <CardContent className="space-y-5">
+          <LabelInput
+            id="name"
+            label="이름"
+            value={formData.name}
+            onChange={(value) => handleInputChange("name", value)}
+            placeholder="김건강"
+            required
+          />
+
+          <div className="space-y-2">
+            <div className="flex items-center gap-1">
+              <Label className="text-sm font-medium text-neutral-900">생년월일</Label>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-red-500">*</span>
+                <span className="text-sm font-medium text-neutral-500">필수</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <Select
+                value={formData.birthYear}
+                onValueChange={(value) => handleInputChange("birthYear", value)}
+              >
+                <SelectTrigger className="h-9 border-neutral-200">
+                  <SelectValue placeholder="년도" />
+                </SelectTrigger>
+                <SelectContent>
+                  {years.map((year) => (
+                    <SelectItem key={year} value={String(year)}>
+                      {year}년
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={formData.birthMonth}
+                onValueChange={(value) => handleInputChange("birthMonth", value)}
+              >
+                <SelectTrigger className="h-9 border-neutral-200">
+                  <SelectValue placeholder="월" />
+                </SelectTrigger>
+                <SelectContent>
+                  {months.map((month) => (
+                    <SelectItem key={month} value={String(month)}>
+                      {month}월
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={formData.birthDay}
+                onValueChange={(value) => handleInputChange("birthDay", value)}
+              >
+                <SelectTrigger className="h-9 border-neutral-200">
+                  <SelectValue placeholder="일" />
+                </SelectTrigger>
+                <SelectContent>
+                  {days.map((day) => (
+                    <SelectItem key={day} value={String(day)}>
+                      {day}일
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+
           <LabelInput
             id="email"
             label="이메일"
             type="email"
             value={formData.email}
             onChange={(value) => handleInputChange("email", value)}
+            placeholder="HealthKim@example.com"
             required
           />
           <LabelInput
@@ -94,8 +162,8 @@ export const SignupForm = (props: {
             type="password"
             value={formData.password}
             onChange={(value) => handleInputChange("password", value)}
+            placeholder="********"
             required
-            description="8자 이상, 영문, 숫자, 특수문자를 포함해야 합니다"
           />
           <LabelInput
             id="confirm-password"
@@ -103,6 +171,15 @@ export const SignupForm = (props: {
             type="password"
             value={formData.confirmPassword}
             onChange={(value) => handleInputChange("confirmPassword", value)}
+            placeholder="*******"
+            required
+          />
+          <LabelInput
+            id="address"
+            label="배송지"
+            value={formData.address}
+            onChange={(value) => handleInputChange("address", value)}
+            placeholder="경기도 양평군 금천면 153-2"
             required
           />
           <LabelInput
@@ -110,16 +187,25 @@ export const SignupForm = (props: {
             label="연락처"
             value={formData.phone}
             onChange={(value) => handleInputChange("phone", value)}
+            placeholder="01012345678"
             required
           />
         </CardContent>
 
-        <CardFooter className="flex justify-between">
-          <Button type="button" variant="outline" onClick={() => navigate(-1)}>
+        <CardFooter className="flex gap-3 border-t border-neutral-200 pt-5">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate(-1)}
+            className="flex-1 h-12 rounded-lg border-neutral-200 text-neutral-700"
+          >
             취소
           </Button>
-          <Button type="submit" className="bg-green-600 hover:bg-green-700">
-            회원가입 완료
+          <Button
+            type="submit"
+            className="flex-1 h-12 rounded-lg bg-[#108c4a] hover:bg-[#0d7a3f] text-white"
+          >
+            회원가입
           </Button>
         </CardFooter>
       </Card>

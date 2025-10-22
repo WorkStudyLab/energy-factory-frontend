@@ -27,7 +27,17 @@ export const LabelInput = ({
 }: LabelInputProps) => {
   return (
     <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
+      <div className="flex items-center gap-1">
+        <Label htmlFor={id} className="text-sm font-medium text-neutral-900">
+          {label}
+        </Label>
+        {required && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-red-500">*</span>
+            <span className="text-sm font-medium text-neutral-500">필수</span>
+          </div>
+        )}
+      </div>
       <Input
         id={id}
         type={type}
@@ -35,6 +45,7 @@ export const LabelInput = ({
         onChange={(e) => onChange(e.target.value)}
         required={required}
         placeholder={placeholder}
+        className="h-9 rounded-lg border-neutral-200"
       />
       {description && <p className="text-sm text-gray-500">{description}</p>}
     </div>
