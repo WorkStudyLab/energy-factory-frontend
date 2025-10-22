@@ -580,12 +580,6 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
                   </PieChart>
                 </ResponsiveContainer>
 
-                {/* 총 칼로리 표시 */}
-                <div className="text-center mt-4 mb-4">
-                  <div className="text-sm text-gray-600">총 칼로리</div>
-                  <div className="text-2xl font-bold text-purple-600">{product.nutrition.calories}kcal</div>
-                </div>
-
                 {/* 범례 */}
                 <div className="w-full space-y-2">
                   {macroData.map((item, index) => (
@@ -602,6 +596,18 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
                       </div>
                     </div>
                   ))}
+                </div>
+
+                {/* 총 칼로리 표시 */}
+                <div className="w-full border-t border-gray-200 pt-3 mt-4">
+                  <div className="flex items-center justify-between">
+                    <div className="text-base font-bold text-gray-700">총 칼로리</div>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-2xl font-semibold text-green-600">{product.nutrition.calories}</span>
+                      <span className="text-base font-semibold text-gray-600">kcal</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">1회 제공량 기준</p>
                 </div>
               </div>
             </div>
