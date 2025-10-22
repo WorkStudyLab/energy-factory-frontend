@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ProductList } from "@/features/products/ui/ProductList";
-import { ProductFilter } from "@/features/products/ui/ProductFilter";
 import {
   nutritionCategories,
   dietaryOptions,
@@ -8,8 +7,7 @@ import {
   mealTimes,
 } from "@/features/products/constants/productConstants";
 
-import { Filter, Search, SlidersHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -28,9 +26,9 @@ import {
 } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 
 export default function ProductsPage() {
-  const [showFilters, setShowFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedGoal, setSelectedGoal] = useState<string>("all");
   const [proteinRange, setProteinRange] = useState([0, 50]);
@@ -74,7 +72,7 @@ export default function ProductsPage() {
           </Tabs>
         </div>
 
-        {/* 검색 및 필터 바 */}
+        {/* 검색 및 정렬 바 */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="relative flex-1">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
@@ -247,63 +245,32 @@ export default function ProductsPage() {
                 </div>
               </SheetContent>
             </Sheet>
-            <Button
-              variant="outline"
-              className="hidden md:flex items-center gap-2"
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-              필터
-            </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {/* 사이드바 필터 (데스크톱) */}
-          <div className="hidden md:block">
-            <ProductFilter
-              showFilters={showFilters}
-              selectedGoal={selectedGoal}
-              onGoalChange={setSelectedGoal}
-              proteinRange={proteinRange}
-              onProteinRangeChange={setProteinRange}
-              carbsRange={carbsRange}
-              onCarbsRangeChange={setCarbsRange}
-              fatRange={fatRange}
-              onFatRangeChange={setFatRange}
-              caloriesRange={caloriesRange}
-              onCaloriesRangeChange={setCaloriesRange}
-              dietaryRestrictions={dietaryRestrictions}
-              onDietaryRestrictionsChange={setDietaryRestrictions}
-            />
-          </div>
-
-          {/* 제품 그리드 */}
-          <div className={`${showFilters ? "md:col-span-3" : "md:col-span-4"}`}>
-            <ProductList
-              filters={{
-                category:
-                  selectedCategory !== "all" ? selectedCategory : undefined,
-                keyword: undefined, // 검색 기능은 나중에 구현
-                minPrice: undefined,
-                maxPrice: undefined,
-                sort: sortOption,
-                page: 0,
-                size: 20,
-              }}
-              onResetFilters={() => {
-                setSelectedCategory("all");
-                setSelectedGoal("all");
-                setProteinRange([0, 50]);
-                setCarbsRange([0, 100]);
-                setFatRange([0, 50]);
-                setCaloriesRange([0, 500]);
-                setDietaryRestrictions([]);
-                setSortOption("createdAt,desc");
-              }}
-            />
-          </div>
-        </div>
+        {/* 제품 그리드 */}
+        <ProductList
+          filters={{
+            category:
+              selectedCategory !== "all" ? selectedCategory : undefined,
+            keyword: undefined,
+            minPrice: undefined,
+            maxPrice: undefined,
+            sort: sortOption,
+            page: 0,
+            size: 20,
+          }}
+          onResetFilters={() => {
+            setSelectedCategory("all");
+            setSelectedGoal("all");
+            setProteinRange([0, 50]);
+            setCarbsRange([0, 100]);
+            setFatRange([0, 50]);
+            setCaloriesRange([0, 500]);
+            setDietaryRestrictions([]);
+            setSortOption("createdAt,desc");
+          }}
+        />
       </div>
     </div>
   );
