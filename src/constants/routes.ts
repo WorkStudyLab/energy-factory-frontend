@@ -15,6 +15,7 @@ export const ROUTES = {
   FORGOT_PASSWORD: "/forgot-password",
   // 회원가입
   SIGNUP: "/signup",
+  SIGNUP_CONNECT: "/signup/connect",
   // 프로필
   PROFILE: "/profile",
   // 마이페이지

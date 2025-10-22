@@ -9,6 +9,7 @@ import CartPage from "./pages/cart/CartPage";
 import LoginPage from "./pages/auth/LoginPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import SignupPage from "./pages/auth/SignupPage";
+import SignupConnectPage from "./pages/auth/SignupConnectPage";
 import NutritionPage from "./pages/nutrition/NutritionPage";
 import DietCoachPage from "./pages/diet-coach/DietCoachPage";
 import OrderHistoryPage from "./pages/order-history/OrderHistoryPage";
@@ -47,6 +48,7 @@ function App() {
                 element={<ForgotPasswordPage />}
               />
               <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
+              <Route path={ROUTES.SIGNUP_CONNECT} element={<SignupConnectPage />} />
               <Route path={ROUTES.NUTRITION} element={<NutritionPage />} />
               <Route path={ROUTES.DIET_COACH} element={<DietCoachPage />} />
               <Route

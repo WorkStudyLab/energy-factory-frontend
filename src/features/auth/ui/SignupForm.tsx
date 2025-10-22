@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useSignup } from "../hooks/useSignup";
 import { Button } from "@/components/ui/button";
 import { LabelInput } from "./LabelInput";
+import { ROUTES } from "@/constants/routes";
 import {
   Select,
   SelectContent,
@@ -62,7 +63,9 @@ export const SignupForm = (props: {
       phoneNumber: formData.phone,
     };
 
-    signup(signupData);
+    // To Do : Layout 테스트용이므로 주석 제거 필요
+    // signup(signupData);
+    navigate(ROUTES.SIGNUP_CONNECT);
   };
 
   // 년도 옵션 생성 (현재 년도부터 100년 전까지)
@@ -72,10 +75,13 @@ export const SignupForm = (props: {
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   return (
-    <form onSubmit={handleSubmit}>
+    // To Do : Layout 테스트용이므로 noValidate 제거 필요
+    <form onSubmit={handleSubmit} noValidate>
       <Card className="border-neutral-200">
         <CardHeader>
-          <CardTitle className="text-base text-neutral-900">기본 정보</CardTitle>
+          <CardTitle className="text-base text-neutral-900">
+            기본 정보
+          </CardTitle>
           <CardDescription className="text-sm text-neutral-600">
             계정 생성을 위해서 아래 정보를 입력해주세요
           </CardDescription>
@@ -92,10 +98,14 @@ export const SignupForm = (props: {
 
           <div className="space-y-2">
             <div className="flex items-center gap-1">
-              <Label className="text-sm font-medium text-neutral-900">생년월일</Label>
+              <Label className="text-sm font-medium text-neutral-900">
+                생년월일
+              </Label>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-red-500">*</span>
-                <span className="text-sm font-medium text-neutral-500">필수</span>
+                <span className="text-sm font-medium text-neutral-500">
+                  필수
+                </span>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-3">
@@ -116,7 +126,9 @@ export const SignupForm = (props: {
               </Select>
               <Select
                 value={formData.birthMonth}
-                onValueChange={(value) => handleInputChange("birthMonth", value)}
+                onValueChange={(value) =>
+                  handleInputChange("birthMonth", value)
+                }
               >
                 <SelectTrigger className="h-9 border-neutral-200">
                   <SelectValue placeholder="월" />
