@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Mail } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
 import { useForgotPassword } from "@/features/auth/hooks/useForgotPassword";
 /**
@@ -20,90 +20,51 @@ import { useForgotPassword } from "@/features/auth/hooks/useForgotPassword";
 const ForgotPasswordPage: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const { sendResetEmail, isLoading, isError, error, isSuccess } =
-    useForgotPassword();
+  const { isLoading, isError, error } = useForgotPassword();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    sendResetEmail({ email });
+    // To Do : Layout 테스트용이므로 주석 제거 필요
+    // sendResetEmail({ email });
+    // 임시로 인증코드 페이지로 이동
+    navigate(ROUTES.VERIFY_CODE, { state: { email } });
   };
-
-  // API 호출 성공 시 성공 페이지로 전환
-  useEffect(() => {
-    if (isSuccess) {
-      setIsSubmitted(true);
-    }
-  }, [isSuccess]);
 
   const handleBackToLogin = () => {
     navigate(ROUTES.LOGIN);
   };
 
-  if (isSubmitted) {
-    return (
-      <div className="container flex items-center justify-center min-h-[calc(100vh-16rem)] py-8">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-              <Mail className="h-6 w-6 text-green-600" />
-            </div>
-            <CardTitle>이메일을 확인하세요</CardTitle>
-            <CardDescription>
-              비밀번호 재설정 링크를 <strong>{email}</strong>로 발송했습니다.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-sm text-muted-foreground">
-              이메일을 받지 못하셨나요? 스팸 폴더를 확인하거나 몇 분 후 다시
-              시도해보세요.
-            </p>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-2">
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => setIsSubmitted(false)}
-            >
-              다시 시도
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full"
-              onClick={handleBackToLogin}
-            >
-              로그인으로 돌아가기
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-    );
-  }
-
   return (
-    <div className="container flex items-center justify-center min-h-[calc(100vh-16rem)] py-8">
-      <Card className="w-full max-w-md">
-        <CardHeader>
+    <div className="min-h-[calc(100vh-16rem)] bg-neutral-50 flex items-center justify-center py-[73px] px-4">
+      <Card className="w-full max-w-[480px] border-neutral-200">
+        <CardHeader className="space-y-3">
           <Button
             variant="ghost"
             size="sm"
-            className="w-fit p-0 h-auto mb-4 text-muted-foreground hover:text-foreground"
+            className="w-fit p-0 h-auto text-neutral-600 hover:text-neutral-900"
             onClick={handleBackToLogin}
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            로그인으로 돌아가기
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            뒤로가기
           </Button>
-          <CardTitle>비밀번호 찾기</CardTitle>
-          <CardDescription>
-            가입하신 이메일 주소를 입력하시면 비밀번호 재설정 링크를
-            보내드립니다.
-          </CardDescription>
+          <div className="space-y-2">
+            <CardTitle className="text-4xl font-bold text-center text-neutral-900">
+              비밀번호 찾기
+            </CardTitle>
+            <CardDescription className="text-base text-center text-neutral-600 font-semibold">
+              등록된 이메일 주소로 인증 코드를 전송합니다.
+              <br />
+              해당 이메일을 입력해주세요.
+            </CardDescription>
+          </div>
         </CardHeader>
-
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+        {/* To Do : Layout 테스트용이므로 noValidate 제거 필요 */}
+        <form onSubmit={handleSubmit} noValidate>
+          <CardContent className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email">이메일 주소</Label>
+              <Label htmlFor="email" className="text-sm font-medium text-neutral-900">
+                이메일 주소
+              </Label>
               <Input
                 id="email"
                 type="email"
@@ -113,6 +74,7 @@ const ForgotPasswordPage: React.FC = () => {
                 required
                 autoComplete="email"
                 autoFocus
+                className="h-9 border-neutral-200"
               />
             </div>
             {isError && (
@@ -123,22 +85,21 @@ const ForgotPasswordPage: React.FC = () => {
                 </p>
               </div>
             )}
-          </CardContent>
-
-          <CardFooter className="flex flex-col space-y-3">
             <Button
               type="submit"
-              className="w-full bg-green-600 hover:bg-green-700"
+              className="w-full h-11 bg-[#108c4a] hover:bg-[#0d7a3e] text-white font-semibold"
               disabled={isLoading || !email.trim()}
             >
-              {isLoading ? "발송 중..." : "재설정 링크 발송"}
+              {isLoading ? "발송 중..." : "메일 전송"}
             </Button>
+          </CardContent>
 
-            <div className="text-center text-sm text-muted-foreground">
+          <CardFooter className="justify-center pb-8">
+            <div className="text-sm text-neutral-600 text-center">
               계정이 기억나셨나요?{" "}
               <button
                 type="button"
-                className="text-green-600 hover:underline font-medium"
+                className="text-[#00a63e] hover:underline font-normal"
                 onClick={handleBackToLogin}
               >
                 로그인하기

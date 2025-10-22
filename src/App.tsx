@@ -8,6 +8,9 @@ import ProductDetailPage from "./pages/products/ProductDetailPage";
 import CartPage from "./pages/cart/CartPage";
 import LoginPage from "./pages/auth/LoginPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
+import VerifyCodePage from "./pages/auth/VerifyCodePage";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+import ResetPasswordSuccessPage from "./pages/auth/ResetPasswordSuccessPage";
 import SignupPage from "./pages/auth/SignupPage";
 import SignupConnectPage from "./pages/auth/SignupConnectPage";
 import NutritionPage from "./pages/nutrition/NutritionPage";
@@ -46,6 +49,15 @@ function App() {
               <Route
                 path={ROUTES.FORGOT_PASSWORD}
                 element={<ForgotPasswordPage />}
+              />
+              <Route path={ROUTES.VERIFY_CODE} element={<VerifyCodePage />} />
+              <Route
+                path={ROUTES.RESET_PASSWORD}
+                element={<ResetPasswordPage />}
+              />
+              <Route
+                path={ROUTES.RESET_PASSWORD_SUCCESS}
+                element={<ResetPasswordSuccessPage />}
               />
               <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
               <Route path={ROUTES.SIGNUP_CONNECT} element={<SignupConnectPage />} />

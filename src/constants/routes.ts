@@ -13,6 +13,9 @@ export const ROUTES = {
   LOGIN: "/login",
   // 비밀번호 찾기
   FORGOT_PASSWORD: "/forgot-password",
+  VERIFY_CODE: "/verify-code",
+  RESET_PASSWORD: "/reset-password",
+  RESET_PASSWORD_SUCCESS: "/reset-password-success",
   // 회원가입
   SIGNUP: "/signup",
   SIGNUP_CONNECT: "/signup/connect",
