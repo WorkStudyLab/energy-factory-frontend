@@ -41,3 +41,20 @@ export const useUpdateCartQuantity = () => {
     },
   });
 };
+
+/**
+ * 장바구니 전체 삭제 Hook
+ * - 전체 삭제 API 호출
+ * - 성공 시 장바구니 데이터 refetch
+ */
+export const useClearCart = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => CartApiService.clearCart(),
+    onSuccess: () => {
+      // 장바구니 데이터 갱신
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
+};

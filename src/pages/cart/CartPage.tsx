@@ -6,13 +6,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
-import { useCart, useUpdateCartQuantity } from "@/features/cart/hooks/useCart";
+import {
+  useCart,
+  useUpdateCartQuantity,
+  useClearCart,
+} from "@/features/cart/hooks/useCart";
 import { ROUTES } from "@/constants/routes";
 import type { CartItem } from "@/types/cart";
 
 export default function CartPage() {
   const { data: cart, isLoading } = useCart();
   const updateQuantityMutation = useUpdateCartQuantity();
+  const clearCartMutation = useClearCart();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const navigate = useNavigate();
 
@@ -91,6 +96,15 @@ export default function CartPage() {
       cartItemId,
       quantity: newQuantity,
     });
+  };
+
+  // 전체 삭제 핸들러
+  const handleClearCart = () => {
+    if (!cart?.items || cart.items.length === 0) return;
+
+    if (confirm("장바구니의 모든 상품을 삭제하시겠습니까?")) {
+      clearCartMutation.mutate();
+    }
   };
 
   // 결제하기 버튼 핸들러
@@ -203,9 +217,16 @@ export default function CartPage() {
                       {cart?.items.length || 0})
                     </span>
                   </div>
-                  <button className="text-sm text-neutral-600 hover:text-neutral-900">
-                    선택 삭제 | 모두 삭제
-                  </button>
+                  <div className="flex items-center gap-2 text-sm text-neutral-600">
+                    <button className="hover:text-neutral-900">선택 삭제</button>
+                    <span>|</span>
+                    <button
+                      onClick={handleClearCart}
+                      className="hover:text-neutral-900"
+                    >
+                      모두 삭제
+                    </button>
+                  </div>
                 </div>
 
                 {/* 아이템 목록 */}

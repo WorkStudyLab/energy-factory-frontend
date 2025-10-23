@@ -73,4 +73,12 @@ export class CartApiService {
       discountRate: 0,
     };
   }
+
+  /**
+   * 장바구니 전체 삭제
+   * @returns 삭제 결과
+   */
+  static async clearCart(): Promise<void> {
+    await api.delete("/api/cart");
+  }
 }
