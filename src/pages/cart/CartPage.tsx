@@ -1,5 +1,5 @@
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,6 +13,7 @@ import type { CartItem } from "@/types/cart";
 export default function CartPage() {
   const { data: cart, isLoading } = useCart();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const navigate = useNavigate();
 
   // 전체 선택/해제
   const handleSelectAll = (checked: boolean) => {
@@ -33,9 +34,10 @@ export default function CartPage() {
   };
 
   // 선택된 아이템들의 총액 계산
-  const selectedTotal = cart?.items
-    .filter((item) => selectedItems.includes(item.id))
-    .reduce((sum, item) => sum + item.totalPrice, 0) || 0;
+  const selectedTotal =
+    cart?.items
+      .filter((item) => selectedItems.includes(item.id))
+      .reduce((sum, item) => sum + item.totalPrice, 0) || 0;
 
   // 선택된 아이템들의 영양소 합계
   const selectedNutrition = cart?.items
@@ -53,7 +55,7 @@ export default function CartPage() {
         }
         return acc;
       },
-      { protein: 0, carbs: 0, fat: 0, calories: 0 }
+      { protein: 0, carbs: 0, fat: 0, calories: 0 },
     );
 
   // 영양소 비율 계산
@@ -78,6 +80,12 @@ export default function CartPage() {
     { name: "지방", value: fatRatio, color: "#f54900" },
     { name: "탄수화물", value: carbsRatio, color: "#155dfc" },
   ];
+
+  // 결제하기 버튼 핸들러
+  const handleCheckout = () => {
+    // TODO: 실제 결제 API 호출 후 주문 완료 페이지로 이동
+    navigate(ROUTES.ORDER_COMPLETE);
+  };
 
   if (isLoading) {
     return (
@@ -115,8 +123,8 @@ export default function CartPage() {
                       onCheckedChange={handleSelectAll}
                     />
                     <span className="text-base text-neutral-900">
-                      전체 선택 ({selectedItems.length}/{cart?.items.length || 0}
-                      )
+                      전체 선택 ({selectedItems.length}/
+                      {cart?.items.length || 0})
                     </span>
                   </div>
                   <button className="text-sm text-neutral-600 hover:text-neutral-900">
@@ -171,9 +179,15 @@ export default function CartPage() {
                         iconSize={14}
                         formatter={(
                           value,
-                          entry: { color?: string; payload?: { value?: number } }
+                          entry: {
+                            color?: string;
+                            payload?: { value?: number };
+                          },
                         ) => (
-                          <span className="text-sm" style={{ color: entry.color }}>
+                          <span
+                            className="text-sm"
+                            style={{ color: entry.color }}
+                          >
                             {value} {entry.payload?.value}%
                           </span>
                         )}
@@ -249,7 +263,10 @@ export default function CartPage() {
                   </span>
                 </div>
 
-                <Button className="w-full bg-green-600 hover:bg-green-700 text-white h-11">
+                <Button
+                  className="w-full bg-green-600 hover:bg-green-700 text-white h-11"
+                  onClick={handleCheckout}
+                >
                   <ShoppingBag className="w-4 h-4 mr-2" />
                   결제하기
                 </Button>

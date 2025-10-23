@@ -29,6 +29,8 @@ export const ROUTES = {
   DIET_COACH: "/diet-coach",
   // 주문 내역
   ORDER_HISTORY: "/order-history",
+  // 주문 완료
+  ORDER_COMPLETE: "/order-complete",
 
   // 테스트
   TEST: "/test",
