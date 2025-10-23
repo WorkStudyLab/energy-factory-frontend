@@ -9,6 +9,8 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
 import {
   useCart,
   useUpdateCartQuantity,
+  useDeleteCartItem,
+  useDeleteSelectedItems,
   useClearCart,
 } from "@/features/cart/hooks/useCart";
 import { ROUTES } from "@/constants/routes";
@@ -17,6 +19,8 @@ import type { CartItem } from "@/types/cart";
 export default function CartPage() {
   const { data: cart, isLoading } = useCart();
   const updateQuantityMutation = useUpdateCartQuantity();
+  const deleteCartItemMutation = useDeleteCartItem();
+  const deleteSelectedItemsMutation = useDeleteSelectedItems();
   const clearCartMutation = useClearCart();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const navigate = useNavigate();
@@ -98,12 +102,46 @@ export default function CartPage() {
     });
   };
 
+  // 개별 아이템 삭제 핸들러
+  const handleDeleteItem = (cartItemId: number) => {
+    if (confirm("이 상품을 장바구니에서 삭제하시겠습니까?")) {
+      deleteCartItemMutation.mutate(cartItemId, {
+        onSuccess: () => {
+          // 삭제된 아이템을 선택 목록에서도 제거
+          setSelectedItems((prev) => prev.filter((id) => id !== cartItemId));
+        },
+      });
+    }
+  };
+
+  // 선택 삭제 핸들러
+  const handleDeleteSelected = () => {
+    if (selectedItems.length === 0) {
+      alert("삭제할 상품을 선택해주세요.");
+      return;
+    }
+
+    if (confirm(`선택한 ${selectedItems.length}개 상품을 삭제하시겠습니까?`)) {
+      deleteSelectedItemsMutation.mutate(selectedItems, {
+        onSuccess: () => {
+          // 선택 목록 초기화
+          setSelectedItems([]);
+        },
+      });
+    }
+  };
+
   // 전체 삭제 핸들러
   const handleClearCart = () => {
     if (!cart?.items || cart.items.length === 0) return;
 
     if (confirm("장바구니의 모든 상품을 삭제하시겠습니까?")) {
-      clearCartMutation.mutate();
+      clearCartMutation.mutate(undefined, {
+        onSuccess: () => {
+          // 선택 목록 초기화
+          setSelectedItems([]);
+        },
+      });
     }
   };
 
@@ -218,7 +256,12 @@ export default function CartPage() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-neutral-600">
-                    <button className="hover:text-neutral-900">선택 삭제</button>
+                    <button
+                      onClick={handleDeleteSelected}
+                      className="hover:text-neutral-900"
+                    >
+                      선택 삭제
+                    </button>
                     <span>|</span>
                     <button
                       onClick={handleClearCart}
@@ -238,6 +281,7 @@ export default function CartPage() {
                       isSelected={selectedItems.includes(item.id)}
                       onSelect={(checked) => handleSelectItem(item.id, checked)}
                       onUpdateQuantity={handleUpdateQuantity}
+                      onDelete={handleDeleteItem}
                     />
                   ))}
                 </div>
@@ -390,11 +434,13 @@ function CartItemRow({
   isSelected,
   onSelect,
   onUpdateQuantity,
+  onDelete,
 }: {
   item: CartItem;
   isSelected: boolean;
   onSelect: (checked: boolean) => void;
   onUpdateQuantity: (cartItemId: number, quantity: number) => void;
+  onDelete: (cartItemId: number) => void;
 }) {
   const handleDecrease = () => {
     if (item.quantity > 1) {
@@ -406,6 +452,10 @@ function CartItemRow({
     if (item.quantity < 999) {
       onUpdateQuantity(item.id, item.quantity + 1);
     }
+  };
+
+  const handleDelete = () => {
+    onDelete(item.id);
   };
   return (
     <div className="flex gap-4 pb-6 border-b border-neutral-200 last:border-0">
@@ -467,7 +517,10 @@ function CartItemRow({
             <span className="text-base text-neutral-900">
               {item.totalPrice.toLocaleString()}원
             </span>
-            <button className="w-8 h-8 rounded-lg hover:bg-neutral-100 flex items-center justify-center">
+            <button
+              onClick={handleDelete}
+              className="w-8 h-8 rounded-lg hover:bg-neutral-100 flex items-center justify-center"
+            >
               <Trash2 className="w-4 h-4 text-neutral-600" />
             </button>
           </div>

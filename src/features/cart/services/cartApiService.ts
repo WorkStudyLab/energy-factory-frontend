@@ -75,6 +75,26 @@ export class CartApiService {
   }
 
   /**
+   * 장바구니 아이템 삭제 (단일)
+   * @param cartItemId - 삭제할 장바구니 아이템 ID
+   * @returns 삭제 결과
+   */
+  static async deleteCartItem(cartItemId: number): Promise<void> {
+    await api.delete(`/api/cart/${cartItemId}`);
+  }
+
+  /**
+   * 장바구니 선택 삭제 (여러 개)
+   * @param cartItemIds - 삭제할 장바구니 아이템 ID 배열
+   * @returns 삭제 결과
+   */
+  static async deleteSelectedItems(cartItemIds: number[]): Promise<void> {
+    await api.delete("/api/cart/selected", {
+      data: { cartItemIds },
+    });
+  }
+
+  /**
    * 장바구니 전체 삭제
    * @returns 삭제 결과
    */

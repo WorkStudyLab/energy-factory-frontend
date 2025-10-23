@@ -43,6 +43,42 @@ export const useUpdateCartQuantity = () => {
 };
 
 /**
+ * 장바구니 아이템 삭제 Hook (단일)
+ * - 개별 아이템 삭제 API 호출
+ * - 성공 시 장바구니 데이터 refetch
+ */
+export const useDeleteCartItem = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (cartItemId: number) =>
+      CartApiService.deleteCartItem(cartItemId),
+    onSuccess: () => {
+      // 장바구니 데이터 갱신
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
+};
+
+/**
+ * 장바구니 선택 삭제 Hook (여러 개)
+ * - 선택된 여러 아이템 삭제 API 호출
+ * - 성공 시 장바구니 데이터 refetch
+ */
+export const useDeleteSelectedItems = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (cartItemIds: number[]) =>
+      CartApiService.deleteSelectedItems(cartItemIds),
+    onSuccess: () => {
+      // 장바구니 데이터 갱신
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
+};
+
+/**
  * 장바구니 전체 삭제 Hook
  * - 전체 삭제 API 호출
  * - 성공 시 장바구니 데이터 refetch
