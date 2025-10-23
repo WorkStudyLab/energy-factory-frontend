@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
+import { PieChart, Pie } from "recharts";
 
 export default function OrdersPage() {
   const [selectedStatus, setSelectedStatus] = useState("all");
@@ -629,63 +630,296 @@ export default function OrdersPage() {
                           상세 보기
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-2xl">
-                        <DialogHeader>
-                          <DialogTitle>주문 상세 정보</DialogTitle>
-                          <DialogDescription>
-                            {order.id} 주문의 상세 정보입니다
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4 max-h-96 overflow-y-auto">
-                          {/* 상세 정보 내용 */}
-                          <div>
-                            <h4 className="font-medium mb-2">주문 상품</h4>
-                            <div className="space-y-2">
+                      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                        <div className="space-y-6">
+                          {/* 헤더 - 주문번호와 배송상태 */}
+                          <div className="border-b border-neutral-200 pb-2">
+                            <div className="flex items-center justify-between mb-2">
+                              <h3 className="text-base font-normal">
+                                주문번호: {order.id}
+                              </h3>
+                              <Badge
+                                className={`${getStatusInfo(order.status).color} flex items-center gap-1`}
+                              >
+                                {getStatusInfo(order.status).icon}
+                                {order.statusText}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-neutral-600">
+                              {order.date} 오전
+                            </p>
+                          </div>
+
+                          {/* 주문 상품 */}
+                          <div className="space-y-4">
+                            <h4 className="text-base font-normal">주문 상품</h4>
+                            <div className="space-y-3">
                               {order.items.map((item, index) => (
                                 <div
                                   key={index}
-                                  className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                                  className="flex gap-3 p-3 bg-neutral-50 rounded-lg"
                                 >
-                                  <div>
-                                    <div className="font-medium">
+                                  <div className="border border-neutral-200 rounded-lg overflow-hidden w-16 h-16 flex-shrink-0">
+                                    <img
+                                      src={
+                                        item.image || "https://placehold.co/64x64"
+                                      }
+                                      alt={item.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="text-sm text-neutral-900 mb-1">
                                       {item.name}
                                     </div>
-                                    <div className="text-sm text-gray-500">
-                                      수량: {item.quantity}개
+                                    <div className="text-xs text-neutral-600 mb-1">
+                                      선택옵션 {item.protein}g ·{" "}
+                                      {item.calories}kcal
+                                    </div>
+                                    <div className="text-xs text-neutral-500">
+                                      탄수화물 {Math.round(item.calories * 0.4 / 4)}g · 단백질{" "}
+                                      {item.protein}g · 지방{" "}
+                                      {Math.round(item.calories * 0.3 / 9)}g
                                     </div>
                                   </div>
-                                  <div className="font-medium">
-                                    {(
-                                      item.price * item.quantity
-                                    ).toLocaleString()}
-                                    원
+                                  <div className="text-right flex-shrink-0">
+                                    <div className="text-sm text-neutral-900">
+                                      {item.price.toLocaleString()}원
+                                    </div>
+                                    <div className="text-xs text-neutral-600">
+                                      수량 {item.quantity}개
+                                    </div>
                                   </div>
                                 </div>
                               ))}
                             </div>
                           </div>
 
-                          <Separator />
+                          {/* 영양소 비율 */}
+                          <div className="space-y-4">
+                            <h4 className="text-lg font-medium">영양소 비율</h4>
+                            <div className="flex items-center justify-between px-24">
+                              {/* 파이 차트 */}
+                              <div className="w-56 h-70">
+                                <PieChart width={224} height={280}>
+                                  <Pie
+                                    data={[
+                                      {
+                                        name: "탄수화물",
+                                        value: order.items.reduce(
+                                          (sum, item) =>
+                                            sum +
+                                            Math.round(
+                                              (item.calories * 0.47 * item.quantity) / 4,
+                                            ),
+                                          0,
+                                        ),
+                                        fill: "#008cdd",
+                                      },
+                                      {
+                                        name: "단백질",
+                                        value: order.items.reduce(
+                                          (sum, item) =>
+                                            sum + item.protein * item.quantity,
+                                          0,
+                                        ),
+                                        fill: "#00a63e",
+                                      },
+                                      {
+                                        name: "지방",
+                                        value: order.items.reduce(
+                                          (sum, item) =>
+                                            sum +
+                                            Math.round(
+                                              (item.calories * 0.17 * item.quantity) / 9,
+                                            ),
+                                          0,
+                                        ),
+                                        fill: "#3ab4ea",
+                                      },
+                                    ]}
+                                    cx={106}
+                                    cy={140}
+                                    innerRadius={0}
+                                    outerRadius={90}
+                                    paddingAngle={0}
+                                    dataKey="value"
+                                    label={({
+                                      cx,
+                                      cy,
+                                      midAngle,
+                                      outerRadius,
+                                      percent,
+                                      name,
+                                    }) => {
+                                      const RADIAN = Math.PI / 180;
+                                      const radius = outerRadius + 30;
+                                      const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                                      const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                                      return (
+                                        <text
+                                          x={x}
+                                          y={y}
+                                          fill={
+                                            name === "탄수화물"
+                                              ? "#008cdd"
+                                              : name === "단백질"
+                                                ? "#00a63e"
+                                                : "#3ab4ea"
+                                          }
+                                          textAnchor={x > cx ? "start" : "end"}
+                                          dominantBaseline="central"
+                                          className="text-xs"
+                                        >
+                                          {`${name} ${Math.round(percent * 100)}%`}
+                                        </text>
+                                      );
+                                    }}
+                                  />
+                                </PieChart>
+                              </div>
+                              {/* 범례 */}
+                              <div className="flex flex-col gap-4 justify-center">
+                                <div className="bg-blue-50 rounded-lg px-3 py-3 flex items-center justify-between w-52">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-4 h-4 rounded-full bg-[#008cdd]" />
+                                    <span className="text-base text-neutral-900">
+                                      탄수화물
+                                    </span>
+                                  </div>
+                                  <span className="text-base text-neutral-900">
+                                    {order.items.reduce(
+                                      (sum, item) =>
+                                        sum +
+                                        Math.round(
+                                          (item.calories * 0.47 * item.quantity) / 4,
+                                        ),
+                                      0,
+                                    )}
+                                    g
+                                  </span>
+                                </div>
+                                <div className="bg-green-50 rounded-lg px-3 py-3 flex items-center justify-between w-52">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-4 h-4 rounded-full bg-green-600" />
+                                    <span className="text-base text-neutral-900">
+                                      단백질
+                                    </span>
+                                  </div>
+                                  <span className="text-base text-neutral-900">
+                                    {order.items.reduce(
+                                      (sum, item) =>
+                                        sum + item.protein * item.quantity,
+                                      0,
+                                    )}
+                                    g
+                                  </span>
+                                </div>
+                                <div className="bg-blue-100 rounded-lg px-3 py-3 flex items-center justify-between w-52">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-4 h-4 rounded-full bg-[#3ab4ea]" />
+                                    <span className="text-base text-neutral-900">
+                                      지방
+                                    </span>
+                                  </div>
+                                  <span className="text-base text-neutral-900">
+                                    {order.items.reduce(
+                                      (sum, item) =>
+                                        sum +
+                                        Math.round(
+                                          (item.calories * 0.17 * item.quantity) / 9,
+                                        ),
+                                      0,
+                                    )}
+                                    g
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
 
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <h4 className="font-medium mb-2">배송 정보</h4>
-                              <div className="text-sm space-y-1">
-                                <div>방법: {order.shipping.method}</div>
-                                <div>주소: {order.shipping.address}</div>
+                          {/* 총 칼로리 */}
+                          <div className="bg-green-50 rounded-lg py-6 px-6 text-center">
+                            <p className="text-base text-neutral-600 mb-2">
+                              총 칼로리
+                            </p>
+                            <p className="text-4xl text-[#00a63e] leading-10">
+                              {order.items.reduce(
+                                (sum, item) =>
+                                  sum + item.calories * item.quantity,
+                                0,
+                              )}{" "}
+                              kcal
+                            </p>
+                          </div>
+
+                          {/* 배송 정보 & 결제 정보 */}
+                          <div className="grid grid-cols-2 gap-6 border-t border-neutral-200 pt-6">
+                            <div className="space-y-3">
+                              <h4 className="text-base font-normal">배송 정보</h4>
+                              <div className="space-y-2 text-sm">
+                                <div className="flex gap-1">
+                                  <span className="text-neutral-600">
+                                    배송 주관:
+                                  </span>
+                                  <span className="text-neutral-900">
+                                    롯데 택배
+                                  </span>
+                                </div>
+                                <div className="flex gap-1">
+                                  <span className="text-neutral-600">
+                                    배송받는 분:
+                                  </span>
+                                  <span className="text-neutral-900">김OO</span>
+                                </div>
+                                <div className="flex gap-1">
+                                  <span className="text-neutral-600">
+                                    배송 주소:
+                                  </span>
+                                  <span className="text-neutral-900">
+                                    {order.shipping.address}
+                                  </span>
+                                </div>
                                 {order.shipping.trackingNumber && (
-                                  <div>
-                                    운송장: {order.shipping.trackingNumber}
+                                  <div className="flex gap-1">
+                                    <span className="text-neutral-600">
+                                      배송시 요구 사항:
+                                    </span>
+                                    <span className="text-neutral-900">
+                                      문에 걸어주세요
+                                    </span>
                                   </div>
                                 )}
                               </div>
                             </div>
-                            <div>
-                              <h4 className="font-medium mb-2">결제 정보</h4>
-                              <div className="text-sm space-y-1">
-                                <div>방법: {order.payment.method}</div>
-                                <div>
-                                  금액: {order.total.toLocaleString()}원
+                            <div className="space-y-3">
+                              <h4 className="text-base font-normal">결제 정보</h4>
+                              <div className="space-y-2 text-sm">
+                                <div className="flex gap-1">
+                                  <span className="text-neutral-600">
+                                    결제 방법:
+                                  </span>
+                                  <span className="text-neutral-900">
+                                    {order.payment.method}
+                                  </span>
+                                </div>
+                                <div className="flex gap-1">
+                                  <span className="text-neutral-600">
+                                    배송 금액:
+                                  </span>
+                                  <span className="text-neutral-900">
+                                    {order.shipping.fee === 0
+                                      ? "배송료 무료"
+                                      : `${order.shipping.fee.toLocaleString()}원`}
+                                  </span>
+                                </div>
+                                <div className="flex gap-1">
+                                  <span className="text-neutral-600">
+                                    총 결제 금액:
+                                  </span>
+                                  <span className="text-neutral-900">
+                                    {order.total.toLocaleString()}원
+                                  </span>
                                 </div>
                               </div>
                             </div>

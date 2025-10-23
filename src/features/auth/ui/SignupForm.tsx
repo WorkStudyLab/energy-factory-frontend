@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useSignup } from "../hooks/useSignup";
+// import { useSignup } from "../hooks/useSignup";
 import { Button } from "@/components/ui/button";
 import { LabelInput } from "./LabelInput";
 import { ROUTES } from "@/constants/routes";
@@ -32,12 +32,12 @@ interface FormData {
   phone: string;
 }
 
-interface SignupRequest {
-  name: string;
-  email: string;
-  password: string;
-  phoneNumber: string;
-}
+// interface SignupRequest {
+//   name: string;
+//   email: string;
+//   password: string;
+//   phoneNumber: string;
+// }
 /**
  * 회원가입 폼 컴포넌트
  * @todo 카카오 로그인 구현
@@ -50,18 +50,18 @@ export const SignupForm = (props: {
   handleInputChange: (field: keyof FormData, value: string | boolean) => void;
 }) => {
   const navigate = useNavigate();
-  const { signup } = useSignup();
+  // const { signup } = useSignup();
   const { formData, handleInputChange } = props;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const signupData: SignupRequest = {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      phoneNumber: formData.phone,
-    };
+    // const signupData: SignupRequest = {
+    //   name: formData.name,
+    //   email: formData.email,
+    //   password: formData.password,
+    //   phoneNumber: formData.phone,
+    // };
 
     // To Do : Layout 테스트용이므로 주석 제거 필요
     // signup(signupData);
