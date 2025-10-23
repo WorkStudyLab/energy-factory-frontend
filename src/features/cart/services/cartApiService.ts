@@ -48,4 +48,29 @@ export class CartApiService {
       discountRate: 0,
     };
   }
+
+  /**
+   * 장바구니 아이템 수량 변경
+   * @param cartItemId - 장바구니 아이템 ID
+   * @param quantity - 변경할 수량 (1~999)
+   * @returns 수정된 장바구니 아이템
+   */
+  static async updateQuantity(
+    cartItemId: number,
+    quantity: number,
+  ): Promise<CartItem> {
+    const response = await api.patch<ApiResponse<CartItem>>(
+      `/api/cart/${cartItemId}`,
+      { quantity },
+    );
+    const item = response.data.data;
+
+    // API 응답 데이터를 UI 친화적으로 변환
+    return {
+      ...item,
+      imageUrl: item.productImageUrl,
+      finalPrice: item.totalPrice / item.quantity,
+      discountRate: 0,
+    };
+  }
 }

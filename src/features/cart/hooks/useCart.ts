@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { CartApiService } from "../services/cartApiService";
 import { useAuthStore } from "@/stores/useAuthStore";
 
@@ -16,5 +16,28 @@ export const useCart = () => {
     enabled: isAuthenticated, // 로그인 상태에서만 호출
     staleTime: 1 * 60 * 1000, // 1분간 캐시 유지
     retry: 1,
+  });
+};
+
+/**
+ * 장바구니 수량 변경 Hook
+ * - 수량 변경 API 호출
+ * - 성공 시 장바구니 데이터 refetch
+ */
+export const useUpdateCartQuantity = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      cartItemId,
+      quantity,
+    }: {
+      cartItemId: number;
+      quantity: number;
+    }) => CartApiService.updateQuantity(cartItemId, quantity),
+    onSuccess: () => {
+      // 장바구니 데이터 갱신
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
   });
 };
