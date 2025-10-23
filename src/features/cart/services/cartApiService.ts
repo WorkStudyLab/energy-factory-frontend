@@ -48,4 +48,57 @@ export class CartApiService {
       discountRate: 0,
     };
   }
+
+  /**
+   * 장바구니 아이템 수량 변경
+   * @param cartItemId - 장바구니 아이템 ID
+   * @param quantity - 변경할 수량 (1~999)
+   * @returns 수정된 장바구니 아이템
+   */
+  static async updateQuantity(
+    cartItemId: number,
+    quantity: number,
+  ): Promise<CartItem> {
+    const response = await api.patch<ApiResponse<CartItem>>(
+      `/api/cart/${cartItemId}`,
+      { quantity },
+    );
+    const item = response.data.data;
+
+    // API 응답 데이터를 UI 친화적으로 변환
+    return {
+      ...item,
+      imageUrl: item.productImageUrl,
+      finalPrice: item.totalPrice / item.quantity,
+      discountRate: 0,
+    };
+  }
+
+  /**
+   * 장바구니 아이템 삭제 (단일)
+   * @param cartItemId - 삭제할 장바구니 아이템 ID
+   * @returns 삭제 결과
+   */
+  static async deleteCartItem(cartItemId: number): Promise<void> {
+    await api.delete(`/api/cart/${cartItemId}`);
+  }
+
+  /**
+   * 장바구니 선택 삭제 (여러 개)
+   * @param cartItemIds - 삭제할 장바구니 아이템 ID 배열
+   * @returns 삭제 결과
+   */
+  static async deleteSelectedItems(cartItemIds: number[]): Promise<void> {
+    await api.delete("/api/cart/selected", {
+      data: { cartItemIds },
+    });
+  }
+
+  /**
+   * 장바구니 전체 삭제
+   * @returns 삭제 결과
+   */
+  static async clearCart(): Promise<void> {
+    await api.delete("/api/cart");
+  }
 }

@@ -6,12 +6,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
-import { useCart } from "@/features/cart/hooks/useCart";
+import {
+  useCart,
+  useUpdateCartQuantity,
+  useDeleteCartItem,
+  useDeleteSelectedItems,
+  useClearCart,
+} from "@/features/cart/hooks/useCart";
 import { ROUTES } from "@/constants/routes";
 import type { CartItem } from "@/types/cart";
 
 export default function CartPage() {
   const { data: cart, isLoading } = useCart();
+  const updateQuantityMutation = useUpdateCartQuantity();
+  const deleteCartItemMutation = useDeleteCartItem();
+  const deleteSelectedItemsMutation = useDeleteSelectedItems();
+  const clearCartMutation = useClearCart();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const navigate = useNavigate();
 
@@ -80,6 +90,60 @@ export default function CartPage() {
     { name: "지방", value: fatRatio, color: "#f54900" },
     { name: "탄수화물", value: carbsRatio, color: "#155dfc" },
   ];
+
+  // 수량 변경 핸들러
+  const handleUpdateQuantity = (cartItemId: number, newQuantity: number) => {
+    // 수량은 1~999 사이여야 함
+    if (newQuantity < 1 || newQuantity > 999) return;
+
+    updateQuantityMutation.mutate({
+      cartItemId,
+      quantity: newQuantity,
+    });
+  };
+
+  // 개별 아이템 삭제 핸들러
+  const handleDeleteItem = (cartItemId: number) => {
+    if (confirm("이 상품을 장바구니에서 삭제하시겠습니까?")) {
+      deleteCartItemMutation.mutate(cartItemId, {
+        onSuccess: () => {
+          // 삭제된 아이템을 선택 목록에서도 제거
+          setSelectedItems((prev) => prev.filter((id) => id !== cartItemId));
+        },
+      });
+    }
+  };
+
+  // 선택 삭제 핸들러
+  const handleDeleteSelected = () => {
+    if (selectedItems.length === 0) {
+      alert("삭제할 상품을 선택해주세요.");
+      return;
+    }
+
+    if (confirm(`선택한 ${selectedItems.length}개 상품을 삭제하시겠습니까?`)) {
+      deleteSelectedItemsMutation.mutate(selectedItems, {
+        onSuccess: () => {
+          // 선택 목록 초기화
+          setSelectedItems([]);
+        },
+      });
+    }
+  };
+
+  // 전체 삭제 핸들러
+  const handleClearCart = () => {
+    if (!cart?.items || cart.items.length === 0) return;
+
+    if (confirm("장바구니의 모든 상품을 삭제하시겠습니까?")) {
+      clearCartMutation.mutate(undefined, {
+        onSuccess: () => {
+          // 선택 목록 초기화
+          setSelectedItems([]);
+        },
+      });
+    }
+  };
 
   // 결제하기 버튼 핸들러
   const handleCheckout = () => {
@@ -191,9 +255,21 @@ export default function CartPage() {
                       {cart?.items.length || 0})
                     </span>
                   </div>
-                  <button className="text-sm text-neutral-600 hover:text-neutral-900">
-                    선택 삭제 | 모두 삭제
-                  </button>
+                  <div className="flex items-center gap-2 text-sm text-neutral-600">
+                    <button
+                      onClick={handleDeleteSelected}
+                      className="hover:text-neutral-900"
+                    >
+                      선택 삭제
+                    </button>
+                    <span>|</span>
+                    <button
+                      onClick={handleClearCart}
+                      className="hover:text-neutral-900"
+                    >
+                      모두 삭제
+                    </button>
+                  </div>
                 </div>
 
                 {/* 아이템 목록 */}
@@ -204,6 +280,8 @@ export default function CartPage() {
                       item={item}
                       isSelected={selectedItems.includes(item.id)}
                       onSelect={(checked) => handleSelectItem(item.id, checked)}
+                      onUpdateQuantity={handleUpdateQuantity}
+                      onDelete={handleDeleteItem}
                     />
                   ))}
                 </div>
@@ -355,11 +433,30 @@ function CartItemRow({
   item,
   isSelected,
   onSelect,
+  onUpdateQuantity,
+  onDelete,
 }: {
   item: CartItem;
   isSelected: boolean;
   onSelect: (checked: boolean) => void;
+  onUpdateQuantity: (cartItemId: number, quantity: number) => void;
+  onDelete: (cartItemId: number) => void;
 }) {
+  const handleDecrease = () => {
+    if (item.quantity > 1) {
+      onUpdateQuantity(item.id, item.quantity - 1);
+    }
+  };
+
+  const handleIncrease = () => {
+    if (item.quantity < 999) {
+      onUpdateQuantity(item.id, item.quantity + 1);
+    }
+  };
+
+  const handleDelete = () => {
+    onDelete(item.id);
+  };
   return (
     <div className="flex gap-4 pb-6 border-b border-neutral-200 last:border-0">
       {/* 체크박스 */}
@@ -398,11 +495,19 @@ function CartItemRow({
         <div className="flex items-center justify-between">
           {/* 수량 조절 */}
           <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden h-8">
-            <button className="w-8 h-full flex items-center justify-center border-r border-neutral-200 hover:bg-neutral-50">
+            <button
+              onClick={handleDecrease}
+              disabled={item.quantity <= 1}
+              className="w-8 h-full flex items-center justify-center border-r border-neutral-200 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <Minus className="w-4 h-4" />
             </button>
             <span className="w-12 text-center text-sm">{item.quantity}</span>
-            <button className="w-8 h-full flex items-center justify-center border-l border-neutral-200 hover:bg-neutral-50">
+            <button
+              onClick={handleIncrease}
+              disabled={item.quantity >= 999}
+              className="w-8 h-full flex items-center justify-center border-l border-neutral-200 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <Plus className="w-4 h-4" />
             </button>
           </div>
@@ -412,7 +517,10 @@ function CartItemRow({
             <span className="text-base text-neutral-900">
               {item.totalPrice.toLocaleString()}원
             </span>
-            <button className="w-8 h-8 rounded-lg hover:bg-neutral-100 flex items-center justify-center">
+            <button
+              onClick={handleDelete}
+              className="w-8 h-8 rounded-lg hover:bg-neutral-100 flex items-center justify-center"
+            >
               <Trash2 className="w-4 h-4 text-neutral-600" />
             </button>
           </div>
