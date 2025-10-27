@@ -21,6 +21,7 @@ interface LoginResponse {
     accessToken: string;
     tokenType: string;
     refreshToken: string;
+    userId: number;
   };
   desc: string;
   status: number;
@@ -47,12 +48,12 @@ export const useLogin = () => {
 
   const mutation = useMutation({
     mutationFn: loginApi,
-    onSuccess: () => {
+    onSuccess: (data) => {
       // 토큰은 HttpOnly 쿠키로 자동 저장되므로 별도 저장 불필요
       // 로그인 상태만 저장
       login(
         {
-          id: "", // TODO: 사용자 정보 API 연동 시 실제 값으로 교체
+          id: data.data.userId,
           email: "",
           name: "",
         },

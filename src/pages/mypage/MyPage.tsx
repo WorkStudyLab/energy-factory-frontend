@@ -16,7 +16,7 @@ import { useDeleteUser } from "@/features/auth/hooks/useDeleteUser";
 
 export default function MyPage() {
   // 인증 관련 훅
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
   const { deleteUser } = useDeleteUser();
   const navigate = useNavigate();
 
@@ -40,13 +40,23 @@ export default function MyPage() {
 
   /** 회원 탈퇴 요청 */
   const handleDeleteAccount = () => {
+    // user가 null인 경우 처리
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
     const confirmed = window.confirm(
       "정말로 회원을 탈퇴하시겠습니까?\n\n탈퇴 시 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.",
     );
 
     if (confirmed) {
-      // To Do 실제 userId 조회 필요
-      deleteUser(33);
+      // 회원 탈퇴 요청
+      deleteUser(user.id);
+      // 로그아웃 요청
+      logout();
+      // 홈으로 이동
       navigate("/");
     }
   };
