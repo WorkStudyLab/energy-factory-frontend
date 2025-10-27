@@ -45,10 +45,6 @@ export function MyPageBasicInfo({ userInfo }: MyPageBasicInfoProps) {
           </span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-base text-neutral-700">계정 연동</span>
-          <span className="text-base text-neutral-900">Naver</span>
-        </div>
-        <div className="flex justify-between items-center">
           <span className="text-base text-neutral-700">배송지</span>
           <span className="text-base text-neutral-900">{userInfo.address}</span>
         </div>

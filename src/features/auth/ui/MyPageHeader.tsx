@@ -70,7 +70,6 @@ function getTimeSinceJoined(memberSince: string): string {
 
 export function MyPageHeader({ userInfo, onLogout }: MyPageHeaderProps) {
   const { name, memberSince, authProvider, profileImage } = userInfo;
-  console.log(userInfo);
   return (
     <Card className="border-neutral-200">
       <CardContent className="p-8">
@@ -84,18 +83,22 @@ export function MyPageHeader({ userInfo, onLogout }: MyPageHeaderProps) {
                 {name}님의 마이페이지
               </h1>
               <div className="flex items-center gap-2 mb-1">
-                <Badge
-                  variant="outline"
-                  className="border-[#88ff90] bg-transparent text-[#00a63e] text-xs font-bold"
-                >
-                  Naver 계정
-                </Badge>
-                <Badge
-                  variant="outline"
-                  className="border-[#bedbff] bg-transparent text-[#155dfc] text-xs font-bold"
-                >
-                  개인계정
-                </Badge>
+                {authProvider === "local" && (
+                  <Badge
+                    variant="outline"
+                    className="border-[#bedbff] bg-transparent text-[#155dfc] text-xs font-bold"
+                  >
+                    개인계정
+                  </Badge>
+                )}
+                {authProvider === "naver" && (
+                  <Badge
+                    variant="outline"
+                    className="border-[#88ff90] bg-transparent text-[#00a63e] text-xs font-bold"
+                  >
+                    Naver 계정
+                  </Badge>
+                )}
               </div>
               <p className="text-sm text-neutral-600">
                 {memberSince} 가입 · {getTimeSinceJoined(memberSince)}
@@ -104,7 +107,7 @@ export function MyPageHeader({ userInfo, onLogout }: MyPageHeaderProps) {
           </div>
           <Button
             onClick={onLogout}
-            className="bg-[#e20004] hover:bg-[#c10003] text-white px-12 h-[50px] rounded-lg"
+            className="bg-[#e20004] hover:bg-[#c10003] text-white font-bold px-10 h-[45px] rounded-lg"
           >
             로그아웃
           </Button>

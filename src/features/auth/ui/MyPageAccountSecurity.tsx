@@ -7,11 +7,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import deleteUserIcon from "@/assets/icons/deleteUserIcon.svg";
+import type { UserInfo } from "@/types/user";
 
 interface MyPageAccountSecurityProps {
-  userInfo: {
-    email: string;
-  };
+  userInfo: UserInfo;
   onDeleteAccount: () => void;
 }
 
@@ -19,6 +18,7 @@ export function MyPageAccountSecurity({
   userInfo,
   onDeleteAccount,
 }: MyPageAccountSecurityProps) {
+  const { authProvider } = userInfo;
   return (
     <Card className="border-neutral-200">
       <CardHeader className="pb-6">
@@ -42,12 +42,17 @@ export function MyPageAccountSecurity({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button className="bg-[#00a63e] hover:bg-[#008c36] text-white px-4 h-[38px] rounded-lg text-sm font-bold">
-              연동됨
-            </Button>
-            <Button className="bg-[#00a63e] hover:bg-[#008c36] text-white px-4 h-[38px] rounded-lg text-sm font-bold">
-              네이버 아이디 연동하기
-            </Button>
+            {authProvider !== "naver" && (
+              <Button className="bg-[#03c75a] hover:bg-[#02a144] text-white px-4 h-[38px] rounded-lg text-sm font-bold">
+                네이버 아이디 연동하기
+              </Button>
+            )}
+
+            {authProvider === "naver" && (
+              <Button className="bg-[#00a63e] hover:bg-[#008c36] text-white px-4 h-[38px] rounded-lg text-sm font-bold">
+                연동됨
+              </Button>
+            )}
           </div>
         </div>
 
@@ -55,11 +60,7 @@ export function MyPageAccountSecurity({
         <div className="flex items-center justify-between pt-2">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center">
-              <img
-                src={deleteUserIcon}
-                alt="회원 탈퇴"
-                className="w-5 h-5"
-              />
+              <img src={deleteUserIcon} alt="회원 탈퇴" className="w-5 h-5" />
             </div>
             <div>
               <div className="text-base text-neutral-900 mb-1">회원 탈퇴</div>
