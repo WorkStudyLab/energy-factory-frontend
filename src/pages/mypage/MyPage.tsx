@@ -6,10 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate } from "react-router-dom";
+import deleteUserIcon from "@/assets/icons/deleteUserIcon.svg";
+import defaultUserImage from "@/assets/images/default-user-image.png";
 
 export default function MyPage() {
   // 인증 관련 훅
@@ -25,12 +27,27 @@ export default function MyPage() {
     authProvider: "naver",
     memberSince: "2024-06-15",
     address: "서울특별시 금천구 스타밸리",
+    profileImage: defaultUserImage, // 기본 프로필 이미지
   };
 
   // 로그아웃 처리
   const handleLogout = () => {
     logout();
     navigate("/");
+  };
+
+  // 회원탈퇴 처리
+  const handleDeleteAccount = () => {
+    const confirmed = window.confirm(
+      "정말로 회원을 탈퇴하시겠습니까?\n\n탈퇴 시 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다."
+    );
+
+    if (confirmed) {
+      // TODO: 회원탈퇴 API 호출
+      console.log("회원탈퇴 처리");
+      logout();
+      navigate("/");
+    }
   };
 
   return (
@@ -43,6 +60,10 @@ export default function MyPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-6">
                   <Avatar className="h-24 w-24 bg-neutral-200">
+                    <AvatarImage
+                      src={userInfo.profileImage}
+                      alt={userInfo.name}
+                    />
                     <AvatarFallback className="text-xl text-neutral-600 bg-neutral-200">
                       {userInfo.name.slice(0, 1)}
                     </AvatarFallback>
@@ -134,8 +155,9 @@ export default function MyPage() {
                 계정 보안 및 설정 관리
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
+            <CardContent className="space-y-4">
+              {/* Naver 계정 연동 */}
+              <div className="flex items-center justify-between border-b border-neutral-200 pb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white border border-neutral-200 rounded-full flex items-center justify-center">
                     <span className="text-base text-black">N</span>
@@ -157,6 +179,34 @@ export default function MyPage() {
                     네이버 아이디 연동하기
                   </Button>
                 </div>
+              </div>
+
+              {/* 회원 탈퇴 */}
+              <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center">
+                    <img
+                      src={deleteUserIcon}
+                      alt="회원 탈퇴"
+                      className="w-5 h-5"
+                    />
+                  </div>
+                  <div>
+                    <div className="text-base text-neutral-900 mb-1">
+                      회원 탈퇴
+                    </div>
+                    <div className="text-sm text-neutral-600">
+                      계정을 영구적으로 삭제합니다
+                    </div>
+                  </div>
+                </div>
+                <Button
+                  onClick={handleDeleteAccount}
+                  variant="outline"
+                  className="border-[#e7000b] text-[#e7000b] hover:bg-red-50 hover:text-[#e7000b] px-4 h-[38px] rounded-lg text-sm"
+                >
+                  회원탈퇴
+                </Button>
               </div>
             </CardContent>
           </Card>
