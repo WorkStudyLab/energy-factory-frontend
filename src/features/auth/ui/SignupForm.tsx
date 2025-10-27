@@ -1,8 +1,7 @@
 import { useNavigate } from "react-router-dom";
-// import { useSignup } from "../hooks/useSignup";
+import { useSignup } from "../hooks/useSignup";
 import { Button } from "@/components/ui/button";
 import { LabelInput } from "./LabelInput";
-import { ROUTES } from "@/constants/routes";
 import {
   Select,
   SelectContent,
@@ -32,12 +31,6 @@ interface FormData {
   phone: string;
 }
 
-// interface SignupRequest {
-//   name: string;
-//   email: string;
-//   password: string;
-//   phoneNumber: string;
-// }
 /**
  * 회원가입 폼 컴포넌트
  * @todo 카카오 로그인 구현
@@ -45,27 +38,32 @@ interface FormData {
  * @todo 비밀번호 유효성 검사 (자릿수, 영문+숫자+특수문자, 비밀번호확인 일치)
  * @todo 휴대폰 번호 유효성 검사 (010-1234-5678 형식)
  */
+interface SignupRequest {
+  name: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
+}
+
 export const SignupForm = (props: {
   formData: FormData;
   handleInputChange: (field: keyof FormData, value: string | boolean) => void;
 }) => {
   const navigate = useNavigate();
-  // const { signup } = useSignup();
+  const { signup, isLoading } = useSignup();
   const { formData, handleInputChange } = props;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // const signupData: SignupRequest = {
-    //   name: formData.name,
-    //   email: formData.email,
-    //   password: formData.password,
-    //   phoneNumber: formData.phone,
-    // };
+    const signupData: SignupRequest = {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      phoneNumber: formData.phone,
+    };
 
-    // To Do : Layout 테스트용이므로 주석 제거 필요
-    // signup(signupData);
-    navigate(ROUTES.SIGNUP_CONNECT);
+    signup(signupData);
   };
 
   // 년도 옵션 생성 (현재 년도부터 100년 전까지)
@@ -75,8 +73,7 @@ export const SignupForm = (props: {
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   return (
-    // To Do : Layout 테스트용이므로 noValidate 제거 필요
-    <form onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit}>
       <Card className="border-neutral-200">
         <CardHeader>
           <CardTitle className="text-base text-neutral-900">
@@ -215,9 +212,10 @@ export const SignupForm = (props: {
           </Button>
           <Button
             type="submit"
+            disabled={isLoading}
             className="flex-1 h-12 rounded-lg bg-[#108c4a] hover:bg-[#0d7a3f] text-white"
           >
-            회원가입
+            {isLoading ? "가입 중..." : "회원가입"}
           </Button>
         </CardFooter>
       </Card>
