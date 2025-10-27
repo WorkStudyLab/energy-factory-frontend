@@ -1,25 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ChevronLeft } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
+import { useVerifyCode } from "@/features/auth/hooks/useVerifyCode";
 
-/**
- * @todo 추후 인증코드 검증 API 연동 필요
- */
 const VerifyCodePage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email || "";
   const [verificationCode, setVerificationCode] = useState("");
+  const { verifyCode, isLoading, isError, error, isSuccess, data } = useVerifyCode();
+
+  // 성공 시 resetToken을 다음 페이지로 전달
+  useEffect(() => {
+    if (isSuccess && data?.data?.resetToken) {
+      navigate(ROUTES.RESET_PASSWORD, {
+        state: {
+          resetToken: data.data.resetToken,
+          email
+        }
+      });
+    }
+  }, [isSuccess, data, navigate, email]);
 
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    // To Do : 인증코드 검증 API 연동 필요
-    // 임시로 비밀번호 재설정 페이지로 이동
-    navigate(ROUTES.RESET_PASSWORD, { state: { email } });
+    verifyCode({ email, code: verificationCode });
   };
 
   const handleBackToForgotPassword = () => {
@@ -74,12 +83,25 @@ const VerifyCodePage: React.FC = () => {
             />
           </div>
 
+          {isError && (
+            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+              <p className="text-sm text-destructive">
+                {error?.response?.data?.code === "40700001"
+                  ? "인증 코드가 만료되었습니다. 다시 요청해주세요."
+                  : error?.response?.data?.code === "40700002"
+                  ? "인증 코드가 일치하지 않습니다."
+                  : error?.response?.data?.message ||
+                    "인증에 실패했습니다. 다시 시도해주세요."}
+              </p>
+            </div>
+          )}
+
           <Button
             type="submit"
             className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold text-base h-11 rounded-[10px]"
-            disabled={verificationCode.length !== 6}
+            disabled={verificationCode.length !== 6 || isLoading}
           >
-            인증번호 확인
+            {isLoading ? "확인 중..." : "인증번호 확인"}
           </Button>
 
           <div className="flex items-center justify-center gap-1 text-sm">

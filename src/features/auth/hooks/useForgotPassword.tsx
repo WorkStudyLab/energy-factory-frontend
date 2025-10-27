@@ -11,14 +11,11 @@ interface ForgotPasswordResponse {
   status: number;
 }
 
-/**
- * @todo 추후 비밀번호 찾기 정책 결정에 따른 로직 및 UI 수정 필요
- */
 const forgotPasswordApi = async (
   request: ForgotPasswordRequest,
 ): Promise<ForgotPasswordResponse> => {
   const response = await api.post<ForgotPasswordResponse>(
-    "/api/auth/forgot-password",
+    "/api/auth/password-reset/send-code",
     request,
     {
       headers: {

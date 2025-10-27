@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,14 +6,13 @@ import { Label } from "@/components/ui/label";
 import { ChevronLeft, Eye, EyeOff } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
 import { useToast } from "@/hooks/use-toast";
+import { useResetPassword } from "@/features/auth/hooks/useResetPassword";
 
-/**
- * @todo 추후 비밀번호 재설정 API 연동 필요
- */
 const ResetPasswordPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const resetToken = location.state?.resetToken || "";
   const email = location.state?.email || "";
 
   const [password, setPassword] = useState("");
@@ -21,38 +20,44 @@ const ResetPasswordPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // 비밀번호 유효성 검사
+  const { resetPassword, isLoading, isError, error, isSuccess } = useResetPassword();
+
+  // 비밀번호 유효성 검사 (API 요구사항: 대문자+소문자+숫자+특수문자 8자 이상)
   const hasMinLength = password.length >= 8;
-  const hasLetter = /[a-zA-Z]/.test(password);
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
   const hasNumber = /\d/.test(password);
-  const isPasswordValid = hasMinLength && hasLetter && hasNumber;
+  const hasSpecialChar = /[@$!%*?&]/.test(password);
+  const isPasswordValid = hasMinLength && hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
   const isFormValid = isPasswordValid && password === confirmPassword && confirmPassword !== "";
+
+  // 성공 시 로그인 페이지로 이동
+  useEffect(() => {
+    if (isSuccess) {
+      toast({
+        title: "비밀번호가 재설정 되었습니다.",
+        duration: 3000,
+      });
+      setTimeout(() => {
+        navigate(ROUTES.LOGIN);
+      }, 1000);
+    }
+  }, [isSuccess, navigate, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!isFormValid) return;
 
-    // To Do : 비밀번호 재설정 API 연동 필요
-
-    // 성공 토스트 표시
-    toast({
-      title: "비밀번호가 재설정 되었습니다.",
-      duration: 3000,
-    });
-
-    // 로그인 페이지로 이동
-    setTimeout(() => {
-      navigate(ROUTES.LOGIN);
-    }, 1000);
+    resetPassword({ resetToken, newPassword: password });
   };
 
   const handleBackToVerifyCode = () => {
     navigate(ROUTES.VERIFY_CODE, { state: { email } });
   };
 
-  // 이메일이 없으면 비밀번호 찾기 페이지로 리다이렉트
-  if (!email) {
+  // resetToken이 없으면 비밀번호 찾기 페이지로 리다이렉트
+  if (!resetToken) {
     navigate(ROUTES.FORGOT_PASSWORD, { replace: true });
     return null;
   }
@@ -142,8 +147,13 @@ const ResetPasswordPage: React.FC = () => {
                 </span>
               </li>
               <li className="flex items-center gap-2">
-                <span className={hasLetter ? "text-green-600" : "text-gray-500"}>
-                  • 영문 포함
+                <span className={hasUpperCase ? "text-green-600" : "text-gray-500"}>
+                  • 대문자 포함
+                </span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className={hasLowerCase ? "text-green-600" : "text-gray-500"}>
+                  • 소문자 포함
                 </span>
               </li>
               <li className="flex items-center gap-2">
@@ -151,15 +161,31 @@ const ResetPasswordPage: React.FC = () => {
                   • 숫자 포함
                 </span>
               </li>
+              <li className="flex items-center gap-2">
+                <span className={hasSpecialChar ? "text-green-600" : "text-gray-500"}>
+                  • 특수문자 포함 (@$!%*?&)
+                </span>
+              </li>
             </ul>
           </div>
+
+          {isError && (
+            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+              <p className="text-sm text-destructive">
+                {error?.response?.data?.code === "40700003"
+                  ? "인증이 만료되었습니다. 처음부터 다시 시도해주세요."
+                  : error?.response?.data?.message ||
+                    "비밀번호 재설정에 실패했습니다. 다시 시도해주세요."}
+              </p>
+            </div>
+          )}
 
           <Button
             type="submit"
             className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold text-base h-11 rounded-[10px] disabled:bg-gray-300 disabled:cursor-not-allowed"
-            disabled={!isFormValid}
+            disabled={!isFormValid || isLoading}
           >
-            비밀번호 재설정
+            {isLoading ? "재설정 중..." : "비밀번호 재설정"}
           </Button>
         </form>
       </div>

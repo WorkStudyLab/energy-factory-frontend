@@ -14,20 +14,23 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
 import { useForgotPassword } from "@/features/auth/hooks/useForgotPassword";
-/**
- * @todo 추후 비밀번호 찾기 정책 결정에 따른 로직 및 UI 수정 필요
- */
+import { useEffect } from "react";
+
 const ForgotPasswordPage: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const { isLoading, isError, error } = useForgotPassword();
+  const { sendResetEmail, isLoading, isError, error, isSuccess } = useForgotPassword();
+
+  // 성공 시 다음 페이지로 이동
+  useEffect(() => {
+    if (isSuccess) {
+      navigate(ROUTES.VERIFY_CODE, { state: { email } });
+    }
+  }, [isSuccess, navigate, email]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // To Do : Layout 테스트용이므로 주석 제거 필요
-    // sendResetEmail({ email });
-    // 임시로 인증코드 페이지로 이동
-    navigate(ROUTES.VERIFY_CODE, { state: { email } });
+    sendResetEmail({ email });
   };
 
   const handleBackToLogin = () => {
@@ -58,8 +61,7 @@ const ForgotPasswordPage: React.FC = () => {
             </CardDescription>
           </div>
         </CardHeader>
-        {/* To Do : Layout 테스트용이므로 noValidate 제거 필요 */}
-        <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleSubmit}>
           <CardContent className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium text-neutral-900">
@@ -80,8 +82,10 @@ const ForgotPasswordPage: React.FC = () => {
             {isError && (
               <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
                 <p className="text-sm text-destructive">
-                  {error?.response?.data?.message ||
-                    "이메일 발송에 실패했습니다. 다시 시도해주세요."}
+                  {error?.response?.data?.code === "42900001"
+                    ? "잠시 후 다시 시도해주세요. (1분 제한)"
+                    : error?.response?.data?.message ||
+                      "이메일 발송에 실패했습니다. 다시 시도해주세요."}
                 </p>
               </div>
             )}
