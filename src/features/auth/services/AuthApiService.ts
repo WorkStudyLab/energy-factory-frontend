@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios/axios";
-import type { DeleteUserResponse } from "@/types/user";
+import type { ApiResponse, DeleteUserResponse, UserInfo } from "@/types/user";
 
 /**
  * 유저 관련 API 클래스입니다.
@@ -14,5 +14,13 @@ export class AuthApiService {
     );
 
     return response.data;
+  }
+
+  /** 회원정보 조회 */
+  static async getUserInfo(userId: number): Promise<UserInfo> {
+    const response = await api.get<ApiResponse<UserInfo>>(
+      `${AuthApiService.BASE_URL}/${userId}`,
+    );
+    return response.data.data;
   }
 }
