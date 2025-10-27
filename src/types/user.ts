@@ -24,6 +24,14 @@ export interface LoginResponse {
   tokenType: string;
 }
 
+/** 회원 탈퇴 응답 인터페이스 */
+export interface DeleteUserResponse {
+  status: number;
+  code: string;
+  desc: string;
+  data: Record<string, never>;
+}
+
 export interface ApiResponse<T> {
   status: number;
   code: string;
