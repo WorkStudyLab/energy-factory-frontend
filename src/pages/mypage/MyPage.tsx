@@ -6,31 +6,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import deleteUserIcon from "@/assets/icons/deleteUserIcon.svg";
 import defaultUserImage from "@/assets/images/default-user-image.png";
 import { useDeleteUser } from "@/features/auth/hooks/useDeleteUser";
+import { useGetUserInfo } from "@/features/auth/hooks/useGetUserInfo";
 
 export default function MyPage() {
   // 인증 관련 훅
   const { logout, user } = useAuthStore();
   const { deleteUser } = useDeleteUser();
+  const {
+    data: userInfoData,
+    isLoading,
+    error,
+  } = useGetUserInfo(user ? user.id : 0);
   const navigate = useNavigate();
-
-  // 사용자 정보 상태
-  const userInfo = {
-    name: "김진장",
-    email: "exam@example.com",
-    phone: "010-1234-5678",
-    birthDate: "1990-01-01",
-    authProvider: "naver",
-    memberSince: "2024-06-15",
-    address: "서울특별시 금천구 스타밸리",
-    profileImage: defaultUserImage, // 기본 프로필 이미지
-  };
 
   // 로그아웃 처리
   const handleLogout = () => {
@@ -61,6 +55,22 @@ export default function MyPage() {
     }
   };
 
+  // 로딩
+  if (isLoading) {
+    return <></>;
+  }
+  // 에러
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  console.log(userInfoData);
+  const userInfo = {
+    // 사용자 정보 상태
+    ...userInfoData,
+    profileImage: defaultUserImage, // 기본 프로필 이미지
+  };
+
   return (
     <div className="min-h-screen bg-neutral-50 py-12">
       <div className="max-w-4xl mx-auto px-4">
@@ -75,9 +85,9 @@ export default function MyPage() {
                       src={userInfo.profileImage}
                       alt={userInfo.name}
                     />
-                    <AvatarFallback className="text-xl text-neutral-600 bg-neutral-200">
+                    {/* <AvatarFallback className="text-xl text-neutral-600 bg-neutral-200">
                       {userInfo.name.slice(0, 1)}
-                    </AvatarFallback>
+                    </AvatarFallback> */}
                   </Avatar>
                   <div>
                     <h1 className="text-base font-normal mb-2">
@@ -175,7 +185,7 @@ export default function MyPage() {
                   </div>
                   <div>
                     <div className="text-base text-neutral-900 mb-1">
-                      Naver 계정 연동
+                      네이버 계정 연동
                     </div>
                     <div className="text-base text-neutral-900">
                       {userInfo.email}

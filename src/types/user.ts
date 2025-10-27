@@ -32,6 +32,24 @@ export interface DeleteUserResponse {
   data: Record<string, never>;
 }
 
+/** 회원 정보 응답 인터페이스 */
+export interface UserInfo {
+  /** 사용자 이름 */
+  name: string;
+  /** 이메일 주소 */
+  email: string;
+  /** 전화번호 (하이픈 포함) */
+  phone: string;
+  /** 생년월일 (YYYY-MM-DD 형식) */
+  birthDate: string;
+  /** 소셜 로그인 제공자 */
+  authProvider: "local" | "naver" | "kakao" | "google";
+  /** 회원 가입일 (YYYY-MM-DD 형식) */
+  memberSince: string;
+  /** 기본 배송지 주소 */
+  address: string;
+}
+
 export interface ApiResponse<T> {
   status: number;
   code: string;
