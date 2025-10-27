@@ -12,10 +12,12 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import deleteUserIcon from "@/assets/icons/deleteUserIcon.svg";
 import defaultUserImage from "@/assets/images/default-user-image.png";
+import { useDeleteUser } from "@/features/auth/hooks/useDeleteUser";
 
 export default function MyPage() {
   // 인증 관련 훅
   const { logout } = useAuthStore();
+  const { deleteUser } = useDeleteUser();
   const navigate = useNavigate();
 
   // 사용자 정보 상태
@@ -36,16 +38,15 @@ export default function MyPage() {
     navigate("/");
   };
 
-  // 회원탈퇴 처리
+  /** 회원 탈퇴 요청 */
   const handleDeleteAccount = () => {
     const confirmed = window.confirm(
-      "정말로 회원을 탈퇴하시겠습니까?\n\n탈퇴 시 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다."
+      "정말로 회원을 탈퇴하시겠습니까?\n\n탈퇴 시 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.",
     );
 
     if (confirmed) {
-      // TODO: 회원탈퇴 API 호출
-      console.log("회원탈퇴 처리");
-      logout();
+      // To Do 실제 userId 조회 필요
+      deleteUser(33);
       navigate("/");
     }
   };

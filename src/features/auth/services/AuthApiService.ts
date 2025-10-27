@@ -9,9 +9,9 @@ export class AuthApiService {
 
   /** 회원 탈퇴 API 호출 메서드 */
   static async deleteUser(userId: number): Promise<DeleteUserResponse> {
-    const response = await api.get<DeleteUserResponse>(this.BASE_URL, {
-      params: { userId },
-    });
+    const response = await api.delete<DeleteUserResponse>(
+      `${AuthApiService.BASE_URL}/${userId}`,
+    );
 
     return response.data;
   }
