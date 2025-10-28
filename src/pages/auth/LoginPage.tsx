@@ -22,19 +22,13 @@ import LoginForm from "@/features/auth/ui/LoginForm";
 export default function LoginPage() {
   const navigate = useNavigate();
 
-  const handleGoogleLogin = () => {
-    // Google 로그인 로직 구현
-    console.log("Google 로그인 시도");
+  /** @todo Naver Login 구현 필요 */
+  const handleNaverLogin = () => {
+    // console.log("Google 로그인 시도");
     // 로그인 성공 시 마이페이지로 이동
-    navigate(ROUTES.MY_PAGE);
+    navigate("/");
   };
 
-  const handleKakaoLogin = () => {
-    // Kakao 로그인 로직 구현
-    console.log("Kakao 로그인 시도");
-    // 로그인 성공 시 마이페이지로 이동
-    navigate(ROUTES.MY_PAGE);
-  };
   return (
     <div className="container flex items-center justify-center min-h-[calc(100vh-16rem)] py-8">
       <Card className="w-full max-w-md">
@@ -75,17 +69,9 @@ export default function LoginPage() {
                 type="button"
                 variant="outline"
                 className="w-full"
-                onClick={handleGoogleLogin}
+                onClick={handleNaverLogin}
               >
-                Google로 로그인
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={handleKakaoLogin}
-              >
-                Kakao로 로그인
+                네이버로 로그인
               </Button>
             </div>
           </div>
