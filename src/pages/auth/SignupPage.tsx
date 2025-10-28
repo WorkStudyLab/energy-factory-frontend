@@ -12,7 +12,9 @@ interface FormData {
   password: string;
   confirmPassword: string;
   address: string;
-  phone: string;
+  phone1: string;
+  phone2: string;
+  phone3: string;
 }
 
 export default function SignupPage() {
@@ -26,7 +28,9 @@ export default function SignupPage() {
     password: "",
     confirmPassword: "",
     address: "",
-    phone: "",
+    phone1: "",
+    phone2: "",
+    phone3: "",
   });
 
   const handleInputChange = (
