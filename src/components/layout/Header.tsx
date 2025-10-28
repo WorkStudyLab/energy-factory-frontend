@@ -1,9 +1,13 @@
 import { Bell, Menu, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { NotificationPopoverContent } from "@/components/ui/notification-popover";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
@@ -11,7 +15,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 
 export default function Header() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white">
@@ -50,8 +54,7 @@ export default function Header() {
             </SheetContent>
           </Sheet>
           <a
-            href="/products"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 hover:cursor-pointer"
             onClick={(e) => {
               e.preventDefault();
               navigate(ROUTES.PRODUCTS);
@@ -86,7 +89,7 @@ export default function Header() {
         </nav>
         <div className="flex items-center gap-4">
           <a
-            className="relative"
+            className="relative hover:cursor-pointer"
             onClick={(e) => {
               e.preventDefault();
               navigate(ROUTES.CART);
@@ -113,28 +116,23 @@ export default function Header() {
                 <span className="sr-only">알림</span>
               </Button>
             </PopoverTrigger>
-            <PopoverContent
-              align="end"
-              className="w-80 p-0"
-              sideOffset={8}
-            >
+            <PopoverContent align="end" className="w-80 p-0" sideOffset={8}>
               <NotificationPopoverContent />
             </PopoverContent>
           </Popover>
           {isAuthenticated ? (
             <a
+              className="hover:cursor-pointer"
               onClick={(e) => {
                 e.preventDefault();
                 navigate(ROUTES.MY_PAGE);
               }}
             >
               <Avatar>
-                {/* TODO: 실제 사용자 프로필 이미지로 교체 필요 */}
-                <AvatarImage
-                  src="/placeholder.svg?height=32&width=32"
-                  alt="사용자"
-                />
-                <AvatarFallback>사용자</AvatarFallback>
+                <AvatarFallback className="bg-green-100 text-green-700 font-medium">
+                  {/* @To Do: 추후 인증 상태 관리 변경 후 확인 필요 */}
+                  {user?.name?.charAt(0).toUpperCase() || "U"}
+                </AvatarFallback>
               </Avatar>
             </a>
           ) : (
