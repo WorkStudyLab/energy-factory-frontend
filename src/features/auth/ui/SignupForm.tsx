@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { useState, useMemo } from "react";
 import { useSignup } from "../hooks/useSignup";
+import { useDialogHelpers } from "@/utils/dialogHelpers";
 import { Button } from "@/components/ui/button";
 import { LabelInput } from "./LabelInput";
+import { PasswordRequirements } from "./PasswordRequirements";
 import {
   Select,
   SelectContent,
@@ -10,6 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -28,7 +33,9 @@ interface FormData {
   password: string;
   confirmPassword: string;
   address: string;
-  phone: string;
+  phone1: string;
+  phone2: string;
+  phone3: string;
 }
 
 /**
@@ -54,18 +61,66 @@ export const SignupForm = (props: {
   const navigate = useNavigate();
   const { signup, isLoading } = useSignup();
   const { formData, handleInputChange } = props;
+  const { alert } = useDialogHelpers();
+
+  // 비밀번호 표시/숨김 상태
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // 비밀번호 유효성 검사
+  const passwordValidation = useMemo(() => {
+    const password = formData.password;
+    return {
+      minLength: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasLowerCase: /[a-z]/.test(password),
+      hasNumber: /[0-9]/.test(password),
+      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    };
+  }, [formData.password]);
+
+  // 모든 비밀번호 요구사항이 충족되었는지 확인
+  const isPasswordValid = Object.values(passwordValidation).every(Boolean);
+
+  // 모든 필수 필드가 입력되었는지 확인
+  const isFormValid = useMemo(() => {
+    return (
+      formData.name.trim() !== "" &&
+      formData.email.trim() !== "" &&
+      formData.birthYear !== "" &&
+      formData.birthMonth !== "" &&
+      formData.birthDay !== "" &&
+      formData.address.trim() !== "" &&
+      formData.phone1.trim() !== "" &&
+      formData.phone2.trim() !== "" &&
+      formData.phone3.trim() !== "" &&
+      isPasswordValid &&
+      formData.password === formData.confirmPassword
+    );
+  }, [formData, isPasswordValid]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 최종 검증
+    if (!isFormValid) {
+      alert("모든 필수 항목을 올바르게 입력해주세요.", {
+        title: "입력 오류",
+      });
+      return;
+    }
+
     // 생년월일을 YYYY-MM-DD 형식으로 변환
     const birthDate = `${formData.birthYear}-${formData.birthMonth.padStart(2, "0")}-${formData.birthDay.padStart(2, "0")}`;
+
+    // 전화번호 조합 (010-0000-0000)
+    const phoneNumber = `${formData.phone1}-${formData.phone2}-${formData.phone3}`;
 
     const signupData: SignupRequest = {
       name: formData.name,
       email: formData.email,
       password: formData.password,
-      phoneNumber: formData.phone,
+      phoneNumber: phoneNumber,
       birthDate: birthDate,
       address: formData.address,
     };
@@ -116,6 +171,7 @@ export const SignupForm = (props: {
               <Select
                 value={formData.birthYear}
                 onValueChange={(value) => handleInputChange("birthYear", value)}
+                required
               >
                 <SelectTrigger className="h-9 border-neutral-200">
                   <SelectValue placeholder="년도" />
@@ -133,6 +189,7 @@ export const SignupForm = (props: {
                 onValueChange={(value) =>
                   handleInputChange("birthMonth", value)
                 }
+                required
               >
                 <SelectTrigger className="h-9 border-neutral-200">
                   <SelectValue placeholder="월" />
@@ -148,6 +205,7 @@ export const SignupForm = (props: {
               <Select
                 value={formData.birthDay}
                 onValueChange={(value) => handleInputChange("birthDay", value)}
+                required
               >
                 <SelectTrigger className="h-9 border-neutral-200">
                   <SelectValue placeholder="일" />
@@ -172,24 +230,70 @@ export const SignupForm = (props: {
             placeholder="HealthKim@example.com"
             required
           />
-          <LabelInput
-            id="password"
-            label="비밀번호"
-            type="password"
-            value={formData.password}
-            onChange={(value) => handleInputChange("password", value)}
-            placeholder="********"
-            required
-          />
-          <LabelInput
-            id="confirm-password"
-            label="비밀번호 확인"
-            type="password"
-            value={formData.confirmPassword}
-            onChange={(value) => handleInputChange("confirmPassword", value)}
-            placeholder="*******"
-            required
-          />
+          {/* 비밀번호 */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-1">
+              <Label htmlFor="password" className="text-sm font-medium text-neutral-900">
+                비밀번호
+              </Label>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-red-500">*</span>
+                <span className="text-sm font-medium text-neutral-500">필수</span>
+              </div>
+            </div>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                placeholder="********"
+                required
+                className="h-9 rounded-lg border-neutral-200 pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+          {/* 비밀번호 확인 */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-1">
+              <Label htmlFor="confirm-password" className="text-sm font-medium text-neutral-900">
+                비밀번호 확인
+              </Label>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-red-500">*</span>
+                <span className="text-sm font-medium text-neutral-500">필수</span>
+              </div>
+            </div>
+            <div className="relative">
+              <Input
+                id="confirm-password"
+                type={showConfirmPassword ? "text" : "password"}
+                value={formData.confirmPassword}
+                onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                placeholder="*******"
+                required
+                className="h-9 rounded-lg border-neutral-200 pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
+          </div>
+
+          {/* 비밀번호 요구사항 */}
+          <PasswordRequirements validation={passwordValidation} />
+
           <LabelInput
             id="address"
             label="배송지"
@@ -198,14 +302,45 @@ export const SignupForm = (props: {
             placeholder="경기도 양평군 금천면 153-2"
             required
           />
-          <LabelInput
-            id="phone"
-            label="연락처"
-            value={formData.phone}
-            onChange={(value) => handleInputChange("phone", value)}
-            placeholder="01012345678"
-            required
-          />
+          <div className="space-y-2">
+            <div className="flex items-center gap-1">
+              <Label className="text-sm font-medium text-neutral-900">
+                연락처
+              </Label>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-red-500">*</span>
+                <span className="text-sm font-medium text-neutral-500">
+                  필수
+                </span>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <Input
+                value={formData.phone1}
+                onChange={(e) => handleInputChange("phone1", e.target.value)}
+                placeholder="010"
+                maxLength={3}
+                required
+                className="h-9 border-neutral-200"
+              />
+              <Input
+                value={formData.phone2}
+                onChange={(e) => handleInputChange("phone2", e.target.value)}
+                placeholder="0000"
+                maxLength={4}
+                required
+                className="h-9 border-neutral-200"
+              />
+              <Input
+                value={formData.phone3}
+                onChange={(e) => handleInputChange("phone3", e.target.value)}
+                placeholder="0000"
+                maxLength={4}
+                required
+                className="h-9 border-neutral-200"
+              />
+            </div>
+          </div>
         </CardContent>
 
         <CardFooter className="flex gap-3 border-t border-neutral-200 pt-5">
@@ -219,8 +354,8 @@ export const SignupForm = (props: {
           </Button>
           <Button
             type="submit"
-            disabled={isLoading}
-            className="flex-1 h-12 rounded-lg bg-[#108c4a] hover:bg-[#0d7a3f] text-white"
+            disabled={isLoading || !isFormValid}
+            className="flex-1 h-12 rounded-lg bg-[#108c4a] hover:bg-[#0d7a3f] text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? "가입 중..." : "회원가입"}
           </Button>

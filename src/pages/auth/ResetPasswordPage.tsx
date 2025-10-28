@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { ChevronLeft, Eye, EyeOff } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
 import { useToast } from "@/hooks/use-toast";
 import { useResetPassword } from "@/features/auth/hooks/useResetPassword";
+import { PasswordRequirements } from "@/features/auth/ui/PasswordRequirements";
 
 const ResetPasswordPage: React.FC = () => {
   const navigate = useNavigate();
@@ -23,12 +24,17 @@ const ResetPasswordPage: React.FC = () => {
   const { resetPassword, isLoading, isError, error, isSuccess } = useResetPassword();
 
   // 비밀번호 유효성 검사 (API 요구사항: 대문자+소문자+숫자+특수문자 8자 이상)
-  const hasMinLength = password.length >= 8;
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasNumber = /\d/.test(password);
-  const hasSpecialChar = /[@$!%*?&]/.test(password);
-  const isPasswordValid = hasMinLength && hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar;
+  const passwordValidation = useMemo(() => {
+    return {
+      minLength: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasLowerCase: /[a-z]/.test(password),
+      hasNumber: /\d/.test(password),
+      hasSpecialChar: /[@$!%*?&]/.test(password),
+    };
+  }, [password]);
+
+  const isPasswordValid = Object.values(passwordValidation).every(Boolean);
   const isFormValid = isPasswordValid && password === confirmPassword && confirmPassword !== "";
 
   // 성공 시 로그인 페이지로 이동
@@ -138,36 +144,7 @@ const ResetPasswordPage: React.FC = () => {
           </div>
 
           {/* 비밀번호 요구사항 */}
-          <div className="bg-[#f4f5f6] rounded-[10px] px-6 py-3">
-            <p className="text-sm font-semibold text-black mb-2">비밀번호 요구 사항</p>
-            <ul className="space-y-1 text-sm">
-              <li className="flex items-center gap-2">
-                <span className={hasMinLength ? "text-green-600" : "text-gray-500"}>
-                  • 8자 이상 입력해주세요
-                </span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className={hasUpperCase ? "text-green-600" : "text-gray-500"}>
-                  • 대문자 포함
-                </span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className={hasLowerCase ? "text-green-600" : "text-gray-500"}>
-                  • 소문자 포함
-                </span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className={hasNumber ? "text-green-600" : "text-gray-500"}>
-                  • 숫자 포함
-                </span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className={hasSpecialChar ? "text-green-600" : "text-gray-500"}>
-                  • 특수문자 포함 (@$!%*?&)
-                </span>
-              </li>
-            </ul>
-          </div>
+          <PasswordRequirements validation={passwordValidation} />
 
           {isError && (
             <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">

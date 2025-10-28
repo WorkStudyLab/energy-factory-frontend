@@ -10,7 +10,7 @@ interface ProductItemProps {
 export function ProductItem({ product }: ProductItemProps) {
   const handleCardClick = () => {
     // 새 탭에서 상품 상세 페이지 열기
-    window.open(`/products/${product.id}`, '_blank');
+    window.open(`/products/${product.id}`, "_blank");
   };
 
   // 단위당 가격 계산 함수
@@ -18,18 +18,18 @@ export function ProductItem({ product }: ProductItemProps) {
     // 최적 단위 결정
     let unit: number;
     let label: string;
-    
+
     if (weight >= 1000) {
       unit = 100;
-      label = '100g당';
+      label = "100g당";
     } else if (weight >= 100) {
-      unit = 100;  
-      label = '100g당';
+      unit = 100;
+      label = "100g당";
     } else {
       unit = 10;
-      label = '10g당';
+      label = "10g당";
     }
-    
+
     const unitPrice = Math.round((price / weight) * unit);
     return { price: unitPrice, label };
   };
@@ -37,12 +37,15 @@ export function ProductItem({ product }: ProductItemProps) {
   const unitPriceInfo = getUnitPrice(product.price, product.weight);
 
   return (
-    <Card className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow flex flex-col" onClick={handleCardClick}>
+    <Card
+      className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow flex flex-col"
+      onClick={handleCardClick}
+    >
       <CardContent className="p-0 relative">
         <img
           src={product.imageUrl || "https://placehold.co/300x200"}
           alt={product.name}
-          className="w-full h-48 object-cover"
+          className="w-full object-cover"
           onError={(e) => {
             e.currentTarget.src = "https://placehold.co/300x200";
           }}
@@ -64,13 +67,17 @@ export function ProductItem({ product }: ProductItemProps) {
           </div>
         )}
       </CardContent>
-      
+
       <CardHeader className="p-4 pb-3 flex-1">
         {/* 태그 배지 */}
         {product.tags && product.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-2">
             {product.tags.slice(0, 3).map((tag, index) => (
-              <Badge key={index} variant="secondary" className="text-xs font-medium px-2 py-0.5">
+              <Badge
+                key={index}
+                variant="secondary"
+                className="text-xs font-medium px-2 py-0.5"
+              >
                 {tag}
               </Badge>
             ))}
@@ -90,8 +97,8 @@ export function ProductItem({ product }: ProductItemProps) {
                 key={star}
                 className={`h-3.5 w-3.5 ${
                   star <= Math.round(product.averageRating)
-                    ? 'fill-yellow-400 text-yellow-400'
-                    : 'fill-gray-200 text-gray-200'
+                    ? "fill-yellow-400 text-yellow-400"
+                    : "fill-gray-200 text-gray-200"
                 }`}
               />
             ))}
@@ -99,33 +106,34 @@ export function ProductItem({ product }: ProductItemProps) {
           <span className="text-xs font-medium text-gray-700">
             {product.averageRating.toFixed(1)}
           </span>
-          <span className="text-xs text-gray-400">
-            ({product.reviewCount})
-          </span>
+          <span className="text-xs text-gray-400">({product.reviewCount})</span>
         </div>
 
         {/* 가격 정보 */}
         <div className="space-y-1">
           {/* 원가 및 할인율 */}
           {product.originalPrice != null &&
-           product.originalPrice > 0 &&
-           product.discount != null &&
-           product.discount > 0 && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-400 line-through">
-                {product.originalPrice.toLocaleString()}원
-              </span>
-              <Badge className="bg-red-500 text-white text-xs px-1.5 py-0.5">
-                {product.discount}%
-              </Badge>
-            </div>
-          )}
+            product.originalPrice > 0 &&
+            product.discount != null &&
+            product.discount > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-400 line-through">
+                  {product.originalPrice.toLocaleString()}원
+                </span>
+                <Badge className="bg-red-500 text-white text-xs px-1.5 py-0.5">
+                  {product.discount}%
+                </Badge>
+              </div>
+            )}
           {/* 현재 가격 */}
           <div className="text-2xl font-bold text-green-600">
             {product.price.toLocaleString()}원
           </div>
           <div className="flex items-center gap-1.5 text-xs text-gray-500">
-            <span>{product.weight}{product.weightUnit}</span>
+            <span>
+              {product.weight}
+              {product.weightUnit}
+            </span>
             <span>•</span>
             <span className="text-gray-600">
               {unitPriceInfo.label} {unitPriceInfo.price.toLocaleString()}원
