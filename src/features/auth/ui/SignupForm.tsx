@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { useSignup } from "../hooks/useSignup";
+import { useDialogHelpers } from "@/utils/dialogHelpers";
 import { Button } from "@/components/ui/button";
 import { LabelInput } from "./LabelInput";
 import { PasswordRequirements } from "./PasswordRequirements";
@@ -60,6 +61,7 @@ export const SignupForm = (props: {
   const navigate = useNavigate();
   const { signup, isLoading } = useSignup();
   const { formData, handleInputChange } = props;
+  const { alert } = useDialogHelpers();
 
   // 비밀번호 표시/숨김 상태
   const [showPassword, setShowPassword] = useState(false);
@@ -80,8 +82,33 @@ export const SignupForm = (props: {
   // 모든 비밀번호 요구사항이 충족되었는지 확인
   const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
+  // 모든 필수 필드가 입력되었는지 확인
+  const isFormValid = useMemo(() => {
+    return (
+      formData.name.trim() !== "" &&
+      formData.email.trim() !== "" &&
+      formData.birthYear !== "" &&
+      formData.birthMonth !== "" &&
+      formData.birthDay !== "" &&
+      formData.address.trim() !== "" &&
+      formData.phone1.trim() !== "" &&
+      formData.phone2.trim() !== "" &&
+      formData.phone3.trim() !== "" &&
+      isPasswordValid &&
+      formData.password === formData.confirmPassword
+    );
+  }, [formData, isPasswordValid]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // 최종 검증
+    if (!isFormValid) {
+      alert("모든 필수 항목을 올바르게 입력해주세요.", {
+        title: "입력 오류",
+      });
+      return;
+    }
 
     // 생년월일을 YYYY-MM-DD 형식으로 변환
     const birthDate = `${formData.birthYear}-${formData.birthMonth.padStart(2, "0")}-${formData.birthDay.padStart(2, "0")}`;
@@ -144,6 +171,7 @@ export const SignupForm = (props: {
               <Select
                 value={formData.birthYear}
                 onValueChange={(value) => handleInputChange("birthYear", value)}
+                required
               >
                 <SelectTrigger className="h-9 border-neutral-200">
                   <SelectValue placeholder="년도" />
@@ -161,6 +189,7 @@ export const SignupForm = (props: {
                 onValueChange={(value) =>
                   handleInputChange("birthMonth", value)
                 }
+                required
               >
                 <SelectTrigger className="h-9 border-neutral-200">
                   <SelectValue placeholder="월" />
@@ -176,6 +205,7 @@ export const SignupForm = (props: {
               <Select
                 value={formData.birthDay}
                 onValueChange={(value) => handleInputChange("birthDay", value)}
+                required
               >
                 <SelectTrigger className="h-9 border-neutral-200">
                   <SelectValue placeholder="일" />
@@ -290,6 +320,7 @@ export const SignupForm = (props: {
                 onChange={(e) => handleInputChange("phone1", e.target.value)}
                 placeholder="010"
                 maxLength={3}
+                required
                 className="h-9 border-neutral-200"
               />
               <Input
@@ -297,6 +328,7 @@ export const SignupForm = (props: {
                 onChange={(e) => handleInputChange("phone2", e.target.value)}
                 placeholder="0000"
                 maxLength={4}
+                required
                 className="h-9 border-neutral-200"
               />
               <Input
@@ -304,6 +336,7 @@ export const SignupForm = (props: {
                 onChange={(e) => handleInputChange("phone3", e.target.value)}
                 placeholder="0000"
                 maxLength={4}
+                required
                 className="h-9 border-neutral-200"
               />
             </div>
@@ -321,11 +354,7 @@ export const SignupForm = (props: {
           </Button>
           <Button
             type="submit"
-            disabled={
-              isLoading ||
-              !isPasswordValid ||
-              formData.password !== formData.confirmPassword
-            }
+            disabled={isLoading || !isFormValid}
             className="flex-1 h-12 rounded-lg bg-[#108c4a] hover:bg-[#0d7a3f] text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? "가입 중..." : "회원가입"}
