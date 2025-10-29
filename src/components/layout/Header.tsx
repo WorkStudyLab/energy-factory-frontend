@@ -12,6 +12,7 @@ import { NotificationPopoverContent } from "@/components/ui/notification-popover
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useState } from "react";
 
 interface MobileMenuProps {
   isAuthenticated: boolean;
@@ -19,9 +20,15 @@ interface MobileMenuProps {
 
 function MobileMenu({ isAuthenticated }: MobileMenuProps) {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  const handleNavigate = (route: string) => {
+    navigate(route);
+    setOpen(false);
+  };
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button variant="ghost" size="icon" className="md:hidden">
           <Menu className="h-5 w-5" />
@@ -35,7 +42,7 @@ function MobileMenu({ isAuthenticated }: MobileMenuProps) {
             className="text-lg font-medium hover:underline"
             onClick={(e) => {
               e.preventDefault();
-              navigate(ROUTES.PRODUCTS);
+              handleNavigate(ROUTES.PRODUCTS);
             }}
           >
             상품
@@ -46,7 +53,7 @@ function MobileMenu({ isAuthenticated }: MobileMenuProps) {
               className="text-lg font-medium hover:underline"
               onClick={(e) => {
                 e.preventDefault();
-                navigate(ROUTES.ORDER_HISTORY);
+                handleNavigate(ROUTES.ORDER_HISTORY);
               }}
             >
               주문 내역

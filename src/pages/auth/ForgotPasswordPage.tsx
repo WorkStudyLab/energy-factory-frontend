@@ -38,7 +38,7 @@ const ForgotPasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-16rem)] bg-neutral-50 flex items-center justify-center py-[73px] px-4">
+    <div className="min-h-[calc(100vh-16rem)] flex items-center justify-center py-[73px] px-4">
       <Card className="w-full max-w-[480px] border-neutral-200">
         <CardHeader className="space-y-3">
           <Button

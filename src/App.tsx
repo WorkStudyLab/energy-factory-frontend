@@ -27,12 +27,14 @@ import LoginTestPage from "./pages/test/LoginTestPage";
 import { DialogTestPage } from "./pages/test/DialogTestPage";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
+import ScrollToTop from "./components/layout/ScrollToTop";
 import { Toaster } from "./components/ui/toaster";
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
+        <ScrollToTop />
         <div className="min-h-screen flex flex-col">
           <Header />
 

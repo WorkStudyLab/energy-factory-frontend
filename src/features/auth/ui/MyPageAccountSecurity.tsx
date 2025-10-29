@@ -29,27 +29,27 @@ export function MyPageAccountSecurity({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Naver 계정 연동 */}
-        <div className="flex items-center justify-between border-b border-neutral-200 pb-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-neutral-200 pb-4 gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white border border-neutral-200 rounded-full flex items-center justify-center">
               <span className="text-base text-black">N</span>
             </div>
-            <div>
+            <div className="flex-1">
               <div className="text-base text-neutral-900 mb-1">
                 네이버 계정 연동
               </div>
               <div className="text-base text-neutral-900">{userInfo.email}</div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 md:ml-0 ml-[52px]">
             {authProvider !== "naver" && (
-              <Button className="bg-[#03c75a] hover:bg-[#02a144] text-white px-4 h-[38px] rounded-lg text-sm font-bold">
+              <Button className="bg-[#03c75a] hover:bg-[#02a144] text-white px-4 h-[38px] rounded-lg text-sm font-bold w-full md:w-auto">
                 네이버 아이디 연동하기
               </Button>
             )}
 
             {authProvider === "naver" && (
-              <Button className="bg-[#00a63e] hover:bg-[#008c36] text-white px-4 h-[38px] rounded-lg text-sm font-bold">
+              <Button className="bg-[#00a63e] hover:bg-[#008c36] text-white px-4 h-[38px] rounded-lg text-sm font-bold w-full md:w-auto">
                 연동됨
               </Button>
             )}
