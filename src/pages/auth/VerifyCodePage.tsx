@@ -42,7 +42,7 @@ const VerifyCodePage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-73px)] bg-neutral-50 flex items-center justify-center py-[73px] px-6">
+    <div className="min-h-[calc(100vh-73px)] flex items-center justify-center py-[73px] px-6">
       <div className="w-full max-w-[480px] bg-white rounded-[10px] border border-neutral-200 px-8 py-[30px]">
         {/* 뒤로가기 버튼 */}
         <button

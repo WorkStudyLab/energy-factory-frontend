@@ -60,7 +60,6 @@ export default function MyPage() {
     return <div>사용자 정보를 불러올 수 없습니다.</div>;
   }
 
-  console.log(userInfoData);
   const userInfo = {
     // 사용자 정보 상태
     ...userInfoData,
@@ -68,7 +67,7 @@ export default function MyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 py-12">
+    <div className="min-h-screen py-12">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex flex-col gap-6">
           {/* 헤더 */}

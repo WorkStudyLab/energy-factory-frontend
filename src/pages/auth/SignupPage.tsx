@@ -44,7 +44,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 flex items-center justify-center py-16 px-4">
+    <div className="min-h-screen flex items-center justify-center py-16 px-4">
       <div className="w-full max-w-[640px]">
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-3 text-center">

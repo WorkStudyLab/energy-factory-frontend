@@ -153,7 +153,7 @@ export default function CartPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <p className="text-neutral-600">로딩 중...</p>
       </div>
     );
@@ -162,7 +162,7 @@ export default function CartPage() {
   // 장바구니가 비어있는 경우
   if (!cart?.items || cart.items.length === 0) {
     return (
-      <div className="min-h-screen bg-neutral-50 flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen flex flex-col items-center justify-center px-4">
         <Card className="border-neutral-200 w-full max-w-[620px]">
           <CardContent className="p-16 flex flex-col items-center gap-7">
             {/* 아이콘 */}
@@ -224,7 +224,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 pb-12">
+    <div className="min-h-screen pb-12">
       <div className="container max-w-[1248px] mx-auto px-4 pt-12">
         {/* 헤더 */}
         <div className="flex flex-col items-center gap-2 mb-8">

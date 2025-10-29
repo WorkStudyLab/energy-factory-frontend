@@ -51,7 +51,7 @@ export default function OrderCompletePage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 pb-12">
+    <div className="min-h-screen pb-12">
       <div className="container max-w-[1248px] mx-auto px-4 pt-12">
         {/* 주문 완료 메인 카드 */}
         <Card className="border-neutral-200 mb-6">

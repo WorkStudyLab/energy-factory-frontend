@@ -16,7 +16,7 @@ export default function SignupConnectPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 flex items-center justify-center py-16 px-4">
+    <div className="min-h-screen flex items-center justify-center py-16 px-4">
       <div className="w-full max-w-[640px]">
         <div className="flex flex-col gap-[25px]">
           {/* 헤더 섹션 */}
