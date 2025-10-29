@@ -118,6 +118,11 @@ export interface ProductFilters {
   size?: number;
 }
 
+// 카테고리 목록 응답 타입
+export interface CategoriesResponse {
+  categories: string[];
+}
+
 // 상품 상세 타입 정의
 export interface ProductDetail extends Product {
   rating: number;  // averageRating과 동일

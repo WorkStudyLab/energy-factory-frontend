@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { ProductList } from "@/features/products/ui/ProductList";
 import {
-  nutritionCategories,
   dietaryOptions,
   sortOptions,
   mealTimes,
 } from "@/features/products/constants/productConstants";
+import { useCategories } from "@/features/products/hooks/useCategories";
 
 import { Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -25,10 +25,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 
 export default function ProductsPage() {
+  const { data: categories, isLoading: isCategoriesLoading } = useCategories();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedGoal, setSelectedGoal] = useState<string>("all");
   const [proteinRange, setProteinRange] = useState([0, 50]);
@@ -37,6 +37,16 @@ export default function ProductsPage() {
   const [caloriesRange, setCaloriesRange] = useState([0, 500]);
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState("createdAt,desc");
+
+  // 카테고리 정렬: "기타"를 맨 마지막으로
+  const sortedCategories = (categories || []).sort((a, b) => {
+    if (a === "기타") return 1;
+    if (b === "기타") return -1;
+    return 0;
+  });
+
+  // 전체 카테고리 포함
+  const allCategories = ["전체", ...sortedCategories];
 
   return (
     <div className="container py-8">
@@ -50,26 +60,38 @@ export default function ProductsPage() {
           </p>
         </div>
 
-        {/* 영양 카테고리 네비게이션 */}
-        <div className="bg-white border rounded-lg p-2">
-          <Tabs
-            value={selectedCategory}
-            onValueChange={setSelectedCategory}
-            className="w-full"
-          >
-            <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 bg-transparent h-auto p-0">
-              {nutritionCategories.map((category) => (
-                <TabsTrigger
-                  key={category.id}
-                  value={category.id}
-                  className="flex items-center gap-2 h-auto py-2 data-[state=active]:bg-green-50 data-[state=active]:text-green-700"
-                >
-                  {category.icon}
-                  <span>{category.name}</span>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+        {/* 카테고리 네비게이션 */}
+        <div className="bg-white rounded-lg p-4">
+          {isCategoriesLoading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-3">
+              {allCategories.map((category) => {
+                const categoryValue = category === "전체" ? "all" : category;
+                const isActive = selectedCategory === categoryValue;
+
+                return (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(categoryValue)}
+                    className={`
+                      px-4 py-2.5 rounded-lg
+                      border-2 transition-all duration-200 font-medium
+                      ${
+                        isActive
+                          ? "bg-green-100 text-green-800 border-green-600 shadow-md scale-105"
+                          : "bg-gray-50 text-gray-700 border-transparent hover:bg-gray-100 hover:scale-105"
+                      }
+                    `}
+                  >
+                    {category}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* 검색 및 정렬 바 */}

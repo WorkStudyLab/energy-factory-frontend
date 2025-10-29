@@ -1,8 +1,8 @@
 import { api } from "@/lib/axios/axios";
-import type { 
-  ProductFilters, 
-  ProductsResponse, 
-  ApiResponse 
+import type {
+  ProductFilters,
+  ProductsResponse,
+  ApiResponse,
 } from "@/types/product";
 
 export class ProductsApiService {
@@ -15,7 +15,31 @@ export class ProductsApiService {
       this.BASE_URL,
       { params }
     );
-    
+
+    return response.data.data;
+  }
+
+  // 카테고리 목록 조회
+  static async getCategories(): Promise<string[]> {
+    const response = await api.get<ApiResponse<string[]>>(
+      `${this.BASE_URL}/categories`
+    );
+
+    return response.data.data;
+  }
+
+  // 카테고리별 상품 조회
+  static async getProductsByCategory(
+    category: string,
+    filters: Omit<ProductFilters, 'category'> = {}
+  ): Promise<ProductsResponse> {
+    const params = this.buildQueryParams(filters);
+
+    const response = await api.get<ApiResponse<ProductsResponse>>(
+      `${this.BASE_URL}/categories/${encodeURIComponent(category)}`,
+      { params }
+    );
+
     return response.data.data;
   }
 
