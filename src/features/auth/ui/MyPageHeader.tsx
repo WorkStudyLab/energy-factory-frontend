@@ -72,17 +72,17 @@ export function MyPageHeader({ userInfo, onLogout }: MyPageHeaderProps) {
   const { name, memberSince, authProvider, profileImage } = userInfo;
   return (
     <Card className="border-neutral-200">
-      <CardContent className="p-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Avatar className="h-24 w-24 bg-neutral-200">
+      <CardContent className="p-4 md:p-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex items-center gap-4 md:gap-6">
+            <Avatar className="h-20 w-20 md:h-24 md:w-24 bg-neutral-200 flex-shrink-0">
               <AvatarImage src={profileImage} alt={name} />
             </Avatar>
-            <div>
+            <div className="flex-1 min-w-0">
               <h1 className="text-base font-normal mb-2">
                 {name}님의 마이페이지
               </h1>
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
                 {authProvider === "local" && (
                   <Badge
                     variant="outline"
@@ -107,7 +107,7 @@ export function MyPageHeader({ userInfo, onLogout }: MyPageHeaderProps) {
           </div>
           <Button
             onClick={onLogout}
-            className="bg-[#e20004] hover:bg-[#c10003] text-white font-bold px-10 h-[45px] rounded-lg"
+            className="bg-[#e20004] hover:bg-[#c10003] text-white font-bold px-10 h-[45px] rounded-lg w-full md:w-auto"
           >
             로그아웃
           </Button>
