@@ -1,11 +1,47 @@
-import { CheckCircle2, Package, Truck, CreditCard, Info } from "lucide-react";
-import { Link } from "react-router-dom";
+import {
+  CheckCircle2,
+  Package,
+  Truck,
+  CreditCard,
+  Info,
+  Loader2,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ROUTES } from "@/constants/routes";
+import usePaymentSuccess from "@/features/order/hooks/usePaymentSuccess";
 
 export default function OrderCompletePage() {
+  const navigate = useNavigate();
+  const { paymentConfirmResult, isLoading, error } = usePaymentSuccess();
+
+  console.log("결제 완료 결과:", paymentConfirmResult);
+
+  // 에러 발생 시 실패 페이지로 리디렉션
+  useEffect(() => {
+    if (error) {
+      navigate(ROUTES.ORDER_FAIL, { replace: true });
+    }
+  }, [error, navigate]);
+
+  // 로딩 중일 때 표시
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="size-12 text-green-600 animate-spin" />
+          <p className="text-base md:text-lg font-semibold text-neutral-900">
+            결제 중입니다...
+          </p>
+          <p className="text-sm text-neutral-600">잠시만 기다려주세요</p>
+        </div>
+      </div>
+    );
+  }
+
   // TODO: 실제로는 주문 ID를 URL 파라미터나 상태로 받아와서 주문 정보를 조회해야 합니다
   const orderInfo = {
     orderId: "EF-2025-01160001",
@@ -76,7 +112,9 @@ export default function OrderCompletePage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 {/* 주문번호 */}
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-xs md:text-sm font-bold text-neutral-600">주문번호</p>
+                  <p className="text-xs md:text-sm font-bold text-neutral-600">
+                    주문번호
+                  </p>
                   <p className="text-sm md:text-base text-neutral-900">
                     {orderInfo.orderId}
                   </p>
@@ -84,7 +122,9 @@ export default function OrderCompletePage() {
 
                 {/* 주문일시 */}
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-xs md:text-sm font-bold text-neutral-600">주문일시</p>
+                  <p className="text-xs md:text-sm font-bold text-neutral-600">
+                    주문일시
+                  </p>
                   <p className="text-sm md:text-base text-neutral-900">
                     {orderInfo.orderDate}
                   </p>
@@ -180,7 +220,9 @@ export default function OrderCompletePage() {
                 {/* 헤더 */}
                 <div className="flex items-center gap-2 mb-4 md:mb-6">
                   <Truck className="size-4 md:size-5 text-green-600" />
-                  <h2 className="text-sm md:text-base font-bold text-neutral-900">배송 정보</h2>
+                  <h2 className="text-sm md:text-base font-bold text-neutral-900">
+                    배송 정보
+                  </h2>
                 </div>
 
                 {/* 배송 정보 내용 */}
@@ -236,11 +278,15 @@ export default function OrderCompletePage() {
                       <CheckCircle2 className="size-3.5 md:size-4 text-green-600" />
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-xs md:text-sm text-neutral-900">결제 완료</p>
+                      <p className="text-xs md:text-sm text-neutral-900">
+                        결제 완료
+                      </p>
                       <p className="text-xs text-neutral-600">상품 준비중</p>
                     </div>
                   </div>
-                  <span className="text-xs md:text-sm text-green-600 font-semibold">진행중</span>
+                  <span className="text-xs md:text-sm text-green-600 font-semibold">
+                    진행중
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -253,14 +299,18 @@ export default function OrderCompletePage() {
                 {/* 헤더 */}
                 <div className="flex items-center gap-2">
                   <CreditCard className="size-4 md:size-5 text-green-600" />
-                  <h2 className="text-sm md:text-base font-bold text-neutral-900">결제 정보</h2>
+                  <h2 className="text-sm md:text-base font-bold text-neutral-900">
+                    결제 정보
+                  </h2>
                 </div>
 
                 {/* 금액 정보 */}
                 <div className="space-y-2 md:space-y-3">
                   <div className="flex justify-between text-sm md:text-base text-neutral-700">
                     <span>상품 금액</span>
-                    <span>{orderInfo.payment.productAmount.toLocaleString()}원</span>
+                    <span>
+                      {orderInfo.payment.productAmount.toLocaleString()}원
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm md:text-base text-neutral-700">
                     <span>배송비</span>
@@ -282,7 +332,9 @@ export default function OrderCompletePage() {
 
                 {/* 결제 수단 */}
                 <div className="bg-neutral-50 rounded-lg p-3 md:p-4 space-y-1">
-                  <p className="text-xs md:text-sm text-neutral-600">결제 수단</p>
+                  <p className="text-xs md:text-sm text-neutral-600">
+                    결제 수단
+                  </p>
                   <p className="text-sm md:text-base font-semibold text-neutral-900">
                     {orderInfo.payment.method}
                   </p>

@@ -1,51 +1,67 @@
-import { api } from "@/lib/axios/axios";
-import type {
-  ProductFilters,
-  ProductsResponse,
-  ApiResponse,
-} from "@/types/product";
+// import { api } from "@/lib/axios/axios";
+// import type {
+//   ProductFilters,
+//   ProductsResponse,
+//   ApiResponse,
+// } from "@/types/product";
+import generateRandomString from "@/utils/generateRandomString";
 
 export class PaymentApiService {
   private static readonly BASE_URL = "/api/orders/payments";
 
   // 1. 주문 생성 서비스
-  // 2. 결제 완료 서비스
-
-  //   static async getProducts(
-  //     filters: ProductFilters = {},
-  //   ): Promise<ProductsResponse> {
-  //     const params = this.buildQueryParams(filters);
-
-  //     const response = await api.get<ApiResponse<ProductsResponse>>(
-  //       this.BASE_URL,
-  //       { params },
+  /** @todo 상세 기능 명세 필요 */
+  //   static async createOrder(orderData: any): Promise<any> {
+  //     const response = await api.post<ApiResponse<any>>(
+  //       `${this.BASE_URL}/create-order`,
+  //       orderData,
   //     );
 
   //     return response.data.data;
   //   }
 
-  private static buildQueryParams(
-    filters: ProductFilters,
-  ): Record<string, any> {
-    const params: Record<string, any> = {};
+  // 1.1 주문 생성 서비스 테스트용
+  static async createOrder(): Promise<{
+    orderId: string;
+    orderName: string;
+    amount: number;
+  }> {
+    const response = {
+      orderId: generateRandomString(),
+      orderName: "테스트주문",
+      amount: 1000,
+    };
 
-    if (filters.category) params.category = filters.category;
-    if (filters.keyword) params.keyword = filters.keyword;
-    if (filters.status) params.status = filters.status;
-    if (filters.minPrice !== undefined) params.minPrice = filters.minPrice;
-    if (filters.maxPrice !== undefined) params.maxPrice = filters.maxPrice;
+    return response;
+  }
 
-    // Spring Boot Pageable 형식으로 파라미터 설정
-    params.page = filters.page ?? 0;
-    params.size = filters.size ?? 20;
+  // 2. 결제 완료 서비스
+  //   static async completePayment(paymentData: any): Promise<any> {
+  //     const response = await api.post<ApiResponse<any>>(
+  //       `${this.BASE_URL}/complete-payment`,
+  //       paymentData,
+  //     );
 
-    // sort 파라미터 처리 (Spring Boot 형식: sort=fieldName,direction)
-    if (filters.sort) {
-      params.sort = filters.sort;
-    } else {
-      params.sort = "createdAt,desc";
-    }
+  //     return response.data.data;
+  //   }
+  //   2.1 결제 완료 서비스 테스트용
+  static async completePayment(): Promise<{
+    orderId: string;
+    orderName: string;
+    amount: number;
+  }> {
+    // 3초 지연
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    return params;
+    // 에러 테스트
+    throw new Error("결제 완료 처리 중 오류가 발생했습니다.");
+
+    const response = {
+      orderId: generateRandomString(),
+      orderName: "테스트주문",
+      amount: 1000,
+    };
+
+    return response;
   }
 }
