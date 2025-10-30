@@ -14,15 +14,9 @@ import {
   useClearCart,
 } from "@/features/cart/hooks/useCart";
 import { ROUTES } from "@/constants/routes";
-import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
-import type { TossPaymentsPayment } from "@tosspayments/tosspayments-sdk";
 import type { CartItem } from "@/types/cart";
-function generateRandomString() {
-  return window.btoa(Math.random().toString()).slice(0, 20);
-}
-/** Toss Client Key */
-const clientKey = import.meta.env.VITE_TOSS_CLIENT_KEY;
-const customerKey = generateRandomString();
+import usePayment from "@/features/order/hooks/usePayment";
+import CartEmpty from "@/features/order/ui/CartEmpty";
 
 export default function CartPage() {
   const { data: cart, isLoading } = useCart();
@@ -32,31 +26,9 @@ export default function CartPage() {
   const clearCartMutation = useClearCart();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const isInitialized = useRef(false);
-
-  const [payment, setPayment] = useState<TossPaymentsPayment | null>(null);
-
-  useEffect(() => {
-    async function fetchPayment() {
-      try {
-        const tossPayments = await loadTossPayments(clientKey);
-
-        // 회원 결제
-        // @docs https://docs.tosspayments.com/sdk/v2/js#tosspaymentspayment
-        const payment = tossPayments.payment({
-          customerKey,
-        });
-        // 비회원 결제
-        // const payment = tossPayments.payment({ customerKey: ANONYMOUS });
-
-        setPayment(payment);
-      } catch (error) {
-        console.error("Error fetching payment:", error);
-      }
-    }
-
-    console.log("ytw??");
-    fetchPayment();
-  }, [clientKey, customerKey]);
+  const { request: requestPayment } = usePayment({
+    amount: 1000,
+  });
 
   // 초기 진입 시 전체 선택
   useEffect(() => {
@@ -65,46 +37,6 @@ export default function CartPage() {
       isInitialized.current = true;
     }
   }, [cart?.items]);
-
-  // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
-  // @docs https://docs.tosspayments.com/sdk/v2/js#paymentrequestpayment
-  async function requestPayment() {
-    if (!payment) {
-      console.error("Payment is not initialized.");
-      return;
-    }
-
-    const selectedPaymentMethod = "CARD"; // 해당 앱에서는 카드결제 형태만 사용
-
-    // 결제를 요청하기 전에 orderId, amount를 서버에 저장하세요.
-    // 결제 과정에서 악의적으로 결제 금액이 바뀌는 것을 확인하는 용도입니다.
-    switch (selectedPaymentMethod) {
-      case "CARD":
-        await payment.requestPayment({
-          method: "CARD", // 카드 및 간편결제
-          amount: {
-            currency: "KRW",
-            // value: selectedTotal,
-            value: 1000, // 테스트 용도 --- IGNORE ---
-          },
-          orderId: generateRandomString(), // 고유 주문번호
-          orderName: "토스 티셔츠 외 2건",
-          successUrl: window.location.origin + ROUTES.ORDER_COMPLETE, // 결제 요청이 성공하면 리다이렉트되는 URL
-          failUrl: window.location.origin + "/fail", // 결제 요청이 실패하면 리다이렉트되는 URL
-          customerEmail: "customer123@gmail.com",
-          customerName: "김토스",
-          // 가상계좌 안내, 퀵계좌이체 휴대폰 번호 자동 완성에 사용되는 값입니다. 필요하다면 주석을 해제해 주세요.
-          // customerMobilePhone: "01012341234",
-          card: {
-            useEscrow: false,
-            flowMode: "DEFAULT",
-            useCardPoint: false,
-            useAppCardOnly: false,
-          },
-        });
-        break;
-    }
-  }
 
   // 전체 선택/해제
   const handleSelectAll = (checked: boolean) => {
@@ -246,66 +178,7 @@ export default function CartPage() {
 
   // 장바구니가 비어있는 경우
   if (!cart?.items || cart.items.length === 0) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4">
-        <Card className="border-neutral-200 w-full max-w-[620px]">
-          <CardContent className="p-16 flex flex-col items-center gap-7">
-            {/* 아이콘 */}
-            <div className="size-24 rounded-full bg-neutral-100 flex items-center justify-center">
-              <ShoppingBag className="size-12 text-neutral-400" />
-            </div>
-
-            {/* 제목 */}
-            <h2 className="text-2xl font-bold text-neutral-900">
-              장바구니가 비어있습니다
-            </h2>
-
-            {/* 설명 */}
-            <div className="text-center text-lg text-neutral-600 space-y-1">
-              <p>Energy Factory의 건강한 상품을 장바구니에 담아보세요.</p>
-              <p>맞춤형 영양 정보와 함께 최적의 식단을 구성할 수 있습니다.</p>
-            </div>
-
-            {/* 쇼핑하기 버튼 */}
-            <Button
-              asChild
-              className="bg-green-600 hover:bg-green-700 text-white h-11 px-12"
-            >
-              <Link to={ROUTES.PRODUCTS}>쇼핑하기</Link>
-            </Button>
-
-            {/* 혜택 안내 */}
-            <div className="border-t border-neutral-200 pt-8 w-full">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* 무료 배송 */}
-                <div className="flex flex-col items-center gap-2">
-                  <p className="text-sm font-bold text-green-600">무료 배송</p>
-                  <p className="text-sm text-neutral-600 text-center">
-                    30,000원 이상 구매시
-                  </p>
-                </div>
-
-                {/* 영양 정보 */}
-                <div className="flex flex-col items-center gap-2">
-                  <p className="text-sm font-bold text-green-600">영양 정보</p>
-                  <p className="text-sm text-neutral-600 text-center">
-                    맞춤형 영양 분석 제공
-                  </p>
-                </div>
-
-                {/* 안전 거래 */}
-                <div className="flex flex-col items-center gap-2">
-                  <p className="text-sm font-bold text-green-600">안전 거래</p>
-                  <p className="text-sm text-neutral-600 text-center">
-                    100% 상품 보호
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <CartEmpty />;
   }
 
   return (
