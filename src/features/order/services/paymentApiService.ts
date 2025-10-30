@@ -54,7 +54,7 @@ export class PaymentApiService {
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
     // 에러 테스트
-    throw new Error("결제 완료 처리 중 오류가 발생했습니다.");
+    // throw new Error("결제 완료 처리 중 오류가 발생했습니다.");
 
     const response = {
       orderId: generateRandomString(),
