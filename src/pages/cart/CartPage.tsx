@@ -1,5 +1,5 @@
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +14,15 @@ import {
   useClearCart,
 } from "@/features/cart/hooks/useCart";
 import { ROUTES } from "@/constants/routes";
+import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
+import type { TossPaymentsPayment } from "@tosspayments/tosspayments-sdk";
 import type { CartItem } from "@/types/cart";
+function generateRandomString() {
+  return window.btoa(Math.random().toString()).slice(0, 20);
+}
+/** Toss Client Key */
+const clientKey = import.meta.env.VITE_TOSS_CLIENT_KEY;
+const customerKey = generateRandomString();
 
 export default function CartPage() {
   const { data: cart, isLoading } = useCart();
@@ -23,20 +31,80 @@ export default function CartPage() {
   const deleteSelectedItemsMutation = useDeleteSelectedItems();
   const clearCartMutation = useClearCart();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const navigate = useNavigate();
   const isInitialized = useRef(false);
+
+  const [payment, setPayment] = useState<TossPaymentsPayment | null>(null);
+
+  useEffect(() => {
+    async function fetchPayment() {
+      try {
+        const tossPayments = await loadTossPayments(clientKey);
+
+        // 회원 결제
+        // @docs https://docs.tosspayments.com/sdk/v2/js#tosspaymentspayment
+        const payment = tossPayments.payment({
+          customerKey,
+        });
+        // 비회원 결제
+        // const payment = tossPayments.payment({ customerKey: ANONYMOUS });
+
+        setPayment(payment);
+      } catch (error) {
+        console.error("Error fetching payment:", error);
+      }
+    }
+
+    console.log("ytw??");
+    fetchPayment();
+  }, [clientKey, customerKey]);
 
   // 초기 진입 시 전체 선택
   useEffect(() => {
-    if (
-      cart?.items &&
-      cart.items.length > 0 &&
-      !isInitialized.current
-    ) {
+    if (cart?.items && cart.items.length > 0 && !isInitialized.current) {
       setSelectedItems(cart.items.map((item) => item.id));
       isInitialized.current = true;
     }
   }, [cart?.items]);
+
+  // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
+  // @docs https://docs.tosspayments.com/sdk/v2/js#paymentrequestpayment
+  async function requestPayment() {
+    if (!payment) {
+      console.error("Payment is not initialized.");
+      return;
+    }
+
+    const selectedPaymentMethod = "CARD"; // 해당 앱에서는 카드결제 형태만 사용
+
+    // 결제를 요청하기 전에 orderId, amount를 서버에 저장하세요.
+    // 결제 과정에서 악의적으로 결제 금액이 바뀌는 것을 확인하는 용도입니다.
+    switch (selectedPaymentMethod) {
+      case "CARD":
+        await payment.requestPayment({
+          method: "CARD", // 카드 및 간편결제
+          amount: {
+            currency: "KRW",
+            // value: selectedTotal,
+            value: 1000, // 테스트 용도 --- IGNORE ---
+          },
+          orderId: generateRandomString(), // 고유 주문번호
+          orderName: "토스 티셔츠 외 2건",
+          successUrl: window.location.origin + ROUTES.ORDER_COMPLETE, // 결제 요청이 성공하면 리다이렉트되는 URL
+          failUrl: window.location.origin + "/fail", // 결제 요청이 실패하면 리다이렉트되는 URL
+          customerEmail: "customer123@gmail.com",
+          customerName: "김토스",
+          // 가상계좌 안내, 퀵계좌이체 휴대폰 번호 자동 완성에 사용되는 값입니다. 필요하다면 주석을 해제해 주세요.
+          // customerMobilePhone: "01012341234",
+          card: {
+            useEscrow: false,
+            flowMode: "DEFAULT",
+            useCardPoint: false,
+            useAppCardOnly: false,
+          },
+        });
+        break;
+    }
+  }
 
   // 전체 선택/해제
   const handleSelectAll = (checked: boolean) => {
@@ -159,13 +227,13 @@ export default function CartPage() {
   };
 
   // 결제하기 버튼 핸들러
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (selectedItems.length === 0) {
       alert("결제할 상품을 선택해주세요.");
       return;
     }
-    // TODO: 실제 결제 API 호출 후 주문 완료 페이지로 이동
-    navigate(ROUTES.ORDER_COMPLETE);
+    // 실제 결제 API 호출
+    await requestPayment();
   };
 
   if (isLoading) {
@@ -516,7 +584,10 @@ function CartItemRow({
       </div>
 
       {/* 상품 정보 */}
-      <div className="flex-1 space-y-2 cursor-pointer" onClick={handleItemClick}>
+      <div
+        className="flex-1 space-y-2 cursor-pointer"
+        onClick={handleItemClick}
+      >
         <h3 className="text-sm md:text-base text-neutral-900">
           {item.productName}
         </h3>
@@ -589,9 +660,7 @@ function NutritionDetail({
 }) {
   return (
     <div className="flex flex-col items-center gap-1">
-      <p className="text-xs md:text-sm text-center text-neutral-600">
-        {label}
-      </p>
+      <p className="text-xs md:text-sm text-center text-neutral-600">{label}</p>
       <p className={`text-sm md:text-base ${color}`}>{value}</p>
       <p className="text-[10px] md:text-xs text-center text-neutral-500">
         {percentage}
