@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
 import { PaymentApiService } from "../services/paymentApiService";
-
-interface PaymentConfirmResult {
-  orderId: string;
-  orderName: string;
-  amount: number;
-}
+import type { Payment } from "@/types/order";
 
 const usePaymentSuccess = () => {
   const [paymentConfirmResult, setPaymentConfirmResult] =
-    useState<PaymentConfirmResult | null>(null);
+    useState<Payment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -17,7 +12,24 @@ const usePaymentSuccess = () => {
     const fetchPaymentResult = async () => {
       try {
         setIsLoading(true);
-        const result = await PaymentApiService.completePayment();
+
+        // URL에서 쿼리 파라미터 추출
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentKey = urlParams.get("paymentKey");
+        const orderId = urlParams.get("orderId");
+        const amount = urlParams.get("amount");
+
+        if (!paymentKey || !orderId || !amount) {
+          throw new Error("필수 결제 정보가 누락되었습니다.");
+        }
+
+        const paymentData = {
+          paymentKey,
+          orderId,
+          amount: Number(amount),
+        };
+
+        const result = await PaymentApiService.completePayment(paymentData);
         console.log("결제 완료 API 결과:", result);
         setPaymentConfirmResult(result);
       } catch (err) {

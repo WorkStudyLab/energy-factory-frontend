@@ -26,9 +26,7 @@ export default function CartPage() {
   const clearCartMutation = useClearCart();
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const isInitialized = useRef(false);
-  const { request: requestPayment } = usePayment({
-    amount: 1000,
-  });
+  const { request: requestPayment } = usePayment();
 
   // 초기 진입 시 전체 선택
   useEffect(() => {
@@ -164,8 +162,24 @@ export default function CartPage() {
       alert("결제할 상품을 선택해주세요.");
       return;
     }
+
+    const orderInfo = {
+      recipientName: "홍길동",
+      phoneNumber: "010-1234-5678",
+      postalCode: "12345",
+      addressLine1: "서울특별시 강남구 테헤란로 123",
+      addressLine2: "101동 202호",
+      orderItems: cart!.items
+        .filter((item) => selectedItems.includes(item.id))
+        .map((item) => ({
+          productId: item.productId,
+          variantId: item.variantId,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+    };
     // 실제 결제 API 호출
-    await requestPayment();
+    await requestPayment(orderInfo);
   };
 
   if (isLoading) {
