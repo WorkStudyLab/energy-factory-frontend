@@ -6,7 +6,7 @@ interface OrderListProps {
   orders: OrderListItem[];
   onReorder: (orderId: number) => void;
   onCancelOrder: (orderId: number) => void;
-  observerTarget?: React.RefObject<HTMLDivElement>;
+  observerTarget?: React.RefObject<HTMLDivElement | null>;
   isLoading?: boolean;
   isFetchingNextPage?: boolean;
 }
