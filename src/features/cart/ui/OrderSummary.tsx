@@ -19,6 +19,15 @@ const OrderSummary = (props: OrderSummaryProps) => {
     0,
   );
 
+  // 배송비 계산 (3만원 이상 무료, 이하 2,500원)
+  const FREE_SHIPPING_THRESHOLD = 30000;
+  const SHIPPING_FEE = 2500;
+  const shippingFee =
+    selectedTotalPrice >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
+
+  // 최종 결제 금액
+  const finalTotalPrice = selectedTotalPrice + shippingFee;
+
   const { request: requestPayment } = usePayment();
 
   // 결제하기 버튼 핸들러
@@ -56,7 +65,9 @@ const OrderSummary = (props: OrderSummaryProps) => {
           </div>
           <div className="flex justify-between text-sm md:text-base text-neutral-700">
             <span>배송비</span>
-            <span>무료</span>
+            <span>
+              {shippingFee === 0 ? "무료" : `${shippingFee.toLocaleString()}원`}
+            </span>
           </div>
         </div>
 
@@ -67,7 +78,7 @@ const OrderSummary = (props: OrderSummaryProps) => {
             총 결제 금액
           </span>
           <span className="text-lg md:text-xl font-bold text-green-600">
-            {selectedTotalPrice.toLocaleString()}원
+            {finalTotalPrice.toLocaleString()}원
           </span>
         </div>
 
