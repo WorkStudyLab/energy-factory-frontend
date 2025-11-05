@@ -1,17 +1,106 @@
-import { CheckCircle2, Package, Truck, CreditCard, Info } from "lucide-react";
-import { Link } from "react-router-dom";
+import {
+  CheckCircle2,
+  Package,
+  Truck,
+  CreditCard,
+  Info,
+  Loader2,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ROUTES } from "@/constants/routes";
+import usePaymentSuccess from "@/features/order/hooks/usePaymentSuccess";
+
+// 날짜 포맷 유틸리티 함수 (한국 시간 기준)
+const formatOrderDate = (dateString: string) => {
+  // 서버에서 UTC 시간을 보내는 경우 Z suffix가 없을 수 있으므로 추가
+  const utcString = dateString.endsWith('Z') ? dateString : dateString + 'Z';
+  const date = new Date(utcString);
+
+  // UTC 시간에 9시간을 더해 한국 시간으로 변환
+  const koreaTimeOffset = 9 * 60 * 60 * 1000;
+  const koreaTime = new Date(date.getTime() + koreaTimeOffset);
+
+  const year = koreaTime.getUTCFullYear();
+  const month = koreaTime.getUTCMonth() + 1;
+  const day = koreaTime.getUTCDate();
+  const hours = koreaTime.getUTCHours();
+  const minutes = koreaTime.getUTCMinutes();
+
+  return `${year}년 ${month}월 ${day}일 ${hours}:${
+    minutes < 10 ? "0" + minutes : minutes
+  }`;
+};
+
+const formatDeliveryDate = (dateString: string) => {
+  // 서버에서 UTC 시간을 보내는 경우 Z suffix가 없을 수 있으므로 추가
+  const utcString = dateString.endsWith('Z') ? dateString : dateString + 'Z';
+  const date = new Date(utcString);
+
+  // UTC 시간에 9시간을 더해 한국 시간으로 변환
+  const koreaTimeOffset = 9 * 60 * 60 * 1000;
+  const koreaTime = new Date(date.getTime() + koreaTimeOffset);
+
+  // 3일 추가
+  koreaTime.setUTCDate(koreaTime.getUTCDate() + 3);
+
+  const year = koreaTime.getUTCFullYear();
+  const month = koreaTime.getUTCMonth() + 1;
+  const day = koreaTime.getUTCDate();
+  const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
+  const weekday = weekdays[koreaTime.getUTCDay()];
+
+  return `${year}년 ${month}월 ${day}일 (${weekday})`;
+};
+
+// 결제 수단 매핑 함수
+const getPaymentMethodText = (method: string) => {
+  const methodMap: Record<string, string> = {
+    CREDIT_CARD: "신용카드",
+    DEBIT_CARD: "체크카드",
+    BANK_TRANSFER: "계좌이체",
+    VIRTUAL_ACCOUNT: "가상계좌",
+  };
+  return methodMap[method] || method;
+};
 
 export default function OrderCompletePage() {
-  // TODO: 실제로는 주문 ID를 URL 파라미터나 상태로 받아와서 주문 정보를 조회해야 합니다
+  const navigate = useNavigate();
+  const { paymentConfirmResult, isLoading, error } = usePaymentSuccess();
+
+  console.log("결제 완료 결과:", paymentConfirmResult);
+
+  // 에러 발생 시 실패 페이지로 리디렉션
+  useEffect(() => {
+    if (error) {
+      navigate(ROUTES.ORDER_FAIL, { replace: true });
+    }
+  }, [error, navigate]);
+
+  // 로딩 중일 때 표시
+  if (isLoading || paymentConfirmResult === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="size-12 text-green-600 animate-spin" />
+          <p className="text-base md:text-lg font-semibold text-neutral-900">
+            결제 중입니다...
+          </p>
+          <p className="text-sm text-neutral-600">잠시만 기다려주세요</p>
+        </div>
+      </div>
+    );
+  }
+
   const orderInfo = {
-    orderId: "EF-2025-01160001",
-    orderDate: "2025년 1월 16일 14:32",
-    deliveryDate: "2025년 1월 18일 (금)",
+    orderId: paymentConfirmResult.orderNumber,
+    orderDate: formatOrderDate(paymentConfirmResult.paidAt),
+    deliveryDate: formatDeliveryDate(paymentConfirmResult.paidAt),
     items: [
+      // TODO: 실제 주문 상품 정보는 별도 API로 조회 필요
       {
         id: 1,
         name: "유기농 닭가슴살",
@@ -35,6 +124,7 @@ export default function OrderCompletePage() {
       },
     ],
     recipient: {
+      // TODO: 실제 배송 정보는 별도 API로 조회 필요
       name: "김진장",
       phone: "010-1234-5678",
       address: "서울특별시 강남구 테헤란로 123",
@@ -42,11 +132,11 @@ export default function OrderCompletePage() {
       deliveryRequest: "문 앞에 놓아주세요",
     },
     payment: {
-      productAmount: 64600,
+      productAmount: paymentConfirmResult.amount,
       shippingFee: 0,
-      totalAmount: 64600,
-      method: "신용카드",
-      detail: "신한카드 (****-1234)",
+      totalAmount: paymentConfirmResult.amount,
+      method: getPaymentMethodText(paymentConfirmResult.paymentMethod),
+      detail: `${getPaymentMethodText(paymentConfirmResult.paymentMethod)}`,
     },
   };
 
@@ -76,7 +166,9 @@ export default function OrderCompletePage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 {/* 주문번호 */}
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-xs md:text-sm font-bold text-neutral-600">주문번호</p>
+                  <p className="text-xs md:text-sm font-bold text-neutral-600">
+                    주문번호
+                  </p>
                   <p className="text-sm md:text-base text-neutral-900">
                     {orderInfo.orderId}
                   </p>
@@ -84,7 +176,9 @@ export default function OrderCompletePage() {
 
                 {/* 주문일시 */}
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-xs md:text-sm font-bold text-neutral-600">주문일시</p>
+                  <p className="text-xs md:text-sm font-bold text-neutral-600">
+                    주문일시
+                  </p>
                   <p className="text-sm md:text-base text-neutral-900">
                     {orderInfo.orderDate}
                   </p>
@@ -180,7 +274,9 @@ export default function OrderCompletePage() {
                 {/* 헤더 */}
                 <div className="flex items-center gap-2 mb-4 md:mb-6">
                   <Truck className="size-4 md:size-5 text-green-600" />
-                  <h2 className="text-sm md:text-base font-bold text-neutral-900">배송 정보</h2>
+                  <h2 className="text-sm md:text-base font-bold text-neutral-900">
+                    배송 정보
+                  </h2>
                 </div>
 
                 {/* 배송 정보 내용 */}
@@ -236,11 +332,15 @@ export default function OrderCompletePage() {
                       <CheckCircle2 className="size-3.5 md:size-4 text-green-600" />
                     </div>
                     <div className="flex flex-col">
-                      <p className="text-xs md:text-sm text-neutral-900">결제 완료</p>
+                      <p className="text-xs md:text-sm text-neutral-900">
+                        결제 완료
+                      </p>
                       <p className="text-xs text-neutral-600">상품 준비중</p>
                     </div>
                   </div>
-                  <span className="text-xs md:text-sm text-green-600 font-semibold">진행중</span>
+                  <span className="text-xs md:text-sm text-green-600 font-semibold">
+                    진행중
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -253,14 +353,18 @@ export default function OrderCompletePage() {
                 {/* 헤더 */}
                 <div className="flex items-center gap-2">
                   <CreditCard className="size-4 md:size-5 text-green-600" />
-                  <h2 className="text-sm md:text-base font-bold text-neutral-900">결제 정보</h2>
+                  <h2 className="text-sm md:text-base font-bold text-neutral-900">
+                    결제 정보
+                  </h2>
                 </div>
 
                 {/* 금액 정보 */}
                 <div className="space-y-2 md:space-y-3">
                   <div className="flex justify-between text-sm md:text-base text-neutral-700">
                     <span>상품 금액</span>
-                    <span>{orderInfo.payment.productAmount.toLocaleString()}원</span>
+                    <span>
+                      {orderInfo.payment.productAmount.toLocaleString()}원
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm md:text-base text-neutral-700">
                     <span>배송비</span>
@@ -282,7 +386,9 @@ export default function OrderCompletePage() {
 
                 {/* 결제 수단 */}
                 <div className="bg-neutral-50 rounded-lg p-3 md:p-4 space-y-1">
-                  <p className="text-xs md:text-sm text-neutral-600">결제 수단</p>
+                  <p className="text-xs md:text-sm text-neutral-600">
+                    결제 수단
+                  </p>
                   <p className="text-sm md:text-base font-semibold text-neutral-900">
                     {orderInfo.payment.method}
                   </p>

@@ -17,6 +17,7 @@ import NutritionPage from "./pages/nutrition/NutritionPage";
 import DietCoachPage from "./pages/diet-coach/DietCoachPage";
 import OrderHistoryPage from "./pages/order-history/OrderHistoryPage";
 import OrderCompletePage from "./pages/order/OrderCompletePage";
+import OrderFailPage from "./pages/order/OrderFailPage";
 import MyPage from "./pages/mypage/MyPage";
 import TestPage from "./pages/test/TestPage";
 import UiTestPage from "./pages/test/UiTestPage";
@@ -73,6 +74,10 @@ function App() {
               <Route
                 path={ROUTES.ORDER_COMPLETE}
                 element={<OrderCompletePage />}
+              />
+              <Route
+                path={ROUTES.ORDER_FAIL}
+                element={<OrderFailPage />}
               />
               <Route path={ROUTES.MY_PAGE} element={<MyPage />} />
               <Route path={ROUTES.TEST} element={<TestPage />} />
