@@ -35,6 +35,7 @@ import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import { Toaster } from "./components/ui/toaster";
+import { AppRoute } from "./components/route/AppRoute";
 
 function App() {
   return (
@@ -50,57 +51,194 @@ function App() {
                 path={ROUTES.HOME}
                 element={<Navigate to={ROUTES.PRODUCTS} replace />}
               />
-              <Route path={ROUTES.LANDING} element={<LandingPage />} />
-              <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
+              <Route
+                path={ROUTES.LANDING}
+                element={
+                  <AppRoute path={ROUTES.LANDING} element={<LandingPage />} />
+                }
+              />
+              <Route
+                path={ROUTES.PRODUCTS}
+                element={
+                  <AppRoute path={ROUTES.PRODUCTS} element={<ProductsPage />} />
+                }
+              />
               <Route
                 path={ROUTES.PRODUCT_DETAIL}
-                element={<ProductDetailPage />}
+                element={
+                  <AppRoute
+                    path={ROUTES.PRODUCT_DETAIL}
+                    element={<ProductDetailPage />}
+                  />
+                }
               />
-              <Route path={ROUTES.CART} element={<CartPage />} />
-              <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+              <Route
+                path={ROUTES.CART}
+                element={<AppRoute path={ROUTES.CART} element={<CartPage />} />}
+              />
+              <Route
+                path={ROUTES.LOGIN}
+                element={
+                  <AppRoute path={ROUTES.LOGIN} element={<LoginPage />} />
+                }
+              />
               <Route
                 path={ROUTES.FORGOT_PASSWORD}
-                element={<ForgotPasswordPage />}
+                element={
+                  <AppRoute
+                    path={ROUTES.FORGOT_PASSWORD}
+                    element={<ForgotPasswordPage />}
+                  />
+                }
               />
-              <Route path={ROUTES.VERIFY_CODE} element={<VerifyCodePage />} />
+              <Route
+                path={ROUTES.VERIFY_CODE}
+                element={
+                  <AppRoute
+                    path={ROUTES.VERIFY_CODE}
+                    element={<VerifyCodePage />}
+                  />
+                }
+              />
               <Route
                 path={ROUTES.RESET_PASSWORD}
-                element={<ResetPasswordPage />}
+                element={
+                  <AppRoute
+                    path={ROUTES.RESET_PASSWORD}
+                    element={<ResetPasswordPage />}
+                  />
+                }
               />
               <Route
                 path={ROUTES.RESET_PASSWORD_SUCCESS}
-                element={<ResetPasswordSuccessPage />}
+                element={
+                  <AppRoute
+                    path={ROUTES.RESET_PASSWORD_SUCCESS}
+                    element={<ResetPasswordSuccessPage />}
+                  />
+                }
               />
-              <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
+              <Route
+                path={ROUTES.SIGNUP}
+                element={
+                  <AppRoute path={ROUTES.SIGNUP} element={<SignupPage />} />
+                }
+              />
               <Route
                 path={ROUTES.SIGNUP_CONNECT}
-                element={<SignupConnectPage />}
+                element={
+                  <AppRoute
+                    path={ROUTES.SIGNUP_CONNECT}
+                    element={<SignupConnectPage />}
+                  />
+                }
               />
-              <Route path={ROUTES.NUTRITION} element={<NutritionPage />} />
-              <Route path={ROUTES.DIET_COACH} element={<DietCoachPage />} />
+              <Route
+                path={ROUTES.NUTRITION}
+                element={
+                  <AppRoute
+                    path={ROUTES.NUTRITION}
+                    element={<NutritionPage />}
+                  />
+                }
+              />
+              <Route
+                path={ROUTES.DIET_COACH}
+                element={
+                  <AppRoute
+                    path={ROUTES.DIET_COACH}
+                    element={<DietCoachPage />}
+                  />
+                }
+              />
               <Route
                 path={ROUTES.ORDER_HISTORY}
-                element={<OrderHistoryPage />}
+                element={
+                  <AppRoute
+                    path={ROUTES.ORDER_HISTORY}
+                    element={<OrderHistoryPage />}
+                  />
+                }
               />
               <Route
                 path={ROUTES.ORDER_COMPLETE}
-                element={<OrderCompletePage />}
+                element={
+                  <AppRoute
+                    path={ROUTES.ORDER_COMPLETE}
+                    element={<OrderCompletePage />}
+                  />
+                }
               />
-              <Route path={ROUTES.ORDER_FAIL} element={<OrderFailPage />} />
-              <Route path={ROUTES.MY_PAGE} element={<MyPage />} />
-              <Route path={ROUTES.TEST} element={<TestPage />} />
-              <Route path={ROUTES.UI_TEST} element={<UiTestPage />} />
-              <Route path={ROUTES.SHADCN_TEST} element={<ShadcnTestPage />} />
+              <Route
+                path={ROUTES.ORDER_FAIL}
+                element={
+                  <AppRoute
+                    path={ROUTES.ORDER_FAIL}
+                    element={<OrderFailPage />}
+                  />
+                }
+              />
+              <Route
+                path={ROUTES.MY_PAGE}
+                element={
+                  <AppRoute path={ROUTES.MY_PAGE} element={<MyPage />} />
+                }
+              />
+              <Route
+                path={ROUTES.TEST}
+                element={<AppRoute path={ROUTES.TEST} element={<TestPage />} />}
+              />
+              <Route
+                path={ROUTES.UI_TEST}
+                element={
+                  <AppRoute path={ROUTES.UI_TEST} element={<UiTestPage />} />
+                }
+              />
+              <Route
+                path={ROUTES.SHADCN_TEST}
+                element={
+                  <AppRoute
+                    path={ROUTES.SHADCN_TEST}
+                    element={<ShadcnTestPage />}
+                  />
+                }
+              />
               <Route
                 path={ROUTES.TAILWIND_TEST}
-                element={<TailwindTestPage />}
+                element={
+                  <AppRoute
+                    path={ROUTES.TAILWIND_TEST}
+                    element={<TailwindTestPage />}
+                  />
+                }
               />
               <Route
                 path={ROUTES.SIGNUP_API_TEST}
-                element={<SignupTestPage />}
+                element={
+                  <AppRoute
+                    path={ROUTES.SIGNUP_API_TEST}
+                    element={<SignupTestPage />}
+                  />
+                }
               />
-              <Route path={ROUTES.LOGIN_API_TEST} element={<LoginTestPage />} />
-              <Route path={ROUTES.DIALOG_TEST} element={<DialogTestPage />} />
+              <Route
+                path={ROUTES.LOGIN_API_TEST}
+                element={
+                  <AppRoute
+                    path={ROUTES.LOGIN_API_TEST}
+                    element={<LoginTestPage />}
+                  />
+                }
+              />
+              <Route
+                path={ROUTES.DIALOG_TEST}
+                element={
+                  <AppRoute
+                    path={ROUTES.DIALOG_TEST}
+                    element={<DialogTestPage />}
+                  />
+                }
+              />
             </Routes>
           </main>
 
