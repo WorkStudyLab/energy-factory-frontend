@@ -1,43 +1,43 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import type { Cart } from "@/types/cart";
+import type { CartItem } from "@/types/cart";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 
-const NutritionCard = (props: { cart: Cart; selectedItems: number[] }) => {
-  const { cart, selectedItems } = props;
-  // 선택된 아이템들의 영양소 합계
-  const selectedNutrition = cart?.items
-    .filter((item) => selectedItems.includes(item.id))
-    .reduce(
-      (acc, item) => {
-        const nutrition = item.nutrition;
-        if (nutrition) {
-          return {
-            protein: acc.protein + nutrition.protein * item.quantity,
-            carbs: acc.carbs + nutrition.carbs * item.quantity,
-            fat: acc.fat + nutrition.fat * item.quantity,
-            calories: acc.calories + nutrition.calories * item.quantity,
-          };
-        }
-        return acc;
-      },
-      { protein: 0, carbs: 0, fat: 0, calories: 0 },
-    );
+interface NutritionCardProps {
+  selectedCartItems: CartItem[];
+}
+
+const NutritionCard = (props: NutritionCardProps) => {
+  const { selectedCartItems } = props;
+
+  // 선택된 아이템들의 영양소 합계 계산
+  const selectedNutrition = selectedCartItems.reduce(
+    (acc, item) => {
+      const nutrition = item.nutrition;
+      if (nutrition) {
+        return {
+          protein: acc.protein + nutrition.protein * item.quantity,
+          carbs: acc.carbs + nutrition.carbs * item.quantity,
+          fat: acc.fat + nutrition.fat * item.quantity,
+          calories: acc.calories + nutrition.calories * item.quantity,
+        };
+      }
+      return acc;
+    },
+    { protein: 0, carbs: 0, fat: 0, calories: 0 },
+  );
 
   // 영양소 비율 계산
-  const totalMacros = selectedNutrition
-    ? selectedNutrition.protein +
-      selectedNutrition.carbs +
-      selectedNutrition.fat
-    : 0;
+  const totalMacros =
+    selectedNutrition.protein + selectedNutrition.carbs + selectedNutrition.fat;
   const proteinRatio = totalMacros
-    ? Math.round((selectedNutrition!.protein / totalMacros) * 100)
+    ? Math.round((selectedNutrition.protein / totalMacros) * 100)
     : 0;
   const carbsRatio = totalMacros
-    ? Math.round((selectedNutrition!.carbs / totalMacros) * 100)
+    ? Math.round((selectedNutrition.carbs / totalMacros) * 100)
     : 0;
   const fatRatio = totalMacros
-    ? Math.round((selectedNutrition!.fat / totalMacros) * 100)
+    ? Math.round((selectedNutrition.fat / totalMacros) * 100)
     : 0;
 
   // 파이 차트 데이터
@@ -102,19 +102,19 @@ const NutritionCard = (props: { cart: Cart; selectedItems: number[] }) => {
         <div className="grid grid-cols-3 gap-3 md:gap-6 mb-6">
           <NutritionDetail
             label="탄수화물"
-            value={`${selectedNutrition?.carbs.toFixed(1) || 0}g`}
+            value={`${selectedNutrition.carbs.toFixed(1)}g`}
             percentage={`${carbsRatio}%`}
             color="text-blue-500"
           />
           <NutritionDetail
             label="단백질"
-            value={`${selectedNutrition?.protein || 0}g`}
+            value={`${selectedNutrition.protein}g`}
             percentage={`${proteinRatio}%`}
             color="text-violet-500"
           />
           <NutritionDetail
             label="지방"
-            value={`${selectedNutrition?.fat.toFixed(1) || 0}g`}
+            value={`${selectedNutrition.fat.toFixed(1)}g`}
             percentage={`${fatRatio}%`}
             color="text-orange-500"
           />
@@ -128,7 +128,7 @@ const NutritionCard = (props: { cart: Cart; selectedItems: number[] }) => {
             총 칼로리
           </p>
           <p className="text-lg md:text-xl text-center text-neutral-900">
-            {selectedNutrition?.calories || 0}kcal
+            {selectedNutrition.calories}kcal
           </p>
         </div>
       </CardContent>

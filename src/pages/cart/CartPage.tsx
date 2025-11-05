@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   useCart,
   useUpdateCartQuantity,
@@ -100,6 +100,12 @@ export default function CartPage() {
     }
   };
 
+  // 선택된 아이템들 필터링
+  const selectedCartItems = useMemo(
+    () => cart?.items.filter((item) => selectedItems.includes(item.id)) || [],
+    [cart?.items, selectedItems],
+  );
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -142,12 +148,12 @@ export default function CartPage() {
             />
 
             {/* 영양소 요약 영역 */}
-            <NutritionCard cart={cart} selectedItems={selectedItems} />
+            <NutritionCard selectedCartItems={selectedCartItems} />
           </div>
 
           {/* 오른쪽: 주문 요약 */}
           <div className="w-full lg:w-[395px]">
-            <OrderSummary cart={cart} selectedItems={selectedItems} />
+            <OrderSummary selectedCartItems={selectedCartItems} />
           </div>
         </div>
       </div>

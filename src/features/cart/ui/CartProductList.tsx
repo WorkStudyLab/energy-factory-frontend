@@ -31,10 +31,7 @@ const CartProductList = (props: ICartProductListProps) => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-6">
           <div className="flex items-center gap-2">
             <Checkbox
-              checked={
-                selectedItems.length === cart?.items.length &&
-                cart?.items.length > 0
-              }
+              checked={selectedItems.length === cart?.items.length}
               onCheckedChange={handleSelectAll}
             />
             <span className="text-sm sm:text-base text-neutral-900">
@@ -116,12 +113,14 @@ function CartItemRow(props: ICartItemRowProps) {
   };
 
   return (
-    <div className="flex gap-3 md:gap-4 pb-6 border-b border-neutral-200 last:border-0">
+    <div
+      className="flex gap-3 md:gap-4 pb-6 border-b border-neutral-200 last:border-0"
+      onClick={handleItemClick}
+    >
       {/* 체크박스 */}
-      <div className="pt-2" onClick={stopPropagation}>
+      <div className="pt-2">
         <Checkbox
           checked={isSelected}
-          onCheckedChange={onSelect}
           className="data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
         />
       </div>
