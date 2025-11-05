@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { PaymentApiService } from "../services/paymentApiService";
 import type { Payment } from "@/types/order";
 
@@ -7,8 +7,13 @@ const usePaymentSuccess = () => {
     useState<Payment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const hasCalledRef = useRef(false);
 
   useEffect(() => {
+    // 이미 호출되었으면 무시 (React Strict Mode 중복 실행 방지)
+    if (hasCalledRef.current) return;
+    hasCalledRef.current = true;
+
     const fetchPaymentResult = async () => {
       try {
         setIsLoading(true);
