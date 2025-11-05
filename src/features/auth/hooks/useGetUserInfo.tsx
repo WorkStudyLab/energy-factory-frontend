@@ -8,7 +8,6 @@ export const useGetUserInfo = () => {
   return useQuery({
     queryKey: ["userinfo"],
     queryFn: () => AuthApiService.getUserInfo(),
-    staleTime: 5 * 60 * 1000, // 5분
     retry: 1,
   });
 };
