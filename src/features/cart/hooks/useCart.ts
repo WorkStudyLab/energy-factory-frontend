@@ -14,7 +14,6 @@ export const useCart = () => {
     queryKey: ["cart"],
     queryFn: () => CartApiService.getCart(),
     enabled: isAuthenticated, // 로그인 상태에서만 호출
-    staleTime: 1 * 60 * 1000, // 1분간 캐시 유지
     retry: 1,
   });
 };
