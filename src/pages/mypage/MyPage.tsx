@@ -15,7 +15,7 @@ export default function MyPage() {
     data: userInfoData,
     isLoading,
     error,
-  } = useGetUserInfo(user ? user.id : 0);
+  } = useGetUserInfo();
   const navigate = useNavigate();
 
   // 로그아웃 처리
@@ -38,8 +38,8 @@ export default function MyPage() {
     );
 
     if (confirmed) {
-      // 회원 탈퇴 요청
-      deleteUser(user.id);
+      // 회원 탈퇴 요청 (토큰에서 userId 자동 추출)
+      deleteUser();
       // 로그아웃 요청
       logout();
       // 홈으로 이동
