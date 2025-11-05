@@ -2,6 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
 import { useSignup } from "../hooks/useSignup";
 import { useDialogHelpers } from "@/utils/dialogHelpers";
+import { useMutation } from "@tanstack/react-query";
+import { AuthApiService } from "../services/AuthApiService";
+import { ROUTES } from "@/constants/routes";
+import { useAuthStore } from "@/stores/useAuthStore";
 import { Button } from "@/components/ui/button";
 import { LabelInput } from "./LabelInput";
 import { PasswordRequirements } from "./PasswordRequirements";
@@ -57,11 +61,49 @@ interface SignupRequest {
 export const SignupForm = (props: {
   formData: FormData;
   handleInputChange: (field: keyof FormData, value: string | boolean) => void;
+  isNaverSignup?: boolean;
+  naverProvidedFields?: Set<string>;
 }) => {
   const navigate = useNavigate();
-  const { signup, isLoading } = useSignup();
-  const { formData, handleInputChange } = props;
+  const { signup, isLoading: isSignupLoading } = useSignup();
+  const { setUser } = useAuthStore();
+  const {
+    formData,
+    handleInputChange,
+    isNaverSignup = false,
+    naverProvidedFields = new Set(),
+  } = props;
   const { alert } = useDialogHelpers();
+
+  // 네이버 추가 정보 업데이트 mutation
+  const updateAdditionalInfoMutation = useMutation({
+    mutationFn: async (data: { birthDate: string; address: string }) => {
+      return await AuthApiService.updateAdditionalInfo(data);
+    },
+    onSuccess: async (updatedUserInfo) => {
+      // Zustand 스토어에 최신 사용자 정보 저장
+      setUser({
+        id: 0, // API 응답에 id가 없으므로 임시값
+        email: updatedUserInfo.email,
+        name: updatedUserInfo.name,
+      });
+
+      alert("추가 정보가 저장되었습니다.", {
+        title: "저장 완료",
+        onConfirm: () => {
+          navigate(ROUTES.HOME);
+        },
+      });
+    },
+    onError: (error: any) => {
+      console.error("추가 정보 저장 실패:", error);
+      alert("추가 정보 저장에 실패했습니다. 다시 시도해주세요.", {
+        title: "저장 실패",
+      });
+    },
+  });
+
+  const isLoading = isSignupLoading || updateAdditionalInfoMutation.isPending;
 
   // 비밀번호 표시/숨김 상태
   const [showPassword, setShowPassword] = useState(false);
@@ -84,7 +126,7 @@ export const SignupForm = (props: {
 
   // 모든 필수 필드가 입력되었는지 확인
   const isFormValid = useMemo(() => {
-    return (
+    const baseValidation =
       formData.name.trim() !== "" &&
       formData.email.trim() !== "" &&
       formData.birthYear !== "" &&
@@ -93,11 +135,20 @@ export const SignupForm = (props: {
       formData.address.trim() !== "" &&
       formData.phone1.trim() !== "" &&
       formData.phone2.trim() !== "" &&
-      formData.phone3.trim() !== "" &&
+      formData.phone3.trim() !== "";
+
+    // 네이버 로그인은 비밀번호 검증 불필요
+    if (isNaverSignup) {
+      return baseValidation;
+    }
+
+    // 일반 회원가입은 비밀번호 검증 필요
+    return (
+      baseValidation &&
       isPasswordValid &&
       formData.password === formData.confirmPassword
     );
-  }, [formData, isPasswordValid]);
+  }, [formData, isPasswordValid, isNaverSignup]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,6 +164,16 @@ export const SignupForm = (props: {
     // 생년월일을 YYYY-MM-DD 형식으로 변환
     const birthDate = `${formData.birthYear}-${formData.birthMonth.padStart(2, "0")}-${formData.birthDay.padStart(2, "0")}`;
 
+    // 네이버 로그인 모드: 추가 정보만 업데이트
+    if (isNaverSignup) {
+      updateAdditionalInfoMutation.mutate({
+        birthDate,
+        address: formData.address.trim(),
+      });
+      return;
+    }
+
+    // 일반 회원가입 모드: 전체 회원가입 처리
     // 전화번호 조합 (010-0000-0000)
     const phoneNumber = `${formData.phone1}-${formData.phone2}-${formData.phone3}`;
 
@@ -153,6 +214,7 @@ export const SignupForm = (props: {
             onChange={(value) => handleInputChange("name", value)}
             placeholder="김건강"
             required
+            disabled={naverProvidedFields.has("name")}
           />
 
           <div className="space-y-2">
@@ -172,8 +234,15 @@ export const SignupForm = (props: {
                 value={formData.birthYear}
                 onValueChange={(value) => handleInputChange("birthYear", value)}
                 required
+                disabled={naverProvidedFields.has("birthYear")}
               >
-                <SelectTrigger className="h-9 border-neutral-200">
+                <SelectTrigger
+                  className={`h-9 border-neutral-200 ${
+                    naverProvidedFields.has("birthYear")
+                      ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
+                      : ""
+                  }`}
+                >
                   <SelectValue placeholder="년도" />
                 </SelectTrigger>
                 <SelectContent>
@@ -190,8 +259,15 @@ export const SignupForm = (props: {
                   handleInputChange("birthMonth", value)
                 }
                 required
+                disabled={naverProvidedFields.has("birthMonth")}
               >
-                <SelectTrigger className="h-9 border-neutral-200">
+                <SelectTrigger
+                  className={`h-9 border-neutral-200 ${
+                    naverProvidedFields.has("birthMonth")
+                      ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
+                      : ""
+                  }`}
+                >
                   <SelectValue placeholder="월" />
                 </SelectTrigger>
                 <SelectContent>
@@ -206,8 +282,15 @@ export const SignupForm = (props: {
                 value={formData.birthDay}
                 onValueChange={(value) => handleInputChange("birthDay", value)}
                 required
+                disabled={naverProvidedFields.has("birthDay")}
               >
-                <SelectTrigger className="h-9 border-neutral-200">
+                <SelectTrigger
+                  className={`h-9 border-neutral-200 ${
+                    naverProvidedFields.has("birthDay")
+                      ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
+                      : ""
+                  }`}
+                >
                   <SelectValue placeholder="일" />
                 </SelectTrigger>
                 <SelectContent>
@@ -229,7 +312,11 @@ export const SignupForm = (props: {
             onChange={(value) => handleInputChange("email", value)}
             placeholder="HealthKim@example.com"
             required
+            disabled={naverProvidedFields.has("email")}
           />
+          {/* 비밀번호 - 네이버 로그인 시 숨김 */}
+          {!isNaverSignup && (
+            <>
           {/* 비밀번호 */}
           <div className="space-y-2">
             <div className="flex items-center gap-1">
@@ -293,6 +380,8 @@ export const SignupForm = (props: {
 
           {/* 비밀번호 요구사항 */}
           <PasswordRequirements validation={passwordValidation} />
+            </>
+          )}
 
           <LabelInput
             id="address"
@@ -301,6 +390,7 @@ export const SignupForm = (props: {
             onChange={(value) => handleInputChange("address", value)}
             placeholder="경기도 양평군 금천면 153-2"
             required
+            disabled={naverProvidedFields.has("address")}
           />
           <div className="space-y-2">
             <div className="flex items-center gap-1">
@@ -321,7 +411,12 @@ export const SignupForm = (props: {
                 placeholder="010"
                 maxLength={3}
                 required
-                className="h-9 border-neutral-200"
+                disabled={naverProvidedFields.has("phone1")}
+                className={`h-9 border-neutral-200 ${
+                  naverProvidedFields.has("phone1")
+                    ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
+                    : ""
+                }`}
               />
               <Input
                 value={formData.phone2}
@@ -329,7 +424,12 @@ export const SignupForm = (props: {
                 placeholder="0000"
                 maxLength={4}
                 required
-                className="h-9 border-neutral-200"
+                disabled={naverProvidedFields.has("phone2")}
+                className={`h-9 border-neutral-200 ${
+                  naverProvidedFields.has("phone2")
+                    ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
+                    : ""
+                }`}
               />
               <Input
                 value={formData.phone3}
@@ -337,7 +437,12 @@ export const SignupForm = (props: {
                 placeholder="0000"
                 maxLength={4}
                 required
-                className="h-9 border-neutral-200"
+                disabled={naverProvidedFields.has("phone3")}
+                className={`h-9 border-neutral-200 ${
+                  naverProvidedFields.has("phone3")
+                    ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
+                    : ""
+                }`}
               />
             </div>
           </div>
@@ -357,7 +462,13 @@ export const SignupForm = (props: {
             disabled={isLoading || !isFormValid}
             className="flex-1 h-12 rounded-lg bg-[#108c4a] hover:bg-[#0d7a3f] text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "가입 중..." : "회원가입"}
+            {isLoading
+              ? isNaverSignup
+                ? "저장 중..."
+                : "가입 중..."
+              : isNaverSignup
+                ? "저장하고 시작하기"
+                : "회원가입"}
           </Button>
         </CardFooter>
       </Card>

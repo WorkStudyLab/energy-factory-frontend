@@ -9,7 +9,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 
 // 환경 변수에서 API 기본 URL 가져오기 (기본값 설정)
 const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://13.209.24.80:8080";
+  import.meta.env.VITE_API_BASE_URL || "https://energy-factory.kr";
 
 // axios 인스턴스 생성
 const apiClient: AxiosInstance = axios.create({
@@ -39,6 +39,9 @@ apiClient.interceptors.request.use(
   },
 );
 
+// 토큰 갱신 중인지 추적하는 플래그
+let isRefreshing = false;
+
 // 응답 인터셉터
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
@@ -50,17 +53,29 @@ apiClient.interceptors.response.use(
     return response;
   },
   async (error: AxiosError) => {
-    const originalRequest = error.config;
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
 
     // 401 에러 처리 (토큰 만료)
-    if (error.response?.status === 401) {
-      // 로그인 API 호출 시에는 토큰 갱신 로직을 실행하지 않음
-      if (originalRequest?.url?.includes("/auth/login")) {
+    if (error.response?.status === 401 && originalRequest) {
+      // 이미 재시도한 요청이거나, 로그인/갱신 API는 재시도하지 않음
+      if (
+        originalRequest._retry ||
+        originalRequest.url?.includes("/auth/login") ||
+        originalRequest.url?.includes("/auth/refresh") ||
+        originalRequest.url?.includes("/users/me")
+      ) {
         return Promise.reject(error);
       }
 
-      // 토큰 갱신 로직 (쿠키 기반)
-      const { logout } = useAuthStore.getState();
+      // 이미 토큰 갱신 중이면 대기
+      if (isRefreshing) {
+        return Promise.reject(error);
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
         // 토큰 갱신 API 호출 (쿠키가 자동으로 전송됨)
@@ -70,25 +85,29 @@ apiClient.interceptors.response.use(
           { withCredentials: true },
         );
 
+        isRefreshing = false;
+
         // 토큰 갱신 성공 시 원래 요청 재시도
-        if (originalRequest) {
-          return apiClient(originalRequest);
-        }
+        return apiClient(originalRequest);
       } catch (refreshError) {
         // 토큰 갱신 실패시 로그아웃
-        console.error("토큰 갱신 실패:", refreshError);
+        isRefreshing = false;
+        const { logout } = useAuthStore.getState();
         logout();
         window.location.href = "/login";
+        return Promise.reject(refreshError);
       }
     }
 
     // 에러 로깅
-    console.error("❌ API 에러:", {
-      status: error.response?.status,
-      message: error.message,
-      url: error.config?.url,
-      data: error.response?.data,
-    });
+    if (import.meta.env.DEV) {
+      console.error("❌ API 에러:", {
+        status: error.response?.status,
+        message: error.message,
+        url: error.config?.url,
+        data: error.response?.data,
+      });
+    }
 
     return Promise.reject(error);
   },

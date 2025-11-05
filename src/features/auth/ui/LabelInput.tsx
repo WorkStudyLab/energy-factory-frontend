@@ -10,6 +10,7 @@ interface LabelInputProps {
   required?: boolean;
   placeholder?: string;
   description?: string;
+  disabled?: boolean;
 }
 
 /**
@@ -24,6 +25,7 @@ export const LabelInput = ({
   required = false,
   placeholder,
   description,
+  disabled = false,
 }: LabelInputProps) => {
   return (
     <div className="space-y-2">
@@ -45,7 +47,12 @@ export const LabelInput = ({
         onChange={(e) => onChange(e.target.value)}
         required={required}
         placeholder={placeholder}
-        className="h-9 rounded-lg border-neutral-200"
+        disabled={disabled}
+        className={`h-9 rounded-lg border-neutral-200 ${
+          disabled
+            ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
+            : ""
+        }`}
       />
       {description && <p className="text-sm text-gray-500">{description}</p>}
     </div>

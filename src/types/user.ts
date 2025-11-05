@@ -56,3 +56,17 @@ export interface ApiResponse<T> {
   desc: string;
   data: T;
 }
+
+/** 네이버 소셜 로그인 후 추가 정보 입력 요청 */
+export interface UserAdditionalInfoRequest {
+  /** 생년월일 (YYYY-MM-DD 형식) */
+  birthDate: string;
+  /** 배송지 주소 */
+  address: string;
+}
+
+/** 사용자 프로필 응답 (GET /api/users/profile) */
+export type UserProfileResponse = ApiResponse<UserInfo>;
+
+/** 사용자 정보 응답 (GET /api/users/me) */
+export type UserMeResponse = UserInfo;

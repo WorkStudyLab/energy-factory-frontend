@@ -22,11 +22,15 @@ import LoginForm from "@/features/auth/ui/LoginForm";
 export default function LoginPage() {
   const navigate = useNavigate();
 
-  /** @todo Naver Login 구현 필요 */
+  /**
+   * 네이버 로그인 핸들러
+   *
+   * GET /api/oauth2/naver API를 호출하여 네이버 로그인 페이지로 리다이렉트합니다.
+   * 로그인 완료 후 백엔드에서 /oauth/naver/callback으로 리다이렉트됩니다.
+   */
   const handleNaverLogin = () => {
-    // console.log("Google 로그인 시도");
-    // 로그인 성공 시 마이페이지로 이동
-    navigate("/");
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://energy-factory.kr";
+    window.location.href = `${API_BASE_URL}/api/oauth2/naver`;
   };
 
   return (
