@@ -6,10 +6,20 @@ interface OrderListProps {
   orders: OrderListItem[];
   onReorder: (orderId: number) => void;
   onCancelOrder: (orderId: number) => void;
+  observerTarget?: React.RefObject<HTMLDivElement | null>;
+  isLoading?: boolean;
+  isFetchingNextPage?: boolean;
 }
 
-const OrderList = ({ orders, onReorder, onCancelOrder }: OrderListProps) => {
-  if (orders.length === 0) {
+const OrderList = ({
+  orders,
+  onReorder,
+  onCancelOrder,
+  observerTarget,
+  isLoading,
+  isFetchingNextPage,
+}: OrderListProps) => {
+  if (orders.length === 0 && !isLoading) {
     return <EmptyOrder />;
   }
 
@@ -23,6 +33,16 @@ const OrderList = ({ orders, onReorder, onCancelOrder }: OrderListProps) => {
           onCancelOrder={onCancelOrder}
         />
       ))}
+
+      {/* IntersectionObserver 타겟 */}
+      {observerTarget && <div ref={observerTarget} className="h-10" />}
+
+      {/* 로딩 인디케이터 */}
+      {(isLoading || isFetchingNextPage) && (
+        <div className="flex justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        </div>
+      )}
     </div>
   );
 };
