@@ -126,24 +126,26 @@ function HeaderActions({ isAuthenticated, userName }: HeaderActionsProps) {
           <span className="sr-only">장바구니</span>
         </a>
       )}
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative hidden md:flex h-auto w-auto p-1"
-          >
-            <Bell className="h-5 w-5" />
-            <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-green-600">
-              2
-            </Badge>
-            <span className="sr-only">알림</span>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent align="end" className="w-80 p-0" sideOffset={8}>
-          <NotificationPopoverContent />
-        </PopoverContent>
-      </Popover>
+      {isAuthenticated && (
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative hidden md:flex h-auto w-auto p-1"
+            >
+              <Bell className="h-5 w-5" />
+              <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-green-600">
+                2
+              </Badge>
+              <span className="sr-only">알림</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-80 p-0" sideOffset={8}>
+            <NotificationPopoverContent />
+          </PopoverContent>
+        </Popover>
+      )}
       {isAuthenticated ? (
         <a
           className="hover:cursor-pointer"
