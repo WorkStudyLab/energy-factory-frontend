@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/tanstack/queryClient";
 import { ROUTES } from "./constants/routes";
@@ -15,7 +20,7 @@ import SignupPage from "./pages/auth/SignupPage";
 import SignupConnectPage from "./pages/auth/SignupConnectPage";
 import NutritionPage from "./pages/nutrition/NutritionPage";
 import DietCoachPage from "./pages/diet-coach/DietCoachPage";
-import OrderHistoryPage from "./pages/order-history/OrderHistoryPage";
+import OrderHistoryPage from "./pages/order/OrderHistoryPage";
 import OrderCompletePage from "./pages/order/OrderCompletePage";
 import OrderFailPage from "./pages/order/OrderFailPage";
 import MyPage from "./pages/mypage/MyPage";
@@ -41,7 +46,10 @@ function App() {
 
           <main className="flex-1">
             <Routes>
-              <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.PRODUCTS} replace />} />
+              <Route
+                path={ROUTES.HOME}
+                element={<Navigate to={ROUTES.PRODUCTS} replace />}
+              />
               <Route path={ROUTES.LANDING} element={<LandingPage />} />
               <Route path={ROUTES.PRODUCTS} element={<ProductsPage />} />
               <Route
@@ -64,7 +72,10 @@ function App() {
                 element={<ResetPasswordSuccessPage />}
               />
               <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
-              <Route path={ROUTES.SIGNUP_CONNECT} element={<SignupConnectPage />} />
+              <Route
+                path={ROUTES.SIGNUP_CONNECT}
+                element={<SignupConnectPage />}
+              />
               <Route path={ROUTES.NUTRITION} element={<NutritionPage />} />
               <Route path={ROUTES.DIET_COACH} element={<DietCoachPage />} />
               <Route
@@ -75,10 +86,7 @@ function App() {
                 path={ROUTES.ORDER_COMPLETE}
                 element={<OrderCompletePage />}
               />
-              <Route
-                path={ROUTES.ORDER_FAIL}
-                element={<OrderFailPage />}
-              />
+              <Route path={ROUTES.ORDER_FAIL} element={<OrderFailPage />} />
               <Route path={ROUTES.MY_PAGE} element={<MyPage />} />
               <Route path={ROUTES.TEST} element={<TestPage />} />
               <Route path={ROUTES.UI_TEST} element={<UiTestPage />} />
