@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ProductList } from "@/features/products/ui/ProductList";
 import {
   dietaryOptions,
@@ -6,6 +6,8 @@ import {
   mealTimes,
 } from "@/features/products/constants/productConstants";
 import { useCategories } from "@/features/products/hooks/useCategories";
+import useInfiniteProducts from "@/features/products/hooks/useInfiniteProducts";
+import useIntersectionObserver from "@/features/order/hooks/useIntersectionObserver";
 
 import { Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -37,6 +39,36 @@ export default function ProductsPage() {
   const [caloriesRange, setCaloriesRange] = useState([0, 500]);
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState("createdAt,desc");
+
+  // 무한 스크롤을 위한 훅 사용
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteProducts({
+    category: selectedCategory !== "all" ? selectedCategory : undefined,
+    sort: sortOption,
+    pageSize: 8,
+  });
+
+  // IntersectionObserver 설정
+  const observerTarget = useIntersectionObserver({
+    onIntersect: () => {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    enabled: hasNextPage && !isFetchingNextPage,
+  });
+
+  // 모든 페이지의 상품을 하나의 배열로 병합
+  const allProducts = useMemo(() => {
+    return data?.pages.flatMap((page) => page.products) ?? [];
+  }, [data]);
 
   // 카테고리 정렬: "기타"를 맨 마지막으로
   const sortedCategories = (categories || []).sort((a, b) => {
@@ -272,16 +304,12 @@ export default function ProductsPage() {
 
         {/* 제품 그리드 */}
         <ProductList
-          filters={{
-            category:
-              selectedCategory !== "all" ? selectedCategory : undefined,
-            keyword: undefined,
-            minPrice: undefined,
-            maxPrice: undefined,
-            sort: sortOption,
-            page: 0,
-            size: 20,
-          }}
+          products={allProducts}
+          observerTarget={observerTarget}
+          isLoading={isLoading}
+          isFetchingNextPage={isFetchingNextPage}
+          error={error}
+          onRetry={() => refetch()}
           onResetFilters={() => {
             setSelectedCategory("all");
             setSelectedGoal("all");

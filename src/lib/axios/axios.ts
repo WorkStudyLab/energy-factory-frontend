@@ -65,7 +65,7 @@ apiClient.interceptors.response.use(
       try {
         // 토큰 갱신 API 호출 (쿠키가 자동으로 전송됨)
         await axios.post(
-          `${BASE_URL}/auth/refresh`,
+          `${BASE_URL}/api/auth/refresh`,
           {},
           { withCredentials: true },
         );
