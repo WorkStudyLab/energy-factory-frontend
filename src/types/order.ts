@@ -1,3 +1,5 @@
+import type { ApiResponse, PageInfo } from "./product";
+
 export type OrderStatus = "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
 
 export type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED" | "REFUNDED";
@@ -77,4 +79,32 @@ export interface ConfirmPaymentApiResponse {
   code: string;
   desc: string;
   data: Payment;
+}
+
+export interface OrderListItem {
+  id: number;
+  orderNumber: number;
+  totalPrice: number;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  recipientName: string;
+  itemCount: number;
+  representativeProductName: string;
+}
+
+export interface OrderListData {
+  orders: OrderListItem[];
+  pageInfo: PageInfo;
+}
+
+export type OrderListApiResponse = ApiResponse<OrderListData>;
+
+export interface OrderListQueryParams {
+  userId: number;
+  status?: OrderStatus;
+  paymentStatus?: PaymentStatus;
+  pageable: {
+    page: number;
+    size: number;
+  };
 }
