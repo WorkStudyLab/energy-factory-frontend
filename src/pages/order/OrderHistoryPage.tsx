@@ -41,7 +41,7 @@ import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { PieChart, Pie } from "recharts";
 
-export default function OrdersPage() {
+export default function OrderHistoryPage() {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedPeriod, setSelectedPeriod] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -639,7 +639,9 @@ export default function OrdersPage() {
                                 주문번호: {order.id}
                               </h3>
                               <Badge
-                                className={`${getStatusInfo(order.status).color} flex items-center gap-1`}
+                                className={`${
+                                  getStatusInfo(order.status).color
+                                } flex items-center gap-1`}
                               >
                                 {getStatusInfo(order.status).icon}
                                 {order.statusText}
@@ -662,7 +664,8 @@ export default function OrdersPage() {
                                   <div className="border border-neutral-200 rounded-lg overflow-hidden w-16 h-16 flex-shrink-0">
                                     <img
                                       src={
-                                        item.image || "https://placehold.co/64x64"
+                                        item.image ||
+                                        "https://placehold.co/64x64"
                                       }
                                       alt={item.name}
                                       className="w-full h-full object-cover"
@@ -673,13 +676,14 @@ export default function OrdersPage() {
                                       {item.name}
                                     </div>
                                     <div className="text-xs text-neutral-600 mb-1">
-                                      선택옵션 {item.protein}g ·{" "}
-                                      {item.calories}kcal
+                                      선택옵션 {item.protein}g · {item.calories}
+                                      kcal
                                     </div>
                                     <div className="text-xs text-neutral-500">
-                                      탄수화물 {Math.round(item.calories * 0.4 / 4)}g · 단백질{" "}
-                                      {item.protein}g · 지방{" "}
-                                      {Math.round(item.calories * 0.3 / 9)}g
+                                      탄수화물{" "}
+                                      {Math.round((item.calories * 0.4) / 4)}g ·
+                                      단백질 {item.protein}g · 지방{" "}
+                                      {Math.round((item.calories * 0.3) / 9)}g
                                     </div>
                                   </div>
                                   <div className="text-right flex-shrink-0">
@@ -710,7 +714,10 @@ export default function OrdersPage() {
                                           (sum, item) =>
                                             sum +
                                             Math.round(
-                                              (item.calories * 0.47 * item.quantity) / 4,
+                                              (item.calories *
+                                                0.47 *
+                                                item.quantity) /
+                                                4,
                                             ),
                                           0,
                                         ),
@@ -731,7 +738,10 @@ export default function OrdersPage() {
                                           (sum, item) =>
                                             sum +
                                             Math.round(
-                                              (item.calories * 0.17 * item.quantity) / 9,
+                                              (item.calories *
+                                                0.17 *
+                                                item.quantity) /
+                                                9,
                                             ),
                                           0,
                                         ),
@@ -754,8 +764,12 @@ export default function OrdersPage() {
                                     }) => {
                                       const RADIAN = Math.PI / 180;
                                       const radius = outerRadius + 30;
-                                      const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                                      const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                                      const x =
+                                        cx +
+                                        radius * Math.cos(-midAngle * RADIAN);
+                                      const y =
+                                        cy +
+                                        radius * Math.sin(-midAngle * RADIAN);
                                       return (
                                         <text
                                           x={x}
@@ -764,14 +778,16 @@ export default function OrdersPage() {
                                             name === "탄수화물"
                                               ? "#008cdd"
                                               : name === "단백질"
-                                                ? "#00a63e"
-                                                : "#3ab4ea"
+                                              ? "#00a63e"
+                                              : "#3ab4ea"
                                           }
                                           textAnchor={x > cx ? "start" : "end"}
                                           dominantBaseline="central"
                                           className="text-xs"
                                         >
-                                          {`${name} ${Math.round(percent * 100)}%`}
+                                          {`${name} ${Math.round(
+                                            percent * 100,
+                                          )}%`}
                                         </text>
                                       );
                                     }}
@@ -792,7 +808,10 @@ export default function OrdersPage() {
                                       (sum, item) =>
                                         sum +
                                         Math.round(
-                                          (item.calories * 0.47 * item.quantity) / 4,
+                                          (item.calories *
+                                            0.47 *
+                                            item.quantity) /
+                                            4,
                                         ),
                                       0,
                                     )}
@@ -827,7 +846,10 @@ export default function OrdersPage() {
                                       (sum, item) =>
                                         sum +
                                         Math.round(
-                                          (item.calories * 0.17 * item.quantity) / 9,
+                                          (item.calories *
+                                            0.17 *
+                                            item.quantity) /
+                                            9,
                                         ),
                                       0,
                                     )}
@@ -856,7 +878,9 @@ export default function OrdersPage() {
                           {/* 배송 정보 & 결제 정보 */}
                           <div className="grid grid-cols-2 gap-6 border-t border-neutral-200 pt-6">
                             <div className="space-y-3">
-                              <h4 className="text-base font-normal">배송 정보</h4>
+                              <h4 className="text-base font-normal">
+                                배송 정보
+                              </h4>
                               <div className="space-y-2 text-sm">
                                 <div className="flex gap-1">
                                   <span className="text-neutral-600">
@@ -893,7 +917,9 @@ export default function OrdersPage() {
                               </div>
                             </div>
                             <div className="space-y-3">
-                              <h4 className="text-base font-normal">결제 정보</h4>
+                              <h4 className="text-base font-normal">
+                                결제 정보
+                              </h4>
                               <div className="space-y-2 text-sm">
                                 <div className="flex gap-1">
                                   <span className="text-neutral-600">
