@@ -1,7 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import type { CartItem } from "@/types/cart";
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 interface NutritionCardProps {
   selectedCartItems: CartItem[];
@@ -42,9 +41,27 @@ const NutritionCard = (props: NutritionCardProps) => {
 
   // 파이 차트 데이터
   const chartData = [
-    { name: "단백질", value: proteinRatio, color: "#9810fa" },
-    { name: "지방", value: fatRatio, color: "#f54900" },
-    { name: "탄수화물", value: carbsRatio, color: "#155dfc" },
+    {
+      name: "단백질",
+      value: selectedNutrition.protein * 4,
+      grams: selectedNutrition.protein,
+      color: "#22c55e",
+      percentage: proteinRatio,
+    },
+    {
+      name: "탄수화물",
+      value: selectedNutrition.carbs * 4,
+      grams: selectedNutrition.carbs,
+      color: "#3b82f6",
+      percentage: carbsRatio,
+    },
+    {
+      name: "지방",
+      value: selectedNutrition.fat * 9,
+      grams: selectedNutrition.fat,
+      color: "#f59e0b",
+      percentage: fatRatio,
+    },
   ];
 
   return (
@@ -58,78 +75,62 @@ const NutritionCard = (props: NutritionCardProps) => {
         </p>
 
         {/* 파이 차트 */}
-        <div className="h-48 md:h-64 mb-6">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="flex flex-col items-center">
+          <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
                 data={chartData}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={80}
+                innerRadius={0}
+                outerRadius={90}
                 paddingAngle={2}
                 dataKey="value"
+                label={({ name, percentage }) => `${name}\n${percentage}%`}
+                labelLine={true}
               >
                 {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Legend
-                verticalAlign="middle"
-                align="right"
-                layout="vertical"
-                iconType="circle"
-                iconSize={14}
-                formatter={(
-                  value,
-                  entry: {
-                    color?: string;
-                    payload?: { value?: number };
-                  },
-                ) => (
-                  <span className="text-sm" style={{ color: entry.color }}>
-                    {value} {entry.payload?.value}%
-                  </span>
-                )}
-              />
             </PieChart>
           </ResponsiveContainer>
-        </div>
 
-        <Separator className="mb-6" />
+          {/* 범례 */}
+          <div className="w-full space-y-2 mt-4">
+            {chartData.map((item, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: item.color }}
+                  ></div>
+                  <span className="text-sm font-medium">{item.name}</span>
+                </div>
+                <div className="text-sm">
+                  <span className="font-bold">{item.grams.toFixed(1)}g</span>
+                  <span className="text-gray-500 ml-1">
+                    ({item.percentage}%)
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
 
-        {/* 영양소 상세 */}
-        <div className="grid grid-cols-3 gap-3 md:gap-6 mb-6">
-          <NutritionDetail
-            label="탄수화물"
-            value={`${selectedNutrition.carbs.toFixed(1)}g`}
-            percentage={`${carbsRatio}%`}
-            color="text-blue-500"
-          />
-          <NutritionDetail
-            label="단백질"
-            value={`${selectedNutrition.protein}g`}
-            percentage={`${proteinRatio}%`}
-            color="text-violet-500"
-          />
-          <NutritionDetail
-            label="지방"
-            value={`${selectedNutrition.fat.toFixed(1)}g`}
-            percentage={`${fatRatio}%`}
-            color="text-orange-500"
-          />
-        </div>
-
-        <Separator className="mb-6" />
-
-        {/* 총 칼로리 */}
-        <div className="flex flex-col items-center gap-1">
-          <p className="text-xs md:text-sm text-center text-neutral-600">
-            총 칼로리
-          </p>
-          <p className="text-lg md:text-xl text-center text-neutral-900">
-            {selectedNutrition.calories}kcal
-          </p>
+          {/* 총 칼로리 표시 */}
+          <div className="w-full border-t border-gray-200 pt-3 mt-4">
+            <div className="flex items-center justify-between">
+              <div className="text-base font-bold text-gray-700">총 칼로리</div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-semibold text-green-600">
+                  {selectedNutrition.calories}
+                </span>
+                <span className="text-base font-semibold text-gray-600">
+                  kcal
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -137,26 +138,3 @@ const NutritionCard = (props: NutritionCardProps) => {
 };
 
 export default NutritionCard;
-
-// 영양소 상세 정보 컴포넌트
-function NutritionDetail({
-  label,
-  value,
-  percentage,
-  color,
-}: {
-  label: string;
-  value: string;
-  percentage: string;
-  color: string;
-}) {
-  return (
-    <div className="flex flex-col items-center gap-1">
-      <p className="text-xs md:text-sm text-center text-neutral-600">{label}</p>
-      <p className={`text-sm md:text-base ${color}`}>{value}</p>
-      <p className="text-[10px] md:text-xs text-center text-neutral-500">
-        {percentage}
-      </p>
-    </div>
-  );
-}
