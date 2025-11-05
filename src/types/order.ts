@@ -1,10 +1,19 @@
 import type { ApiResponse, PageInfo } from "./product";
 
-export type OrderStatus = "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+export type OrderStatus =
+  | "PENDING"
+  | "CONFIRMED"
+  | "SHIPPED"
+  | "DELIVERED"
+  | "CANCELLED";
 
 export type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED" | "REFUNDED";
 
-export type PaymentMethod = "CREDIT_CARD" | "BANK_TRANSFER" | "VIRTUAL_ACCOUNT" | "MOBILE";
+export type PaymentMethod =
+  | "CREDIT_CARD"
+  | "BANK_TRANSFER"
+  | "VIRTUAL_ACCOUNT"
+  | "MOBILE";
 
 export interface CreateOrderItem {
   productId: number;
@@ -100,7 +109,6 @@ export interface OrderListData {
 export type OrderListApiResponse = ApiResponse<OrderListData>;
 
 export interface OrderListQueryParams {
-  userId: number;
   status?: OrderStatus;
   paymentStatus?: PaymentStatus;
   pageable: {

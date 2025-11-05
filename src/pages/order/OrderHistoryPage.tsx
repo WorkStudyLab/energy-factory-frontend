@@ -1,20 +1,28 @@
-import useOrderList from "@/features/order/hooks/useOrderList";
+import { useMemo } from "react";
+import useInfiniteOrderList from "@/features/order/hooks/useOrderList";
+import useIntersectionObserver from "@/features/order/hooks/useIntersectionObserver";
 import OrderList from "@/features/order/ui/orderList/OrderList";
 
 export default function OrderHistoryPage() {
-  const { data, isLoading } = useOrderList({
-    userId: 39, // @todo userId 서버 수정시 제거 필요
-    pageable: {
-      page: 0, // @todo 페이징 기능 추가 필요
-      size: 50,
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteOrderList({
+      pageSize: 10,
+    });
+
+  // 모든 페이지의 주문 목록을 하나의 배열로 합침
+  const allOrders = useMemo(() => {
+    return data?.pages.flatMap((page) => page.orders) ?? [];
+  }, [data]);
+
+  // IntersectionObserver 설정
+  const observerTarget = useIntersectionObserver({
+    onIntersect: () => {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
     },
+    enabled: hasNextPage && !isFetchingNextPage,
   });
-
-  if (isLoading || !data) {
-    return <div></div>;
-  }
-
-  const { orders } = data;
 
   // 재주문 함수
   const handleReorder = (orderId: number) => {
@@ -42,9 +50,12 @@ export default function OrderHistoryPage() {
 
         {/* 주문 목록 */}
         <OrderList
-          orders={orders}
+          orders={allOrders}
           onReorder={handleReorder}
           onCancelOrder={handleCancelOrder}
+          observerTarget={observerTarget}
+          isLoading={isLoading}
+          isFetchingNextPage={isFetchingNextPage}
         />
       </div>
     </div>
