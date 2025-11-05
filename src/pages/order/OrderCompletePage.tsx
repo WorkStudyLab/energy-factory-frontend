@@ -14,6 +14,59 @@ import { Separator } from "@/components/ui/separator";
 import { ROUTES } from "@/constants/routes";
 import usePaymentSuccess from "@/features/order/hooks/usePaymentSuccess";
 
+// 날짜 포맷 유틸리티 함수 (한국 시간 기준)
+const formatOrderDate = (dateString: string) => {
+  // 서버에서 UTC 시간을 보내는 경우 Z suffix가 없을 수 있으므로 추가
+  const utcString = dateString.endsWith('Z') ? dateString : dateString + 'Z';
+  const date = new Date(utcString);
+
+  // UTC 시간에 9시간을 더해 한국 시간으로 변환
+  const koreaTimeOffset = 9 * 60 * 60 * 1000;
+  const koreaTime = new Date(date.getTime() + koreaTimeOffset);
+
+  const year = koreaTime.getUTCFullYear();
+  const month = koreaTime.getUTCMonth() + 1;
+  const day = koreaTime.getUTCDate();
+  const hours = koreaTime.getUTCHours();
+  const minutes = koreaTime.getUTCMinutes();
+
+  return `${year}년 ${month}월 ${day}일 ${hours}:${
+    minutes < 10 ? "0" + minutes : minutes
+  }`;
+};
+
+const formatDeliveryDate = (dateString: string) => {
+  // 서버에서 UTC 시간을 보내는 경우 Z suffix가 없을 수 있으므로 추가
+  const utcString = dateString.endsWith('Z') ? dateString : dateString + 'Z';
+  const date = new Date(utcString);
+
+  // UTC 시간에 9시간을 더해 한국 시간으로 변환
+  const koreaTimeOffset = 9 * 60 * 60 * 1000;
+  const koreaTime = new Date(date.getTime() + koreaTimeOffset);
+
+  // 3일 추가
+  koreaTime.setUTCDate(koreaTime.getUTCDate() + 3);
+
+  const year = koreaTime.getUTCFullYear();
+  const month = koreaTime.getUTCMonth() + 1;
+  const day = koreaTime.getUTCDate();
+  const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
+  const weekday = weekdays[koreaTime.getUTCDay()];
+
+  return `${year}년 ${month}월 ${day}일 (${weekday})`;
+};
+
+// 결제 수단 매핑 함수
+const getPaymentMethodText = (method: string) => {
+  const methodMap: Record<string, string> = {
+    CREDIT_CARD: "신용카드",
+    DEBIT_CARD: "체크카드",
+    BANK_TRANSFER: "계좌이체",
+    VIRTUAL_ACCOUNT: "가상계좌",
+  };
+  return methodMap[method] || method;
+};
+
 export default function OrderCompletePage() {
   const navigate = useNavigate();
   const { paymentConfirmResult, isLoading, error } = usePaymentSuccess();
@@ -28,7 +81,7 @@ export default function OrderCompletePage() {
   }, [error, navigate]);
 
   // 로딩 중일 때 표시
-  if (isLoading) {
+  if (isLoading || paymentConfirmResult === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -42,12 +95,12 @@ export default function OrderCompletePage() {
     );
   }
 
-  // TODO: 실제로는 주문 ID를 URL 파라미터나 상태로 받아와서 주문 정보를 조회해야 합니다
   const orderInfo = {
-    orderId: "EF-2025-01160001",
-    orderDate: "2025년 1월 16일 14:32",
-    deliveryDate: "2025년 1월 18일 (금)",
+    orderId: paymentConfirmResult.orderNumber,
+    orderDate: formatOrderDate(paymentConfirmResult.paidAt),
+    deliveryDate: formatDeliveryDate(paymentConfirmResult.paidAt),
     items: [
+      // TODO: 실제 주문 상품 정보는 별도 API로 조회 필요
       {
         id: 1,
         name: "유기농 닭가슴살",
@@ -71,6 +124,7 @@ export default function OrderCompletePage() {
       },
     ],
     recipient: {
+      // TODO: 실제 배송 정보는 별도 API로 조회 필요
       name: "김진장",
       phone: "010-1234-5678",
       address: "서울특별시 강남구 테헤란로 123",
@@ -78,11 +132,11 @@ export default function OrderCompletePage() {
       deliveryRequest: "문 앞에 놓아주세요",
     },
     payment: {
-      productAmount: 64600,
+      productAmount: paymentConfirmResult.amount,
       shippingFee: 0,
-      totalAmount: 64600,
-      method: "신용카드",
-      detail: "신한카드 (****-1234)",
+      totalAmount: paymentConfirmResult.amount,
+      method: getPaymentMethodText(paymentConfirmResult.paymentMethod),
+      detail: `${getPaymentMethodText(paymentConfirmResult.paymentMethod)}`,
     },
   };
 
