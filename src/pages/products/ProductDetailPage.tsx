@@ -73,6 +73,13 @@ export default function ProductDetailPage() {
     }
   }, [product, selectedVariant]);
 
+  // 옵션 변경 시 수량 초기화
+  useEffect(() => {
+    if (selectedVariant) {
+      setQuantity(1);
+    }
+  }, [selectedVariant]);
+
   // 페이지 타이틀 설정
   useEffect(() => {
     if (product) {
@@ -369,13 +376,13 @@ export default function ProductDetailPage() {
             {(product.discount ?? 0) > 0 && (
               <div className="flex items-center gap-3 mb-2">
                 {(product.originalPrice ?? 0) > 0 && (
-                  <span className="text-lg text-gray-400 line-through">{(product.originalPrice ?? 0).toLocaleString()}원</span>
+                  <span className="text-lg text-gray-400 line-through">{((product.originalPrice ?? 0) * quantity).toLocaleString()}원</span>
                 )}
                 <Badge className="bg-red-500 text-white text-lg">{product.discount}%</Badge>
               </div>
             )}
-            <div className="text-3xl font-bold">{currentPrice.toLocaleString()}원</div>
-            <div className="text-sm text-gray-500 mt-1">총 {(currentPrice * quantity).toLocaleString()}원</div>
+            <div className="text-3xl font-bold">{(currentPrice * quantity).toLocaleString()}원</div>
+            <div className="text-sm text-gray-500 mt-1">개당 {currentPrice.toLocaleString()}원 × {quantity}개</div>
           </div>
 
           {/* 영양 하이라이트 */}
