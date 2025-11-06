@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useState } from "react";
+import useCartCount from "@/features/cart/hooks/useCartCount";
 
 interface MobileMenuProps {
   isAuthenticated: boolean;
@@ -103,9 +104,14 @@ function DesktopNav({ isAuthenticated }: DesktopNavProps) {
 interface HeaderActionsProps {
   isAuthenticated: boolean;
   userName?: string;
+  cartCount: number;
 }
 
-function HeaderActions({ isAuthenticated, userName }: HeaderActionsProps) {
+function HeaderActions({
+  isAuthenticated,
+  userName,
+  cartCount,
+}: HeaderActionsProps) {
   const navigate = useNavigate();
 
   return (
@@ -121,7 +127,7 @@ function HeaderActions({ isAuthenticated, userName }: HeaderActionsProps) {
           <ShoppingCart className="h-5 w-5" />
           {/* TODO: 실제 장바구니 아이템 개수로 교체 필요 */}
           <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-green-600">
-            3
+            {cartCount}
           </Badge>
           <span className="sr-only">장바구니</span>
         </a>
@@ -178,6 +184,7 @@ function HeaderActions({ isAuthenticated, userName }: HeaderActionsProps) {
 
 export default function Header() {
   const navigate = useNavigate();
+  const { cartCount } = useCartCount();
   const { isAuthenticated, user } = useAuthStore();
 
   return (
@@ -199,6 +206,7 @@ export default function Header() {
         </div>
         <DesktopNav isAuthenticated={isAuthenticated} />
         <HeaderActions
+          cartCount={cartCount}
           isAuthenticated={isAuthenticated}
           userName={user?.name}
         />

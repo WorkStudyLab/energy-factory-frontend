@@ -16,20 +16,29 @@ import {
 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 import { ROUTES } from "@/constants/routes";
 import { useProductDetail } from "@/features/products/hooks/useProductDetail";
 import { CartApiService } from "@/features/cart/services/cartApiService";
 import { useAuthStore } from "@/stores/useAuthStore";
-import type {
-  ProductVariant,
-  VitaminMineral,
-} from "@/types/product";
+import type { ProductVariant, VitaminMineral } from "@/types/product";
 import type { ProductDetail } from "@/types/product";
 
 export default function ProductDetailPage() {
@@ -118,12 +127,15 @@ export default function ProductDetailPage() {
   }
 
   // 선택된 옵션의 가격
-  const selectedVariantData = product.variants.find((v: ProductVariant) => v.name === selectedVariant);
+  const selectedVariantData = product.variants.find(
+    (v: ProductVariant) => v.name === selectedVariant,
+  );
   const currentPrice = selectedVariantData?.price || product.price;
 
   // 수량 조절
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
-  const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const decreaseQuantity = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   // 장바구니 추가
   const handleAddToCart = () => {
@@ -150,7 +162,7 @@ export default function ProductDetailPage() {
 
     // 선택된 variant 정보 찾기
     const selectedVariantData = product?.variants.find(
-      (v) => v.name === selectedVariant
+      (v) => v.name === selectedVariant,
     );
 
     console.log("선택된 variant:", selectedVariantData);
@@ -212,7 +224,7 @@ export default function ProductDetailPage() {
 
     // 선택된 variant 정보 찾기
     const selectedVariantData = product?.variants.find(
-      (v) => v.name === selectedVariant
+      (v) => v.name === selectedVariant,
     );
 
     if (!selectedVariantData) {
@@ -243,14 +255,11 @@ export default function ProductDetailPage() {
     console.log("바로 구매 요청:", requestData);
 
     // API 호출 후 장바구니 페이지로 이동
-    addToCartMutation.mutate(
-      requestData,
-      {
-        onSuccess: () => {
-          navigate(ROUTES.CART);
-        },
-      }
-    );
+    addToCartMutation.mutate(requestData, {
+      onSuccess: () => {
+        navigate(ROUTES.CART);
+      },
+    });
   };
 
   // 위시리스트 토글
@@ -262,7 +271,7 @@ export default function ProductDetailPage() {
   const handleShare = () => {
     const shareUrl = window.location.href;
     const shareText = `${product.name} - Energy Factory`;
-    
+
     if (navigator.share) {
       navigator.share({
         title: shareText,
@@ -316,11 +325,15 @@ export default function ProductDetailPage() {
                 className="rounded-full bg-white/90 hover:bg-white"
                 onClick={toggleWishlist}
               >
-                <Heart className={`h-5 w-5 ${isWishlisted ? "fill-red-500 text-red-500" : ""}`} />
+                <Heart
+                  className={`h-5 w-5 ${
+                    isWishlisted ? "fill-red-500 text-red-500" : ""
+                  }`}
+                />
               </Button>
-              <Button 
-                variant="secondary" 
-                size="icon" 
+              <Button
+                variant="secondary"
+                size="icon"
                 className="rounded-full bg-white/90 hover:bg-white"
                 onClick={handleShare}
               >
@@ -357,7 +370,9 @@ export default function ProductDetailPage() {
               <div className="flex items-center gap-1">
                 <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                 <span className="font-medium">{product.rating}</span>
-                <span className="text-gray-500">({product.reviewCount.toLocaleString()})</span>
+                <span className="text-gray-500">
+                  ({product.reviewCount.toLocaleString()})
+                </span>
               </div>
             </div>
           </div>
@@ -365,7 +380,11 @@ export default function ProductDetailPage() {
           {/* 태그 */}
           <div className="flex flex-wrap gap-2">
             {product.tags.map((tag, index) => (
-              <Badge key={index} variant="secondary" className={tag === "BEST" ? "bg-green-100 text-green-700" : ""}>
+              <Badge
+                key={index}
+                variant="secondary"
+                className={tag === "BEST" ? "bg-green-100 text-green-700" : ""}
+              >
                 {tag}
               </Badge>
             ))}
@@ -376,13 +395,22 @@ export default function ProductDetailPage() {
             {(product.discount ?? 0) > 0 && (
               <div className="flex items-center gap-3 mb-2">
                 {(product.originalPrice ?? 0) > 0 && (
-                  <span className="text-lg text-gray-400 line-through">{((product.originalPrice ?? 0) * quantity).toLocaleString()}원</span>
+                  <span className="text-lg text-gray-400 line-through">
+                    {((product.originalPrice ?? 0) * quantity).toLocaleString()}
+                    원
+                  </span>
                 )}
-                <Badge className="bg-red-500 text-white text-lg">{product.discount}%</Badge>
+                <Badge className="bg-red-500 text-white text-lg">
+                  {product.discount}%
+                </Badge>
               </div>
             )}
-            <div className="text-3xl font-bold">{(currentPrice * quantity).toLocaleString()}원</div>
-            <div className="text-sm text-gray-500 mt-1">개당 {currentPrice.toLocaleString()}원 × {quantity}개</div>
+            <div className="text-3xl font-bold">
+              {(currentPrice * quantity).toLocaleString()}원
+            </div>
+            <div className="text-sm text-gray-500 mt-1">
+              개당 {currentPrice.toLocaleString()}원 × {quantity}개
+            </div>
           </div>
 
           {/* 영양 하이라이트 */}
@@ -397,22 +425,30 @@ export default function ProductDetailPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="text-sm text-gray-600">칼로리</div>
-                  <div className="text-2xl font-bold text-purple-600">{product.nutrition.calories}kcal</div>
+                  <div className="text-2xl font-bold text-purple-600">
+                    {product.nutrition.calories}kcal
+                  </div>
                   <div className="text-xs text-gray-500">100g당</div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-600">단백질</div>
-                  <div className="text-2xl font-bold text-green-600">{product.nutrition.protein}g</div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {product.nutrition.protein}g
+                  </div>
                   <div className="text-xs text-gray-500">100g당</div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-600">탄수화물</div>
-                  <div className="text-2xl font-bold text-blue-600">{product.nutrition.carbs}g</div>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {product.nutrition.carbs}g
+                  </div>
                   <div className="text-xs text-gray-500">100g당</div>
                 </div>
                 <div>
                   <div className="text-sm text-gray-600">지방</div>
-                  <div className="text-2xl font-bold text-amber-600">{product.nutrition.fat}g</div>
+                  <div className="text-2xl font-bold text-amber-600">
+                    {product.nutrition.fat}g
+                  </div>
                   <div className="text-xs text-gray-500">100g당</div>
                 </div>
               </div>
@@ -420,7 +456,12 @@ export default function ProductDetailPage() {
                 <div className="flex items-center gap-2 text-sm text-green-700">
                   <TrendingUp className="h-4 w-4" />
                   <span className="font-medium">
-                    단백질 효율: {((product.nutrition.protein / product.nutrition.calories) * 100).toFixed(1)}g/100kcal
+                    단백질 효율:{" "}
+                    {(
+                      (product.nutrition.protein / product.nutrition.calories) *
+                      100
+                    ).toFixed(1)}
+                    g/100kcal
                   </span>
                 </div>
               </div>
@@ -431,7 +472,10 @@ export default function ProductDetailPage() {
           <div className="space-y-3">
             <div>
               <label className="text-sm font-medium mb-2 block">옵션</label>
-              <Select value={selectedVariant} onValueChange={setSelectedVariant}>
+              <Select
+                value={selectedVariant}
+                onValueChange={setSelectedVariant}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -439,7 +483,11 @@ export default function ProductDetailPage() {
                   {product.variants.map((variant) => (
                     <SelectItem key={variant.name} value={variant.name}>
                       {variant.name} - {variant.price.toLocaleString()}원
-                      {variant.stock < 10 && <span className="text-red-500 ml-2">(재고 {variant.stock}개)</span>}
+                      {variant.stock < 10 && (
+                        <span className="text-red-500 ml-2">
+                          (재고 {variant.stock}개)
+                        </span>
+                      )}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -451,15 +499,28 @@ export default function ProductDetailPage() {
               <label className="text-sm font-medium mb-2 block">수량</label>
               <div className="flex items-center gap-3">
                 <div className="flex items-center border rounded-lg">
-                  <Button variant="ghost" size="icon" onClick={decreaseQuantity} disabled={quantity <= 1}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={decreaseQuantity}
+                    disabled={quantity <= 1}
+                  >
                     <Minus className="h-4 w-4" />
                   </Button>
-                  <span className="w-12 text-center font-medium">{quantity}</span>
-                  <Button variant="ghost" size="icon" onClick={increaseQuantity}>
+                  <span className="w-12 text-center font-medium">
+                    {quantity}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={increaseQuantity}
+                  >
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
-                <span className="text-gray-500">(재고: {selectedVariantData?.stock || 0}개)</span>
+                <span className="text-gray-500">
+                  (재고: {selectedVariantData?.stock || 0}개)
+                </span>
               </div>
             </div>
           </div>
@@ -472,9 +533,8 @@ export default function ProductDetailPage() {
                 {product.shipping.fee === 0
                   ? "무료배송"
                   : product.shipping.freeShippingThreshold
-                    ? `배송비: ${product.shipping.fee.toLocaleString()}원 (${product.shipping.freeShippingThreshold.toLocaleString()}원 이상 무료)`
-                    : `배송비: ${product.shipping.fee.toLocaleString()}원`
-                }
+                  ? `배송비: ${product.shipping.fee.toLocaleString()}원 (${product.shipping.freeShippingThreshold.toLocaleString()}원 이상 무료)`
+                  : `배송비: ${product.shipping.fee.toLocaleString()}원`}
               </span>
             </div>
             {product.shipping.estimatedDays && (
@@ -528,7 +588,10 @@ interface NutritionInfoCardProps {
 // 영양 정보 카드 컴포넌트
 function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
   // 탄단지 데이터 준비 (칼로리 기준)
-  const totalCalories = (product.nutrition.protein * 4) + (product.nutrition.carbs * 4) + (product.nutrition.fat * 9);
+  const totalCalories =
+    product.nutrition.protein * 4 +
+    product.nutrition.carbs * 4 +
+    product.nutrition.fat * 9;
 
   const macroData = [
     {
@@ -536,21 +599,30 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
       value: product.nutrition.protein * 4,
       grams: product.nutrition.protein,
       color: "#22c55e",
-      percentage: totalCalories > 0 ? Math.round((product.nutrition.protein * 4 / totalCalories) * 100) : 0
+      percentage:
+        totalCalories > 0
+          ? Math.round(((product.nutrition.protein * 4) / totalCalories) * 100)
+          : 0,
     },
     {
       name: "탄수화물",
       value: product.nutrition.carbs * 4,
       grams: product.nutrition.carbs,
       color: "#3b82f6",
-      percentage: totalCalories > 0 ? Math.round((product.nutrition.carbs * 4 / totalCalories) * 100) : 0
+      percentage:
+        totalCalories > 0
+          ? Math.round(((product.nutrition.carbs * 4) / totalCalories) * 100)
+          : 0,
     },
     {
       name: "지방",
       value: product.nutrition.fat * 9,
       grams: product.nutrition.fat,
       color: "#f59e0b",
-      percentage: totalCalories > 0 ? Math.round((product.nutrition.fat * 9 / totalCalories) * 100) : 0
+      percentage:
+        totalCalories > 0
+          ? Math.round(((product.nutrition.fat * 9) / totalCalories) * 100)
+          : 0,
     },
   ];
 
@@ -577,7 +649,9 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
                       outerRadius={90}
                       paddingAngle={2}
                       dataKey="value"
-                      label={({ name, percentage }) => `${name}\n${percentage}%`}
+                      label={({ name, percentage }) =>
+                        `${name}\n${percentage}%`
+                      }
                       labelLine={true}
                     >
                       {macroData.map((entry, index) => (
@@ -590,9 +664,15 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
                 {/* 범례 */}
                 <div className="w-full space-y-2">
                   {macroData.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between"
+                    >
                       <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: item.color }}
+                        ></div>
                         <span className="text-sm font-medium">{item.name}</span>
                       </div>
                       <div className="text-sm">
@@ -608,10 +688,16 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
                 {/* 총 칼로리 표시 */}
                 <div className="w-full border-t border-gray-200 pt-3 mt-4">
                   <div className="flex items-center justify-between">
-                    <div className="text-base font-bold text-gray-700">총 칼로리</div>
+                    <div className="text-base font-bold text-gray-700">
+                      총 칼로리
+                    </div>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-semibold text-green-600">{product.nutrition.calories}</span>
-                      <span className="text-base font-semibold text-gray-600">kcal</span>
+                      <span className="text-2xl font-semibold text-green-600">
+                        {product.nutrition.calories}
+                      </span>
+                      <span className="text-base font-semibold text-gray-600">
+                        kcal
+                      </span>
                     </div>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">1회 제공량 기준</p>
@@ -626,48 +712,62 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
                 {product.nutrition.saturatedFat !== undefined && (
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span className="text-sm text-gray-600">포화지방</span>
-                    <span className="text-sm font-medium">{product.nutrition.saturatedFat}g</span>
+                    <span className="text-sm font-medium">
+                      {product.nutrition.saturatedFat}g
+                    </span>
                   </div>
                 )}
                 {product.nutrition.transFat !== undefined && (
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span className="text-sm text-gray-600">트랜스지방</span>
-                    <span className="text-sm font-medium">{product.nutrition.transFat}g</span>
+                    <span className="text-sm font-medium">
+                      {product.nutrition.transFat}g
+                    </span>
                   </div>
                 )}
                 {product.nutrition.cholesterol !== undefined && (
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span className="text-sm text-gray-600">콜레스테롤</span>
-                    <span className="text-sm font-medium">{product.nutrition.cholesterol}mg</span>
+                    <span className="text-sm font-medium">
+                      {product.nutrition.cholesterol}mg
+                    </span>
                   </div>
                 )}
                 {product.nutrition.sodium !== undefined && (
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span className="text-sm text-gray-600">나트륨</span>
-                    <span className="text-sm font-medium">{product.nutrition.sodium}mg</span>
+                    <span className="text-sm font-medium">
+                      {product.nutrition.sodium}mg
+                    </span>
                   </div>
                 )}
                 {product.nutrition.fiber !== undefined && (
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span className="text-sm text-gray-600">식이섬유</span>
-                    <span className="text-sm font-medium">{product.nutrition.fiber}g</span>
+                    <span className="text-sm font-medium">
+                      {product.nutrition.fiber}g
+                    </span>
                   </div>
                 )}
                 {product.nutrition.sugars !== undefined && (
                   <div className="flex justify-between p-2 bg-gray-50 rounded">
                     <span className="text-sm text-gray-600">당류</span>
-                    <span className="text-sm font-medium">{product.nutrition.sugars}g</span>
+                    <span className="text-sm font-medium">
+                      {product.nutrition.sugars}g
+                    </span>
                   </div>
                 )}
               </div>
               {!product.nutrition.saturatedFat &&
-               !product.nutrition.transFat &&
-               !product.nutrition.cholesterol &&
-               !product.nutrition.sodium &&
-               !product.nutrition.fiber &&
-               !product.nutrition.sugars && (
-                <p className="text-sm text-gray-500 text-center py-4">상세 영양 정보가 없습니다.</p>
-              )}
+                !product.nutrition.transFat &&
+                !product.nutrition.cholesterol &&
+                !product.nutrition.sodium &&
+                !product.nutrition.fiber &&
+                !product.nutrition.sugars && (
+                  <p className="text-sm text-gray-500 text-center py-4">
+                    상세 영양 정보가 없습니다.
+                  </p>
+                )}
             </div>
 
             {/* 비타민 & 미네랄 */}
@@ -676,23 +776,38 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
               {product.vitaminsAndMinerals.length > 0 ? (
                 <>
                   <div className="space-y-3">
-                    {product.vitaminsAndMinerals.map((item: VitaminMineral, index: number) => (
-                      <div key={index}>
-                        <div className="flex justify-between mb-1">
-                          <span className="text-sm font-medium">{item.name}</span>
-                          <span className="text-xs text-gray-600">{item.amount}</span>
+                    {product.vitaminsAndMinerals.map(
+                      (item: VitaminMineral, index: number) => (
+                        <div key={index}>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-sm font-medium">
+                              {item.name}
+                            </span>
+                            <span className="text-xs text-gray-600">
+                              {item.amount}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Progress
+                              value={item.daily}
+                              className="h-1.5 flex-1"
+                            />
+                            <span className="text-xs text-gray-500 w-10 text-right">
+                              {item.daily}%
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Progress value={item.daily} className="h-1.5 flex-1" />
-                          <span className="text-xs text-gray-500 w-10 text-right">{item.daily}%</span>
-                        </div>
-                      </div>
-                    ))}
+                      ),
+                    )}
                   </div>
-                  <p className="text-xs text-gray-500 mt-4">* 일일 권장 섭취량 대비 비율</p>
+                  <p className="text-xs text-gray-500 mt-4">
+                    * 일일 권장 섭취량 대비 비율
+                  </p>
                 </>
               ) : (
-                <p className="text-sm text-gray-500 text-center py-4">비타민 & 미네랄 정보가 없습니다.</p>
+                <p className="text-sm text-gray-500 text-center py-4">
+                  비타민 & 미네랄 정보가 없습니다.
+                </p>
               )}
             </div>
 
@@ -704,25 +819,36 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
                   {Object.entries(product.goalScores).map(([goal, score]) => {
                     const numScore = score as number;
                     return (
-                      <div key={goal} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                        <span className="text-sm font-medium">{goalNames[goal] || goal}</span>
+                      <div
+                        key={goal}
+                        className="flex items-center justify-between p-2 bg-gray-50 rounded-lg"
+                      >
+                        <span className="text-sm font-medium">
+                          {goalNames[goal] || goal}
+                        </span>
                         <div className="flex items-center gap-1">
                           {Array.from({ length: 5 }).map((_, i) => (
                             <Star
                               key={i}
                               className={`h-3.5 w-3.5 ${
-                                i < Math.floor(numScore) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                                i < Math.floor(numScore)
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-gray-300"
                               }`}
                             />
                           ))}
-                          <span className="ml-1 text-sm font-bold">{numScore.toFixed(1)}</span>
+                          <span className="ml-1 text-sm font-bold">
+                            {numScore.toFixed(1)}
+                          </span>
                         </div>
                       </div>
                     );
                   })}
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 text-center py-4">피트니스 목표별 정보가 없습니다.</p>
+                <p className="text-sm text-gray-500 text-center py-4">
+                  피트니스 목표별 정보가 없습니다.
+                </p>
               )}
             </div>
           </div>
@@ -731,4 +857,3 @@ function NutritionInfoCard({ product, goalNames }: NutritionInfoCardProps) {
     </div>
   );
 }
-
