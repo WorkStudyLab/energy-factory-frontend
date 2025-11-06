@@ -332,7 +332,7 @@ export default function ProductsPage() {
         {/* 제품 그리드 */}
         <ProductList
           products={allProducts}
-          observerTarget={searchQuery.length > 0 ? null : observerTarget}
+          observerTarget={searchQuery.length > 0 ? undefined : observerTarget}
           isLoading={currentIsLoading}
           isFetchingNextPage={isFetchingNextPage}
           error={currentError}
