@@ -15,7 +15,7 @@ export class PaymentApiService {
   // 1. 주문 생성 서비스
   static async createOrder(orderData: CreateOrderRequest): Promise<Order> {
     const response = await api.post<OrderApiResponse>(
-      `${this.BASE_URL}?userId=39`, // @todo userId 서버 수정시 제거 필요
+      `${this.BASE_URL}`,
       orderData,
     );
 

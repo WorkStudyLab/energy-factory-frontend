@@ -74,8 +74,6 @@ function requestPayment(payment: TossPaymentsPayment | null) {
       /** @todo 사용자 정보 입력 필요 */
       customerEmail: "",
       customerName: recipientName,
-      // 가상계좌 안내, 퀵계좌이체 휴대폰 번호 자동 완성에 사용되는 값입니다. 필요하다면 주석을 해제해 주세요.
-      // customerMobilePhone: "01012341234",
       card: {
         useEscrow: false,
         flowMode: "DEFAULT",
