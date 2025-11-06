@@ -1,5 +1,6 @@
 import api from "@/lib/axios/axios";
 import type { ApiResponse, Cart, CartItem } from "@/types/cart";
+import { broadcastCartChange } from "@/utils/broadcastHelper";
 
 export interface AddToCartRequest {
   productId: number;
@@ -19,7 +20,7 @@ export class CartApiService {
     // API 응답 데이터를 UI 친화적으로 변환
     const transformedCart: Cart = {
       ...cart,
-      items: cart.items.map(item => ({
+      items: cart.items.map((item) => ({
         ...item,
         imageUrl: item.productImageUrl, // 별칭 추가
         finalPrice: item.totalPrice / item.quantity, // 단가 계산
@@ -39,6 +40,8 @@ export class CartApiService {
   static async addToCart(data: AddToCartRequest): Promise<CartItem> {
     const response = await api.post<ApiResponse<CartItem>>("/api/cart", data);
     const item = response.data.data;
+
+    broadcastCartChange();
 
     // API 응답 데이터를 UI 친화적으로 변환
     return {
@@ -81,6 +84,7 @@ export class CartApiService {
    */
   static async deleteCartItem(cartItemId: number): Promise<void> {
     await api.delete(`/api/cart/${cartItemId}`);
+    broadcastCartChange();
   }
 
   /**
@@ -92,6 +96,7 @@ export class CartApiService {
     await api.delete("/api/cart/selected", {
       data: { cartItemIds },
     });
+    broadcastCartChange();
   }
 
   /**
@@ -100,5 +105,6 @@ export class CartApiService {
    */
   static async clearCart(): Promise<void> {
     await api.delete("/api/cart");
+    broadcastCartChange();
   }
 }

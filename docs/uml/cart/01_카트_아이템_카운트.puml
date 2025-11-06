@@ -1,0 +1,97 @@
+@startuml cart_item_count_broadcasting
+
+!define LIGHTBLUE #E3F2FD
+!define LIGHTGREEN #E8F5E9
+!define LIGHTYELLOW #FFF9C4
+
+skinparam backgroundColor white
+skinparam sequenceMessageAlign center
+
+title 헤더 장바구니 아이템 카운트 - 브로드캐스팅 로직
+
+actor 사용자
+participant "Cart API" as API LIGHTBLUE
+participant "broadcastCartChange" as Broadcast LIGHTYELLOW
+participant "BroadcastChannel" as Channel LIGHTGREEN
+participant "CustomEvent" as Event LIGHTGREEN
+participant "Header\n(useCartCount)" as Header LIGHTBLUE
+participant "다른 탭\nHeader" as OtherHeader LIGHTBLUE
+
+== 장바구니 아이템 추가/삭제/결제 시 ==
+
+사용자 -> API: 장바구니 변경 요청\n(추가/삭제/결제)
+activate API
+API -> API: API 처리
+API -> Broadcast: broadcastCartChange()
+activate Broadcast
+
+note over Broadcast: 1초 지연\n(API 처리 속도 차이 고려)
+
+group 전파
+    Broadcast -> Channel: postMessage()\ntype: "CART_CHANGED"
+    note right Channel
+        **다른 탭으로 전파**
+        BroadcastChannel 사용
+    end note
+
+    Broadcast -> Event: window.dispatchEvent()\nCustomEvent: "cart-changed"
+    note right Event
+        **같은 탭 내 전파**
+        CustomEvent 사용
+    end note
+end
+
+deactivate Broadcast
+deactivate API
+
+== 이벤트 수신 및 카운트 갱신 ==
+
+group 같은 탭
+    Event -> Header: CustomEvent 감지
+    activate Header
+    Header -> Header: subscribeCartChange 콜백 실행
+    Header -> Header: refetch() - 장바구니 재조회
+    Header -> Header: cartCount 업데이트
+    note right Header
+        Header에 새로운
+        아이템 개수 표시
+    end note
+    deactivate Header
+end
+
+group 다른 탭
+    Channel -> OtherHeader: BroadcastChannel 메시지 수신
+    activate OtherHeader
+    OtherHeader -> OtherHeader: subscribeCartChange 콜백 실행
+    OtherHeader -> OtherHeader: refetch() - 장바구니 재조회
+    OtherHeader -> OtherHeader: cartCount 업데이트
+    note right OtherHeader
+        다른 탭 Header에도
+        실시간으로 개수 반영
+    end note
+    deactivate OtherHeader
+end
+
+note over Broadcast, OtherHeader
+    **주요 로직**
+
+    1. broadcastCartChange: 이중 전파 메커니즘
+       - BroadcastChannel: 다른 탭 간 통신
+       - CustomEvent: 같은 탭 내 컴포넌트 간 통신
+
+    2. subscribeCartChange: 이벤트 구독
+       - BroadcastChannel.onmessage: 다른 탭 메시지 수신
+       - window.addEventListener: 같은 탭 이벤트 수신
+       - cleanup 함수 반환 (메모리 누수 방지)
+
+    3. useCartCount: Header에서 카운트 표시
+       - useEffect로 구독 설정
+       - 이벤트 수신 시 refetch()로 최신 데이터 갱신
+
+    **구현 파일**
+    - broadcastHelper.ts: 브로드캐스팅 유틸리티
+    - useCartCount.ts: Header 장바구니 카운트 훅
+    - cartApiService.ts: 장바구니 변경 시 브로드캐스트 트리거
+end note
+
+@enduml

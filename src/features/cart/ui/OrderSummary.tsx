@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ROUTES } from "@/constants/routes";
+import { useGetUserInfo } from "@/features/auth/hooks/useGetUserInfo";
 import usePayment from "@/features/order/hooks/usePayment";
 import type { CartItem } from "@/types/cart";
+import { formatPhoneNumber } from "@/utils/numberUtils";
 import { ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -12,6 +14,7 @@ interface OrderSummaryProps {
 }
 
 const OrderSummary = (props: OrderSummaryProps) => {
+  const { data: userInfoData } = useGetUserInfo();
   const { selectedCartItems } = props;
   // 선택된 아이템들의 총 가격 계산
   const selectedTotalPrice = selectedCartItems.reduce(
@@ -38,11 +41,10 @@ const OrderSummary = (props: OrderSummaryProps) => {
     }
 
     const orderInfo = {
-      recipientName: "홍길동",
-      phoneNumber: "010-1234-5678",
+      recipientName: userInfoData?.name || "",
+      phoneNumber: formatPhoneNumber(userInfoData?.phone || ""),
       postalCode: "12345",
-      addressLine1: "서울특별시 강남구 테헤란로 123",
-      addressLine2: "101동 202호",
+      addressLine1: userInfoData?.address || "",
       orderItems: selectedCartItems.map((item) => ({
         productId: item.productId,
         variantId: item.variantId,

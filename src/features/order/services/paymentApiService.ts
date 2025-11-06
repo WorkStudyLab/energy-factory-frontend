@@ -7,6 +7,7 @@ import type {
   OrderApiResponse,
   Payment,
 } from "@/types/order";
+import { broadcastCartChange } from "@/utils/broadcastHelper";
 
 export class PaymentApiService {
   private static readonly BASE_URL = "/api/orders";
@@ -14,7 +15,7 @@ export class PaymentApiService {
   // 1. 주문 생성 서비스
   static async createOrder(orderData: CreateOrderRequest): Promise<Order> {
     const response = await api.post<OrderApiResponse>(
-      `${this.BASE_URL}?userId=39`, // @todo userId 서버 수정시 제거 필요
+      `${this.BASE_URL}`,
       orderData,
     );
 
@@ -30,6 +31,7 @@ export class PaymentApiService {
       paymentData,
     );
 
+    broadcastCartChange();
     return response.data.data;
   }
   //   2.1 결제 완료 서비스 테스트용

@@ -29,7 +29,8 @@ export default function LoginPage() {
    * 로그인 완료 후 백엔드에서 /oauth/naver/callback으로 리다이렉트됩니다.
    */
   const handleNaverLogin = () => {
-    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://energy-factory.kr";
+    const API_BASE_URL =
+      import.meta.env.VITE_API_BASE_URL || "https://energy-factory.kr";
     window.location.href = `${API_BASE_URL}/api/oauth2/naver`;
   };
 
@@ -42,6 +43,7 @@ export default function LoginPage() {
             Energy Factory 계정으로 로그인하세요
           </CardDescription>
         </CardHeader>
+        {/* 로그인 폼 */}
         <LoginForm />
 
         <CardFooter className="flex flex-col">
