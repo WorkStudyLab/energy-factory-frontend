@@ -43,6 +43,21 @@ export class ProductsApiService {
     return response.data.data;
   }
 
+  // 상품 검색
+  static async searchProducts(
+    query: string,
+    filters: Omit<ProductFilters, 'keyword'> = {}
+  ): Promise<ProductsResponse> {
+    const params = this.buildQueryParams({ ...filters, keyword: query });
+
+    const response = await api.get<ApiResponse<ProductsResponse>>(
+      `${this.BASE_URL}/search`,
+      { params: { ...params, q: query } }
+    );
+
+    return response.data.data;
+  }
+
   private static buildQueryParams(filters: ProductFilters): Record<string, any> {
     const params: Record<string, any> = {};
 

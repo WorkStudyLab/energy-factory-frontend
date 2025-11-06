@@ -7,6 +7,7 @@ import {
 } from "@/features/products/constants/productConstants";
 import { useCategories } from "@/features/products/hooks/useCategories";
 import useInfiniteProducts from "@/features/products/hooks/useInfiniteProducts";
+import { useSearchProducts } from "@/features/products/hooks/useSearchProducts";
 import useIntersectionObserver from "@/features/order/hooks/useIntersectionObserver";
 
 import { Filter, Search } from "lucide-react";
@@ -39,8 +40,23 @@ export default function ProductsPage() {
   const [caloriesRange, setCaloriesRange] = useState([0, 500]);
   const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState("createdAt,desc");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // 무한 스크롤을 위한 훅 사용
+  // 검색 결과
+  const {
+    data: searchData,
+    isLoading: isSearchLoading,
+    error: searchError,
+  } = useSearchProducts({
+    query: searchQuery,
+    filters: {
+      category: selectedCategory !== "all" ? selectedCategory : undefined,
+      sort: sortOption,
+    },
+    enabled: searchQuery.length > 0,
+  });
+
+  // 무한 스크롤을 위한 훅 사용 (검색이 아닐 때만)
   const {
     data,
     isLoading,
@@ -67,8 +83,17 @@ export default function ProductsPage() {
 
   // 모든 페이지의 상품을 하나의 배열로 병합
   const allProducts = useMemo(() => {
+    // 검색 중일 때는 검색 결과 사용
+    if (searchQuery.length > 0) {
+      return searchData?.products ?? [];
+    }
+    // 검색이 아닐 때는 무한 스크롤 데이터 사용
     return data?.pages.flatMap((page) => page.products) ?? [];
-  }, [data]);
+  }, [data, searchQuery, searchData]);
+
+  // 현재 로딩 상태 결정
+  const currentIsLoading = searchQuery.length > 0 ? isSearchLoading : isLoading;
+  const currentError = searchQuery.length > 0 ? searchError : error;
 
   // 카테고리 정렬: "기타"를 맨 마지막으로
   const sortedCategories = (categories || []).sort((a, b) => {
@@ -134,6 +159,8 @@ export default function ProductsPage() {
               type="search"
               placeholder="상품명, 영양소, 태그 검색..."
               className="w-full pl-8"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           <div className="flex items-center gap-2">
@@ -305,10 +332,10 @@ export default function ProductsPage() {
         {/* 제품 그리드 */}
         <ProductList
           products={allProducts}
-          observerTarget={observerTarget}
-          isLoading={isLoading}
+          observerTarget={searchQuery.length > 0 ? null : observerTarget}
+          isLoading={currentIsLoading}
           isFetchingNextPage={isFetchingNextPage}
-          error={error}
+          error={currentError}
           onRetry={() => refetch()}
           onResetFilters={() => {
             setSelectedCategory("all");
@@ -319,6 +346,7 @@ export default function ProductsPage() {
             setCaloriesRange([0, 500]);
             setDietaryRestrictions([]);
             setSortOption("createdAt,desc");
+            setSearchQuery("");
           }}
         />
       </div>
