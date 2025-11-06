@@ -33,15 +33,6 @@ export const ROUTE_AUTH: Record<string, RouteAuth> = {
     redirectAuth: ROUTES.PRODUCTS,
   },
 
-  // 네이버 소셜 로그인 관련 페이지
-  [ROUTES.NAVER_CALLBACK]: {
-    allowedRoles: ["guest", "user"], // 로그인 처리 중이므로 모든 사용자 접근 가능
-  },
-  [ROUTES.NAVER_ADDITIONAL_INFO]: {
-    allowedRoles: ["user"], // 이미 로그인된 사용자만 접근 가능
-    redirectUnauth: ROUTES.LOGIN,
-  },
-
   // 상품 관련 페이지 - 모든 사용자 접근 가능
   [ROUTES.PRODUCTS]: {
     allowedRoles: ["guest", "user"],

@@ -18,8 +18,6 @@ import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import ResetPasswordSuccessPage from "./pages/auth/ResetPasswordSuccessPage";
 import SignupPage from "./pages/auth/SignupPage";
 import SignupConnectPage from "./pages/auth/SignupConnectPage";
-import NaverCallbackPage from "./pages/auth/NaverCallbackPage";
-import NaverAdditionalInfoPage from "./pages/auth/NaverAdditionalInfoPage";
 import NutritionPage from "./pages/nutrition/NutritionPage";
 import DietCoachPage from "./pages/diet-coach/DietCoachPage";
 import OrderHistoryPage from "./pages/order/OrderHistoryPage";
@@ -136,24 +134,6 @@ function App() {
                   <AppRoute
                     path={ROUTES.SIGNUP_CONNECT}
                     element={<SignupConnectPage />}
-                  />
-                }
-              />
-              <Route
-                path={ROUTES.NAVER_CALLBACK}
-                element={
-                  <AppRoute
-                    path={ROUTES.NAVER_CALLBACK}
-                    element={<NaverCallbackPage />}
-                  />
-                }
-              />
-              <Route
-                path={ROUTES.NAVER_ADDITIONAL_INFO}
-                element={
-                  <AppRoute
-                    path={ROUTES.NAVER_ADDITIONAL_INFO}
-                    element={<NaverAdditionalInfoPage />}
                   />
                 }
               />

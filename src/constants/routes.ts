@@ -19,9 +19,6 @@ export const ROUTES = {
   // 회원가입
   SIGNUP: "/signup",
   SIGNUP_CONNECT: "/signup/connect",
-  // 네이버 소셜 로그인
-  NAVER_CALLBACK: "/oauth/naver/callback",
-  NAVER_ADDITIONAL_INFO: "/oauth/naver/additional-info",
   // 프로필
   PROFILE: "/profile",
   // 마이페이지
