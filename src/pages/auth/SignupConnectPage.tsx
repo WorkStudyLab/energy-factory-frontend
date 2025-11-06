@@ -11,8 +11,9 @@ export default function SignupConnectPage() {
   };
 
   const handleNaverConnect = () => {
-    // TODO: 네이버 SNS 연동 로직 구현
-    console.log("네이버 연동하기");
+    // 네이버 계정 연동 API 호출
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://energy-factory.kr";
+    window.location.href = `${API_BASE_URL}/api/auth/link/naver`;
   };
 
   return (

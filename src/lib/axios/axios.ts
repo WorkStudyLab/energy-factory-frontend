@@ -99,8 +99,8 @@ apiClient.interceptors.response.use(
       }
     }
 
-    // 에러 로깅
-    if (import.meta.env.DEV) {
+    // 에러 로깅 (401은 제외 - 미로그인 상태는 정상)
+    if (import.meta.env.DEV && error.response?.status !== 401) {
       console.error("❌ API 에러:", {
         status: error.response?.status,
         message: error.message,

@@ -61,8 +61,8 @@ interface SignupRequest {
 export const SignupForm = (props: {
   formData: FormData;
   handleInputChange: (field: keyof FormData, value: string | boolean) => void;
-  isNaverSignup?: boolean;
-  naverProvidedFields?: Set<string>;
+  isOAuthSignup?: boolean;
+  oauthProvidedFields?: Set<string>;
 }) => {
   const navigate = useNavigate();
   const { signup, isLoading: isSignupLoading } = useSignup();
@@ -70,40 +70,70 @@ export const SignupForm = (props: {
   const {
     formData,
     handleInputChange,
-    isNaverSignup = false,
-    naverProvidedFields = new Set(),
+    isOAuthSignup = false,
+    oauthProvidedFields = new Set(),
   } = props;
   const { alert } = useDialogHelpers();
 
-  // 네이버 추가 정보 업데이트 mutation
-  const updateAdditionalInfoMutation = useMutation({
-    mutationFn: async (data: { birthDate: string; address: string }) => {
-      return await AuthApiService.updateAdditionalInfo(data);
+  // OAuth 회원가입 mutation
+  const signupWithOAuthMutation = useMutation({
+    mutationFn: async (data: {
+      email: string;
+      name: string;
+      phoneNumber: string;
+      birthDate: string;
+      address: string;
+    }) => {
+      return await AuthApiService.signupWithOAuth(data);
     },
-    onSuccess: async (updatedUserInfo) => {
-      // Zustand 스토어에 최신 사용자 정보 저장
+    onSuccess: async (response) => {
+      // JWT가 쿠키에 자동 저장됨
+      // Zustand 스토어에 사용자 정보 저장
       setUser({
-        id: 0, // API 응답에 id가 없으므로 임시값
-        email: updatedUserInfo.email,
-        name: updatedUserInfo.name,
+        id: response.data.id,
+        email: response.data.email,
+        name: response.data.name,
       });
 
-      alert("추가 정보가 저장되었습니다.", {
-        title: "저장 완료",
+      // 로컬 스토리지 임시 데이터 삭제
+      localStorage.removeItem("oauth_temp_signup_data");
+
+      alert("회원가입이 완료되었습니다!", {
+        title: "가입 완료",
         onConfirm: () => {
-          navigate(ROUTES.HOME);
+          navigate(ROUTES.PRODUCTS);
         },
       });
     },
     onError: (error: any) => {
-      console.error("추가 정보 저장 실패:", error);
-      alert("추가 정보 저장에 실패했습니다. 다시 시도해주세요.", {
-        title: "저장 실패",
-      });
+      console.error("OAuth 회원가입 실패:", error);
+
+      const errorCode = error.response?.data?.code;
+      const errorDesc = error.response?.data?.desc;
+
+      // 세션 만료 에러
+      if (errorCode === "40100007") {
+        alert("세션이 만료되었습니다. 다시 네이버 로그인을 진행해주세요.", {
+          title: "세션 만료",
+          onConfirm: () => {
+            localStorage.removeItem("oauth_temp_signup_data");
+            window.location.href = "/oauth2/authorization/naver";
+          },
+        });
+      } else if (errorCode === "40000009") {
+        // 이메일 중복 에러
+        alert("이미 사용 중인 이메일입니다.", {
+          title: "회원가입 실패",
+        });
+      } else {
+        alert(errorDesc || "회원가입에 실패했습니다. 다시 시도해주세요.", {
+          title: "회원가입 실패",
+        });
+      }
     },
   });
 
-  const isLoading = isSignupLoading || updateAdditionalInfoMutation.isPending;
+  const isLoading = isSignupLoading || signupWithOAuthMutation.isPending;
 
   // 비밀번호 표시/숨김 상태
   const [showPassword, setShowPassword] = useState(false);
@@ -137,8 +167,8 @@ export const SignupForm = (props: {
       formData.phone2.trim() !== "" &&
       formData.phone3.trim() !== "";
 
-    // 네이버 로그인은 비밀번호 검증 불필요
-    if (isNaverSignup) {
+    // OAuth 로그인은 비밀번호 검증 불필요
+    if (isOAuthSignup) {
       return baseValidation;
     }
 
@@ -148,7 +178,7 @@ export const SignupForm = (props: {
       isPasswordValid &&
       formData.password === formData.confirmPassword
     );
-  }, [formData, isPasswordValid, isNaverSignup]);
+  }, [formData, isPasswordValid, isOAuthSignup]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,19 +194,22 @@ export const SignupForm = (props: {
     // 생년월일을 YYYY-MM-DD 형식으로 변환
     const birthDate = `${formData.birthYear}-${formData.birthMonth.padStart(2, "0")}-${formData.birthDay.padStart(2, "0")}`;
 
-    // 네이버 로그인 모드: 추가 정보만 업데이트
-    if (isNaverSignup) {
-      updateAdditionalInfoMutation.mutate({
+    // 전화번호 조합 (010-0000-0000)
+    const phoneNumber = `${formData.phone1}-${formData.phone2}-${formData.phone3}`;
+
+    // OAuth 회원가입 모드
+    if (isOAuthSignup) {
+      signupWithOAuthMutation.mutate({
+        email: formData.email.trim(),
+        name: formData.name.trim(),
+        phoneNumber,
         birthDate,
         address: formData.address.trim(),
       });
       return;
     }
 
-    // 일반 회원가입 모드: 전체 회원가입 처리
-    // 전화번호 조합 (010-0000-0000)
-    const phoneNumber = `${formData.phone1}-${formData.phone2}-${formData.phone3}`;
-
+    // 일반 회원가입 모드
     const signupData: SignupRequest = {
       name: formData.name,
       email: formData.email,
@@ -214,7 +247,7 @@ export const SignupForm = (props: {
             onChange={(value) => handleInputChange("name", value)}
             placeholder="김건강"
             required
-            disabled={naverProvidedFields.has("name")}
+            disabled={oauthProvidedFields.has("name")}
           />
 
           <div className="space-y-2">
@@ -234,11 +267,11 @@ export const SignupForm = (props: {
                 value={formData.birthYear}
                 onValueChange={(value) => handleInputChange("birthYear", value)}
                 required
-                disabled={naverProvidedFields.has("birthYear")}
+                disabled={oauthProvidedFields.has("birthYear")}
               >
                 <SelectTrigger
                   className={`h-9 border-neutral-200 ${
-                    naverProvidedFields.has("birthYear")
+                    oauthProvidedFields.has("birthYear")
                       ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
                       : ""
                   }`}
@@ -259,11 +292,11 @@ export const SignupForm = (props: {
                   handleInputChange("birthMonth", value)
                 }
                 required
-                disabled={naverProvidedFields.has("birthMonth")}
+                disabled={oauthProvidedFields.has("birthMonth")}
               >
                 <SelectTrigger
                   className={`h-9 border-neutral-200 ${
-                    naverProvidedFields.has("birthMonth")
+                    oauthProvidedFields.has("birthMonth")
                       ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
                       : ""
                   }`}
@@ -282,11 +315,11 @@ export const SignupForm = (props: {
                 value={formData.birthDay}
                 onValueChange={(value) => handleInputChange("birthDay", value)}
                 required
-                disabled={naverProvidedFields.has("birthDay")}
+                disabled={oauthProvidedFields.has("birthDay")}
               >
                 <SelectTrigger
                   className={`h-9 border-neutral-200 ${
-                    naverProvidedFields.has("birthDay")
+                    oauthProvidedFields.has("birthDay")
                       ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
                       : ""
                   }`}
@@ -312,10 +345,10 @@ export const SignupForm = (props: {
             onChange={(value) => handleInputChange("email", value)}
             placeholder="HealthKim@example.com"
             required
-            disabled={naverProvidedFields.has("email")}
+            disabled={oauthProvidedFields.has("email")}
           />
-          {/* 비밀번호 - 네이버 로그인 시 숨김 */}
-          {!isNaverSignup && (
+          {/* 비밀번호 - OAuth 로그인 시 숨김 */}
+          {!isOAuthSignup && (
             <>
           {/* 비밀번호 */}
           <div className="space-y-2">
@@ -390,7 +423,7 @@ export const SignupForm = (props: {
             onChange={(value) => handleInputChange("address", value)}
             placeholder="경기도 양평군 금천면 153-2"
             required
-            disabled={naverProvidedFields.has("address")}
+            disabled={oauthProvidedFields.has("address")}
           />
           <div className="space-y-2">
             <div className="flex items-center gap-1">
@@ -411,9 +444,9 @@ export const SignupForm = (props: {
                 placeholder="010"
                 maxLength={3}
                 required
-                disabled={naverProvidedFields.has("phone1")}
+                disabled={oauthProvidedFields.has("phone1")}
                 className={`h-9 border-neutral-200 ${
-                  naverProvidedFields.has("phone1")
+                  oauthProvidedFields.has("phone1")
                     ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
                     : ""
                 }`}
@@ -424,9 +457,9 @@ export const SignupForm = (props: {
                 placeholder="0000"
                 maxLength={4}
                 required
-                disabled={naverProvidedFields.has("phone2")}
+                disabled={oauthProvidedFields.has("phone2")}
                 className={`h-9 border-neutral-200 ${
-                  naverProvidedFields.has("phone2")
+                  oauthProvidedFields.has("phone2")
                     ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
                     : ""
                 }`}
@@ -437,9 +470,9 @@ export const SignupForm = (props: {
                 placeholder="0000"
                 maxLength={4}
                 required
-                disabled={naverProvidedFields.has("phone3")}
+                disabled={oauthProvidedFields.has("phone3")}
                 className={`h-9 border-neutral-200 ${
-                  naverProvidedFields.has("phone3")
+                  oauthProvidedFields.has("phone3")
                     ? "bg-gray-100 text-gray-600 cursor-not-allowed opacity-70"
                     : ""
                 }`}
@@ -463,11 +496,11 @@ export const SignupForm = (props: {
             className="flex-1 h-12 rounded-lg bg-[#108c4a] hover:bg-[#0d7a3f] text-white disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading
-              ? isNaverSignup
-                ? "저장 중..."
+              ? isOAuthSignup
+                ? "가입 중..."
                 : "가입 중..."
-              : isNaverSignup
-                ? "저장하고 시작하기"
+              : isOAuthSignup
+                ? "가입하고 시작하기"
                 : "회원가입"}
           </Button>
         </CardFooter>

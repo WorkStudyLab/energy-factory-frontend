@@ -57,12 +57,52 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-/** 네이버 소셜 로그인 후 추가 정보 입력 요청 */
-export interface UserAdditionalInfoRequest {
-  /** 생년월일 (YYYY-MM-DD 형식) */
+/** OAuth 임시 정보 응답 (GET /api/auth/oauth-temp-info) */
+export interface OAuthTempInfo {
+  /** OAuth 제공자 */
+  provider: "NAVER" | "KAKAO" | "GOOGLE";
+  /** OAuth 제공자의 고유 ID */
+  providerId: string;
+  /** 이메일 */
+  email: string;
+  /** 이름 */
+  name: string;
+  /** 전화번호 */
+  phoneNumber?: string;
+}
+
+/** OAuth 임시 정보 API 응답 */
+export interface OAuthTempInfoResponse {
+  status: number;
+  code: string;
+  desc: string;
+  data: OAuthTempInfo;
+}
+
+/** OAuth 회원가입 요청 (POST /api/auth/signup-with-oauth) */
+export interface SignupWithOAuthRequest {
+  /** 이메일 */
+  email: string;
+  /** 이름 */
+  name: string;
+  /** 전화번호 */
+  phoneNumber: string;
+  /** 생년월일 (YYYY-MM-DD) */
   birthDate: string;
-  /** 배송지 주소 */
+  /** 주소 */
   address: string;
+}
+
+/** OAuth 회원가입 응답 */
+export interface SignupWithOAuthResponse {
+  status: number;
+  code: string;
+  desc: string;
+  data: {
+    id: number;
+    email: string;
+    name: string;
+  };
 }
 
 /** 사용자 프로필 응답 (GET /api/users/profile) */

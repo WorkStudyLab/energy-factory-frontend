@@ -2,6 +2,8 @@ import { useMutation } from "@tanstack/react-query";
 import { api } from "@/lib/axios/axios";
 import { useNavigate } from "react-router-dom";
 import { useDialogHelpers } from "@/utils/dialogHelpers";
+import { ROUTES } from "@/constants/routes";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 /**
  * 회원가입 요청 타입
@@ -46,17 +48,25 @@ const signupApi = async (userData: SignupRequest): Promise<SignupResponse> => {
 export const useSignup = () => {
   const navigate = useNavigate();
   const { alert } = useDialogHelpers();
+  const { setUser } = useAuthStore();
 
   const mutation = useMutation({
     mutationFn: signupApi,
     onSuccess: (data) => {
       console.log("✅ 회원가입 성공:", data.data);
-      // 로그인 페이지로 리다이렉트
-      navigate("/login");
-      alert("회원가입 성공", {
+
+      // 회원가입 성공 시 사용자 정보를 스토어에 저장 (자동 로그인)
+      setUser({
+        id: data.data.id,
+        email: data.data.email,
+        name: data.data.name,
+      });
+
+      // SNS 연동 페이지로 리다이렉트
+      alert("회원가입 성공!", {
         title: "회원가입 성공",
         onConfirm: () => {
-          navigate("/login");
+          navigate(ROUTES.SIGNUP_CONNECT);
         },
       });
     },

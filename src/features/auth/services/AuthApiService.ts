@@ -3,8 +3,10 @@ import type {
   ApiResponse,
   DeleteUserResponse,
   UserInfo,
-  UserAdditionalInfoRequest,
   UserProfileResponse,
+  OAuthTempInfoResponse,
+  SignupWithOAuthRequest,
+  SignupWithOAuthResponse,
 } from "@/types/user";
 
 /**
@@ -38,14 +40,22 @@ export class AuthApiService {
     return response.data.data;
   }
 
-  /** 네이버 소셜 로그인 후 추가 정보 업데이트 */
-  static async updateAdditionalInfo(
-    data: UserAdditionalInfoRequest,
-  ): Promise<UserInfo> {
-    const response = await api.put<UserProfileResponse>(
-      `${AuthApiService.BASE_URL}/additional-info`,
+  /** OAuth 임시 정보 조회 (GET /api/auth/oauth-temp-info) */
+  static async getOAuthTempInfo(): Promise<OAuthTempInfoResponse> {
+    const response = await api.get<OAuthTempInfoResponse>(
+      "/api/auth/oauth-temp-info",
+    );
+    return response.data;
+  }
+
+  /** OAuth 회원가입 완료 (POST /api/auth/signup-with-oauth) */
+  static async signupWithOAuth(
+    data: SignupWithOAuthRequest,
+  ): Promise<SignupWithOAuthResponse> {
+    const response = await api.post<SignupWithOAuthResponse>(
+      "/api/auth/signup-with-oauth",
       data,
     );
-    return response.data.data;
+    return response.data;
   }
 }

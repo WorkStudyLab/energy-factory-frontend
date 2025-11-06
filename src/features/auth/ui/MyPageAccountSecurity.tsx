@@ -19,6 +19,13 @@ export function MyPageAccountSecurity({
   onDeleteAccount,
 }: MyPageAccountSecurityProps) {
   const { authProvider } = userInfo;
+
+  // 네이버 계정 연동 핸들러
+  const handleNaverLink = () => {
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://energy-factory.kr";
+    window.location.href = `${API_BASE_URL}/api/auth/link/naver`;
+  };
+
   return (
     <Card className="border-neutral-200">
       <CardHeader className="pb-6">
@@ -43,13 +50,19 @@ export function MyPageAccountSecurity({
           </div>
           <div className="flex items-center gap-2 md:ml-0 ml-[52px]">
             {authProvider !== "naver" && (
-              <Button className="bg-[#03c75a] hover:bg-[#02a144] text-white px-4 h-[38px] rounded-lg text-sm font-bold w-full md:w-auto">
+              <Button
+                onClick={handleNaverLink}
+                className="bg-[#03c75a] hover:bg-[#02a144] text-white px-4 h-[38px] rounded-lg text-sm font-bold w-full md:w-auto"
+              >
                 네이버 아이디 연동하기
               </Button>
             )}
 
             {authProvider === "naver" && (
-              <Button className="bg-[#00a63e] hover:bg-[#008c36] text-white px-4 h-[38px] rounded-lg text-sm font-bold w-full md:w-auto">
+              <Button
+                disabled
+                className="bg-[#00a63e] hover:bg-[#008c36] text-white px-4 h-[38px] rounded-lg text-sm font-bold w-full md:w-auto"
+              >
                 연동됨
               </Button>
             )}

@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { SignupForm } from "@/features/auth/ui/SignupForm";
 import { ROUTES } from "@/constants/routes";
 import { AuthApiService } from "@/features/auth/services/AuthApiService";
-import { useAuthStore } from "@/stores/useAuthStore";
+import { useDialogHelpers } from "@/utils/dialogHelpers";
 
 interface FormData {
   name: string;
@@ -19,12 +19,15 @@ interface FormData {
   phone3: string;
 }
 
+const OAUTH_TEMP_DATA_KEY = "oauth_temp_signup_data";
+
 export default function SignupPage() {
   const navigate = useNavigate();
-  const { setUser } = useAuthStore();
-  const [isNaverSignup, setIsNaverSignup] = useState(false);
+  const [searchParams] = useSearchParams();
+  const { alert } = useDialogHelpers();
+  const [isOAuthSignup, setIsOAuthSignup] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [naverProvidedFields, setNaverProvidedFields] = useState<Set<string>>(
+  const [oauthProvidedFields, setOauthProvidedFields] = useState<Set<string>>(
     new Set()
   );
   const hasInitialized = useRef(false);
@@ -42,78 +45,108 @@ export default function SignupPage() {
     phone3: "",
   });
 
-  // 네이버 로그인 후 리다이렉트된 경우 사용자 정보 가져오기
+  // OAuth 모드 감지 및 임시 정보 조회
   useEffect(() => {
-    // 이미 초기화했으면 스킵
     if (hasInitialized.current) {
       return;
     }
 
     hasInitialized.current = true;
 
-    const fetchUserInfo = async () => {
-      try {
-        const userInfo = await AuthApiService.getUserInfo();
+    const initializeSignupPage = async () => {
+      const oauthPending = searchParams.get("oauth");
 
-        // 네이버 로그인인 경우 (authProvider가 'naver')
-        if (userInfo.authProvider === "naver") {
-          setIsNaverSignup(true);
+      // OAuth 모드 (?oauth=pending)
+      if (oauthPending === "pending") {
+        setIsOAuthSignup(true);
 
-          // Zustand 스토어에 사용자 정보 저장 (로그인 상태로 만들기)
-          setUser({
-            id: 0, // API 응답에 id가 없으므로 임시값
-            email: userInfo.email,
-            name: userInfo.name,
-          });
-
-          // 전화번호 파싱 (010-1234-5678 -> [010, 1234, 5678])
-          const phoneParts = userInfo.phone ? userInfo.phone.split("-") : ["", "", ""];
-
-          // 생년월일 파싱 (YYYY-MM-DD -> [YYYY, MM, DD])
-          const birthParts = userInfo.birthDate ? userInfo.birthDate.split("-") : ["", "", ""];
-
-          // 네이버에서 제공한 필드 추적
-          const providedFields = new Set<string>();
-          if (userInfo.name) providedFields.add("name");
-          if (userInfo.email) providedFields.add("email");
-          if (userInfo.phone) {
-            providedFields.add("phone1");
-            providedFields.add("phone2");
-            providedFields.add("phone3");
+        try {
+          // 먼저 로컬 스토리지에서 복원 시도 (세션 만료 대비)
+          const savedData = localStorage.getItem(OAUTH_TEMP_DATA_KEY);
+          if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            applyOAuthData(parsedData);
+            setIsLoading(false);
+            return;
           }
-          if (userInfo.birthDate) {
-            providedFields.add("birthYear");
-            providedFields.add("birthMonth");
-            providedFields.add("birthDay");
+
+          // API 호출하여 OAuth 임시 정보 가져오기
+          const response = await AuthApiService.getOAuthTempInfo();
+          const oauthData = response.data;
+
+          // 로컬 스토리지에 저장 (세션 만료 대비)
+          localStorage.setItem(OAUTH_TEMP_DATA_KEY, JSON.stringify(oauthData));
+
+          applyOAuthData(oauthData);
+        } catch (error: any) {
+          console.error("OAuth 임시 정보 조회 실패:", error);
+
+          // 세션 만료 에러 (40100007)
+          if (error.response?.data?.code === "40100007") {
+            alert(
+              "세션이 만료되었습니다. 다시 네이버 로그인을 진행해주세요.",
+              {
+                title: "세션 만료",
+                onConfirm: () => {
+                  // 로컬 스토리지 클리어
+                  localStorage.removeItem(OAUTH_TEMP_DATA_KEY);
+                  // 네이버 로그인으로 리다이렉트
+                  window.location.href = "/oauth2/authorization/naver";
+                },
+              }
+            );
+          } else {
+            alert("네이버 로그인 정보를 불러오는데 실패했습니다.", {
+              title: "오류",
+              onConfirm: () => navigate(ROUTES.LOGIN),
+            });
           }
-          if (userInfo.address) providedFields.add("address");
-
-          setNaverProvidedFields(providedFields);
-
-          setFormData({
-            name: userInfo.name || "",
-            email: userInfo.email || "",
-            phone1: phoneParts[0] || "",
-            phone2: phoneParts[1] || "",
-            phone3: phoneParts[2] || "",
-            birthYear: birthParts[0] || "",
-            birthMonth: birthParts[1] ? String(parseInt(birthParts[1])) : "",
-            birthDay: birthParts[2] ? String(parseInt(birthParts[2])) : "",
-            address: userInfo.address || "",
-            password: "", // 네이버 로그인은 비밀번호 불필요
-            confirmPassword: "",
-          });
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        // 401 에러 (미로그인) - 정상적인 회원가입 플로우
-        console.log("일반 회원가입 모드");
-      } finally {
+      } else {
+        // 일반 회원가입 모드
+        setIsOAuthSignup(false);
         setIsLoading(false);
       }
     };
 
-    fetchUserInfo();
-  }, []);
+    initializeSignupPage();
+  }, [searchParams, navigate, alert]);
+
+  // OAuth 데이터를 폼에 적용하는 함수
+  const applyOAuthData = (oauthData: any) => {
+    // 전화번호 파싱 (010-1234-5678 -> [010, 1234, 5678])
+    const phoneParts = oauthData.phoneNumber
+      ? oauthData.phoneNumber.split("-")
+      : ["", "", ""];
+
+    // OAuth에서 제공한 필드 추적 (읽기 전용 처리)
+    const providedFields = new Set<string>();
+    if (oauthData.name) providedFields.add("name");
+    if (oauthData.email) providedFields.add("email");
+    if (oauthData.phoneNumber) {
+      providedFields.add("phone1");
+      providedFields.add("phone2");
+      providedFields.add("phone3");
+    }
+
+    setOauthProvidedFields(providedFields);
+
+    setFormData({
+      name: oauthData.name || "",
+      email: oauthData.email || "",
+      phone1: phoneParts[0] || "",
+      phone2: phoneParts[1] || "",
+      phone3: phoneParts[2] || "",
+      birthYear: "",
+      birthMonth: "",
+      birthDay: "",
+      address: "",
+      password: "", // OAuth 로그인은 비밀번호 불필요
+      confirmPassword: "",
+    });
+  };
 
   const handleInputChange = (
     field: keyof FormData,
@@ -142,14 +175,14 @@ export default function SignupPage() {
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-3 text-center">
             <h1 className="text-2xl font-semibold text-neutral-900">
-              {isNaverSignup ? "추가 정보 입력" : "회원가입"}
+              {isOAuthSignup ? "추가 정보 입력" : "회원가입"}
             </h1>
             <p className="text-base text-neutral-600">
-              {isNaverSignup
+              {isOAuthSignup
                 ? "네이버 로그인 정보를 확인하고 추가 정보를 입력해주세요"
                 : "Energy Factory 계정을 만들어 건강한 쇼핑을 시작하세요"}
             </p>
-            {!isNaverSignup && (
+            {!isOAuthSignup && (
               <div className="flex items-center justify-center gap-1 text-sm">
                 <span className="text-neutral-600">이미 계정이 있으신가요?</span>
                 <button
@@ -165,8 +198,8 @@ export default function SignupPage() {
           <SignupForm
             formData={formData}
             handleInputChange={handleInputChange}
-            isNaverSignup={isNaverSignup}
-            naverProvidedFields={naverProvidedFields}
+            isOAuthSignup={isOAuthSignup}
+            oauthProvidedFields={oauthProvidedFields}
           />
         </div>
       </div>

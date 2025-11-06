@@ -26,6 +26,12 @@ export const useAuthInit = () => {
       return;
     }
 
+    // OAuth 회원가입 중이면 스킵 (?oauth=pending)
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get("oauth") === "pending") {
+      return;
+    }
+
     const initAuth = async () => {
       setLoading(true);
 
@@ -40,7 +46,10 @@ export const useAuthInit = () => {
         });
       } catch (error) {
         // 401 에러 = 로그인되지 않음 (정상)
-        // 아무것도 하지 않음
+        // 개발 환경에서만 로그 출력
+        if (import.meta.env.DEV) {
+          console.log("사용자 인증 정보 없음 (미로그인 상태)");
+        }
       } finally {
         setLoading(false);
       }

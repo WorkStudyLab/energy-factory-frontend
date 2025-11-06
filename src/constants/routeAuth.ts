@@ -13,8 +13,7 @@ export const ROUTE_AUTH: Record<string, RouteAuth> = {
     redirectAuth: ROUTES.PRODUCTS,
   },
   [ROUTES.SIGNUP_CONNECT]: {
-    allowedRoles: ["guest"],
-    redirectAuth: ROUTES.PRODUCTS,
+    allowedRoles: ["guest", "user"], // 회원가입 후 바로 접근하므로 user도 허용
   },
   [ROUTES.FORGOT_PASSWORD]: {
     allowedRoles: ["guest"],
