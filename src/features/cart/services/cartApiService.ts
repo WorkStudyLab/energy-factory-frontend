@@ -1,18 +1,12 @@
 import api from "@/lib/axios/axios";
 import type { ApiResponse, Cart, CartItem } from "@/types/cart";
-import { cartChannel } from "../hooks/useCartCount";
+import { broadcastCartChange } from "@/utils/broadcastHelper";
 
 export interface AddToCartRequest {
   productId: number;
   variantId: number;
   quantity: number;
 }
-
-const broadcastCartChange = () => {
-  cartChannel.postMessage({
-    type: "CART_CHANGED",
-  });
-};
 
 export class CartApiService {
   /**

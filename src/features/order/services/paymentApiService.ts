@@ -7,6 +7,7 @@ import type {
   OrderApiResponse,
   Payment,
 } from "@/types/order";
+import { broadcastCartChange } from "@/utils/broadcastHelper";
 
 export class PaymentApiService {
   private static readonly BASE_URL = "/api/orders";
@@ -30,6 +31,7 @@ export class PaymentApiService {
       paymentData,
     );
 
+    broadcastCartChange();
     return response.data.data;
   }
   //   2.1 결제 완료 서비스 테스트용
