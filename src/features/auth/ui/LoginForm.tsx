@@ -26,7 +26,7 @@ export default function LoginForm() {
           <Input
             id="email"
             type="email"
-            placeholder="example@email.com"
+            placeholder="이메일을 입력해주세요"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -46,6 +46,7 @@ export default function LoginForm() {
           <Input
             id="password"
             type="password"
+            placeholder="비밀번호를 입력해주세요"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
