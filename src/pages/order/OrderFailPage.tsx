@@ -50,7 +50,7 @@ export default function OrderFailPage() {
   };
 
   return (
-    <div className="min-h-screen pb-6 md:pb-12 bg-neutral-100">
+    <div className="min-h-screen pb-6 md:pb-12">
       <div className="container max-w-[1248px] mx-auto px-4 pt-6 md:pt-12">
         {/* 결제 실패 메인 카드 */}
         <Card className="border-neutral-200 mb-4 md:mb-6">
@@ -75,7 +75,9 @@ export default function OrderFailPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 {/* 주문번호 */}
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-xs md:text-sm font-bold text-neutral-600">주문번호</p>
+                  <p className="text-xs md:text-sm font-bold text-neutral-600">
+                    주문번호
+                  </p>
                   <p className="text-sm md:text-base text-neutral-900">
                     {failureInfo.orderId}
                   </p>
@@ -83,7 +85,9 @@ export default function OrderFailPage() {
 
                 {/* 시도 시간 */}
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-xs md:text-sm font-bold text-neutral-600">시도 시간</p>
+                  <p className="text-xs md:text-sm font-bold text-neutral-600">
+                    시도 시간
+                  </p>
                   <p className="text-sm md:text-base text-neutral-900">
                     {failureInfo.attemptTime}
                   </p>
@@ -180,14 +184,18 @@ export default function OrderFailPage() {
                 {/* 헤더 */}
                 <div className="flex items-center gap-2">
                   <CreditCard className="size-4 md:size-5 text-green-600" />
-                  <h2 className="text-sm md:text-base font-normal text-neutral-900">결제 정보</h2>
+                  <h2 className="text-sm md:text-base font-normal text-neutral-900">
+                    결제 정보
+                  </h2>
                 </div>
 
                 {/* 금액 정보 */}
                 <div className="space-y-3 md:space-y-[13px]">
                   <div className="flex justify-between text-sm md:text-base text-neutral-700">
                     <span>상품 금액</span>
-                    <span className="text-neutral-900">{failureInfo.payment.productAmount.toLocaleString()}원</span>
+                    <span className="text-neutral-900">
+                      {failureInfo.payment.productAmount.toLocaleString()}원
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm md:text-base text-neutral-700">
                     <span>배송비</span>
@@ -195,7 +203,9 @@ export default function OrderFailPage() {
                   </div>
                   <div className="flex justify-between text-sm md:text-base text-neutral-700">
                     <span>결제 수단</span>
-                    <span className="text-neutral-900">{failureInfo.payment.method}</span>
+                    <span className="text-neutral-900">
+                      {failureInfo.payment.method}
+                    </span>
                   </div>
 
                   {/* 카드 정보 */}
@@ -211,7 +221,9 @@ export default function OrderFailPage() {
                   {/* 상태 */}
                   <div className="flex justify-between text-sm md:text-base">
                     <span className="text-neutral-600">상태</span>
-                    <span className="text-red-600">{failureInfo.payment.status}</span>
+                    <span className="text-red-600">
+                      {failureInfo.payment.status}
+                    </span>
                   </div>
                 </div>
               </CardContent>
