@@ -8,6 +8,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 import { NotificationPopoverContent } from "@/components/ui/notification-popover";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
@@ -19,11 +26,13 @@ import useCartCount from "@/features/cart/hooks/useCartCount";
 
 interface MobileMenuProps {
   isAuthenticated: boolean;
+  userRole?: string;
 }
 
-function MobileMenu({ isAuthenticated }: MobileMenuProps) {
+function MobileMenu({ isAuthenticated, userRole }: MobileMenuProps) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const isAdmin = userRole === "admin";
 
   const handleNavigate = (route: string) => {
     navigate(route);
@@ -62,6 +71,61 @@ function MobileMenu({ isAuthenticated }: MobileMenuProps) {
               주문 내역
             </a>
           )}
+          {isAdmin && (
+            <>
+              <div className="text-lg font-bold text-green-600 mt-4">CMS</div>
+              <a
+                href={ROUTES.TEST}
+                className="text-base font-medium hover:underline pl-4"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate(ROUTES.TEST);
+                }}
+              >
+                테스트 홈
+              </a>
+              <a
+                href={ROUTES.UI_TEST}
+                className="text-base font-medium hover:underline pl-4"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate(ROUTES.UI_TEST);
+                }}
+              >
+                UI 테스트
+              </a>
+              <a
+                href={ROUTES.SHADCN_TEST}
+                className="text-base font-medium hover:underline pl-4"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate(ROUTES.SHADCN_TEST);
+                }}
+              >
+                Shadcn 테스트
+              </a>
+              <a
+                href={ROUTES.TAILWIND_TEST}
+                className="text-base font-medium hover:underline pl-4"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate(ROUTES.TAILWIND_TEST);
+                }}
+              >
+                Tailwind 테스트
+              </a>
+              <a
+                href={ROUTES.DIALOG_TEST}
+                className="text-base font-medium hover:underline pl-4"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate(ROUTES.DIALOG_TEST);
+                }}
+              >
+                Dialog 테스트
+              </a>
+            </>
+          )}
         </nav>
       </SheetContent>
     </Sheet>
@@ -70,10 +134,12 @@ function MobileMenu({ isAuthenticated }: MobileMenuProps) {
 
 interface DesktopNavProps {
   isAuthenticated: boolean;
+  userRole?: string;
 }
 
-function DesktopNav({ isAuthenticated }: DesktopNavProps) {
+function DesktopNav({ isAuthenticated, userRole }: DesktopNavProps) {
   const navigate = useNavigate();
+  const isAdmin = userRole === "admin";
 
   return (
     <nav className="hidden md:flex items-center gap-6">
@@ -98,6 +164,51 @@ function DesktopNav({ isAuthenticated }: DesktopNavProps) {
         >
           주문내역
         </a>
+      )}
+      {isAdmin && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="text-sm font-medium hover:text-green-600 h-auto p-0"
+            >
+              CMS
+              <ChevronDown className="ml-1 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem
+              onClick={() => navigate(ROUTES.TEST)}
+              className="cursor-pointer"
+            >
+              테스트 홈
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate(ROUTES.UI_TEST)}
+              className="cursor-pointer"
+            >
+              UI 테스트
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate(ROUTES.SHADCN_TEST)}
+              className="cursor-pointer"
+            >
+              Shadcn 테스트
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate(ROUTES.TAILWIND_TEST)}
+              className="cursor-pointer"
+            >
+              Tailwind 테스트
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigate(ROUTES.DIALOG_TEST)}
+              className="cursor-pointer"
+            >
+              Dialog 테스트
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
     </nav>
   );
@@ -217,7 +328,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-white">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-4">
-          <MobileMenu isAuthenticated={isAuthenticated} />
+          <MobileMenu isAuthenticated={isAuthenticated} userRole={user?.role} />
           <a
             className="flex items-center gap-2 hover:cursor-pointer"
             onClick={(e) => {
@@ -230,7 +341,7 @@ export default function Header() {
             </span>
           </a>
         </div>
-        <DesktopNav isAuthenticated={isAuthenticated} />
+        <DesktopNav isAuthenticated={isAuthenticated} userRole={user?.role} />
         <HeaderActions
           cartCount={cartCount}
           isAuthenticated={isAuthenticated}

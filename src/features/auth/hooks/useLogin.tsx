@@ -22,6 +22,7 @@ interface LoginResponse {
     tokenType: string;
     refreshToken: string;
     userId: number;
+    role: "USER" | "ADMIN";
   };
   desc: string;
   status: number;
@@ -56,6 +57,7 @@ export const useLogin = () => {
           id: data.data.userId,
           email: "",
           name: "",
+          role: data.data.role.toLowerCase(), // "ADMIN" -> "admin", "USER" -> "user"
         },
         "", // 토큰은 쿠키에 저장됨
         "", // 토큰은 쿠키에 저장됨

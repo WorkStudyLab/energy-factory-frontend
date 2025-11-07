@@ -48,6 +48,8 @@ export interface UserInfo {
   memberSince: string;
   /** 기본 배송지 주소 */
   address: string;
+  /** 사용자 권한 */
+  role: "USER" | "ADMIN";
 }
 
 export interface ApiResponse<T> {

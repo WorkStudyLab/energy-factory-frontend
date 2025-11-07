@@ -40,14 +40,8 @@ export const ROUTES = {
   // Shadcn 테스트
   SHADCN_TEST: "/test/shadcn",
   TAILWIND_TEST: "/test/tailwind",
-  // API 테스트
-  PRODUCTS_API_TEST: "/test/products-api",
-  SIGNUP_API_TEST: "/test/signup-api",
-  LOGIN_API_TEST: "/test/login-api",
   // 다이얼로그 테스트
   DIALOG_TEST: "/test/dialog",
-  // 알림 테스트
-  NOTIFICATION_TEST: "/test/notification",
 } as const;
 
 // 타입 정의

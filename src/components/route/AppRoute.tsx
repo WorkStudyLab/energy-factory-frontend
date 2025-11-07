@@ -13,10 +13,12 @@ interface AppRouteProps {
  * 사용자의 인증 상태와 역할에 따라 접근을 제어합니다.
  */
 export const AppRoute: React.FC<AppRouteProps> = ({ path, element }) => {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
 
   // 현재 사용자의 역할 결정
-  const userRole: UserRole = isAuthenticated ? "user" : "guest";
+  const userRole: UserRole = isAuthenticated
+    ? (user?.role as UserRole) || "user"
+    : "guest";
 
   // 라우트의 권한 설정 가져오기
   const routeAuth = ROUTE_AUTH[path];

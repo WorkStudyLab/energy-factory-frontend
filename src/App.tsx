@@ -28,10 +28,7 @@ import TestPage from "./pages/test/TestPage";
 import UiTestPage from "./pages/test/UiTestPage";
 import ShadcnTestPage from "./pages/test/ShadcnTestPage";
 import TailwindTestPage from "./pages/test/TailwindTestPage";
-import SignupTestPage from "./pages/test/SignupTestPage";
-import LoginTestPage from "./pages/test/LoginTestPage";
 import { DialogTestPage } from "./pages/test/DialogTestPage";
-import NotificationTestPage from "./pages/test/NotificationTestPage";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import ScrollToTop from "./components/layout/ScrollToTop";
@@ -220,38 +217,11 @@ function App() {
                 }
               />
               <Route
-                path={ROUTES.SIGNUP_API_TEST}
-                element={
-                  <AppRoute
-                    path={ROUTES.SIGNUP_API_TEST}
-                    element={<SignupTestPage />}
-                  />
-                }
-              />
-              <Route
-                path={ROUTES.LOGIN_API_TEST}
-                element={
-                  <AppRoute
-                    path={ROUTES.LOGIN_API_TEST}
-                    element={<LoginTestPage />}
-                  />
-                }
-              />
-              <Route
                 path={ROUTES.DIALOG_TEST}
                 element={
                   <AppRoute
                     path={ROUTES.DIALOG_TEST}
                     element={<DialogTestPage />}
-                  />
-                }
-              />
-              <Route
-                path={ROUTES.NOTIFICATION_TEST}
-                element={
-                  <AppRoute
-                    path={ROUTES.NOTIFICATION_TEST}
-                    element={<NotificationTestPage />}
                   />
                 }
               />

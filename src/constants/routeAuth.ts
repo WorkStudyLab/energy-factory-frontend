@@ -34,65 +34,64 @@ export const ROUTE_AUTH: Record<string, RouteAuth> = {
 
   // 상품 관련 페이지 - 모든 사용자 접근 가능
   [ROUTES.PRODUCTS]: {
-    allowedRoles: ["guest", "user"],
+    allowedRoles: ["guest", "user", "admin"],
   },
   [ROUTES.PRODUCT_DETAIL]: {
-    allowedRoles: ["guest", "user"],
+    allowedRoles: ["guest", "user", "admin"],
   },
   [ROUTES.LANDING]: {
-    allowedRoles: ["guest", "user"],
+    allowedRoles: ["guest", "user", "admin"],
   },
 
-  // 로그인 필수 페이지 - user만 접근 가능
+  // 로그인 필수 페이지 - user와 admin 모두 접근 가능
   [ROUTES.CART]: {
-    allowedRoles: ["user"],
+    allowedRoles: ["user", "admin"],
     redirectUnauth: ROUTES.LOGIN, // 미로그인 사용자는 로그인 페이지로 리다이렉트
   },
   [ROUTES.MY_PAGE]: {
-    allowedRoles: ["user"],
+    allowedRoles: ["user", "admin"],
     redirectUnauth: ROUTES.LOGIN,
   },
   [ROUTES.NUTRITION]: {
-    allowedRoles: ["user"],
+    allowedRoles: ["user", "admin"],
     redirectUnauth: ROUTES.LOGIN,
   },
   [ROUTES.DIET_COACH]: {
-    allowedRoles: ["user"],
+    allowedRoles: ["user", "admin"],
     redirectUnauth: ROUTES.LOGIN,
   },
   [ROUTES.ORDER_HISTORY]: {
-    allowedRoles: ["user"],
+    allowedRoles: ["user", "admin"],
     redirectUnauth: ROUTES.LOGIN,
   },
   [ROUTES.ORDER_COMPLETE]: {
-    allowedRoles: ["user"],
+    allowedRoles: ["user", "admin"],
     redirectUnauth: ROUTES.LOGIN,
   },
   [ROUTES.ORDER_FAIL]: {
-    allowedRoles: ["user"],
+    allowedRoles: ["user", "admin"],
     redirectUnauth: ROUTES.LOGIN,
   },
 
-  // 테스트 페이지 - 모든 사용자 접근 가능 (개발 환경)
+  // 테스트 페이지 - ADMIN만 접근 가능
   [ROUTES.TEST]: {
-    allowedRoles: ["guest", "user"],
+    allowedRoles: ["admin"],
+    redirectUnauth: ROUTES.LOGIN,
   },
   [ROUTES.UI_TEST]: {
-    allowedRoles: ["guest", "user"],
+    allowedRoles: ["admin"],
+    redirectUnauth: ROUTES.LOGIN,
   },
   [ROUTES.SHADCN_TEST]: {
-    allowedRoles: ["guest", "user"],
+    allowedRoles: ["admin"],
+    redirectUnauth: ROUTES.LOGIN,
   },
   [ROUTES.TAILWIND_TEST]: {
-    allowedRoles: ["guest", "user"],
-  },
-  [ROUTES.SIGNUP_API_TEST]: {
-    allowedRoles: ["guest", "user"],
-  },
-  [ROUTES.LOGIN_API_TEST]: {
-    allowedRoles: ["guest", "user"],
+    allowedRoles: ["admin"],
+    redirectUnauth: ROUTES.LOGIN,
   },
   [ROUTES.DIALOG_TEST]: {
-    allowedRoles: ["guest", "user"],
+    allowedRoles: ["admin"],
+    redirectUnauth: ROUTES.LOGIN,
   },
 };

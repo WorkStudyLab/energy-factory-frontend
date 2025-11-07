@@ -1,5 +1,5 @@
 // 사용자 역할 타입
-export type UserRole = "guest" | "user";
+export type UserRole = "guest" | "user" | "admin";
 
 // 라우트 권한 설정 타입
 export interface RouteAuth {

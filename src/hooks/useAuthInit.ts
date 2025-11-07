@@ -8,9 +8,6 @@ import { AuthApiService } from "@/features/auth/services/AuthApiService";
  * JWT 토큰이 HttpOnly 쿠키에 있으면 자동으로 사용자 정보를 가져옵니다.
  */
 export const useAuthInit = () => {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const setUser = useAuthStore((state) => state.setUser);
-  const setLoading = useAuthStore((state) => state.setLoading);
   const hasInitialized = useRef(false);
 
   useEffect(() => {
@@ -21,18 +18,20 @@ export const useAuthInit = () => {
 
     hasInitialized.current = true;
 
-    // localStorage에 인증 정보가 이미 있으면 스킵 (persist가 복원함)
-    if (isAuthenticated) {
-      return;
-    }
-
-    // OAuth 회원가입 중이면 스킵 (?oauth=pending)
-    const searchParams = new URLSearchParams(window.location.search);
-    if (searchParams.get("oauth") === "pending") {
-      return;
-    }
-
     const initAuth = async () => {
+      const { isAuthenticated, user, setUser, setLoading } = useAuthStore.getState();
+
+      // localStorage에 인증 정보가 이미 있고 role도 있으면 스킵
+      if (isAuthenticated && user?.role) {
+        return;
+      }
+
+      // OAuth 회원가입 중이면 스킵 (?oauth=pending)
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get("oauth") === "pending") {
+        return;
+      }
+
       setLoading(true);
 
       try {
@@ -43,6 +42,7 @@ export const useAuthInit = () => {
           id: 0, // API 응답에 id가 없으므로 임시값
           email: userInfo.email,
           name: userInfo.name,
+          role: userInfo.role.toLowerCase(), // "ADMIN" -> "admin", "USER" -> "user"
         });
       } catch (error) {
         // 401 에러 = 로그인되지 않음 (정상)
@@ -56,6 +56,5 @@ export const useAuthInit = () => {
     };
 
     initAuth();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // 의존성 배열을 비워서 한 번만 실행
 };

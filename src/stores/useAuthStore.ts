@@ -114,6 +114,7 @@ export const useAuthStore = create<AuthStore>()(
       }),
       {
         name: "auth-store",
+        version: 1, // 스키마 변경 시 버전 업데이트
         partialize: (state) => ({
           user: state.user,
           isAuthenticated: state.isAuthenticated,
