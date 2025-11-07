@@ -34,6 +34,11 @@ export const ROUTES = {
   // 결제 실패
   ORDER_FAIL: "/order-fail",
 
+  // CMS
+  CMS_PRODUCTS: "/cms/products",
+  CMS_PRODUCTS_CREATE: "/cms/products/create",
+  CMS_PRODUCTS_EDIT: "/cms/products/:id/edit",
+
   // 테스트
   TEST: "/test",
   UI_TEST: "/test/ui",
