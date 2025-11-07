@@ -12,7 +12,9 @@ import { NotificationPopoverContent } from "@/components/ui/notification-popover
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useState } from "react";
+import { useNotificationStore } from "@/stores/useNotificationStore";
+import { subscribeNotificationChange } from "@/utils/notificationBroadcast";
+import { useState, useEffect } from "react";
 import useCartCount from "@/features/cart/hooks/useCartCount";
 
 interface MobileMenuProps {
@@ -113,6 +115,28 @@ function HeaderActions({
   cartCount,
 }: HeaderActionsProps) {
   const navigate = useNavigate();
+  const unreadCount = useNotificationStore((state) => state.unreadCount);
+
+  // 다른 탭에서 알림 변경 시 localStorage에서 다시 로드
+  useEffect(() => {
+    const unsubscribe = subscribeNotificationChange(() => {
+      // localStorage에서 최신 데이터를 읽어와서 스토어에 반영
+      const stored = localStorage.getItem("notification-storage");
+      if (stored) {
+        try {
+          const data = JSON.parse(stored);
+          if (data.state) {
+            // Zustand persist는 state.state 형태로 저장함
+            useNotificationStore.setState(data.state);
+          }
+        } catch (error) {
+          console.error("알림 동기화 에러:", error);
+        }
+      }
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
     <div className="flex items-center gap-4">
@@ -141,9 +165,11 @@ function HeaderActions({
               className="relative hidden md:flex h-auto w-auto p-1"
             >
               <Bell className="h-5 w-5" />
-              <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-green-600">
-                2
-              </Badge>
+              {unreadCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-green-600">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </Badge>
+              )}
               <span className="sr-only">알림</span>
             </Button>
           </PopoverTrigger>

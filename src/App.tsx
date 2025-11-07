@@ -31,12 +31,14 @@ import TailwindTestPage from "./pages/test/TailwindTestPage";
 import SignupTestPage from "./pages/test/SignupTestPage";
 import LoginTestPage from "./pages/test/LoginTestPage";
 import { DialogTestPage } from "./pages/test/DialogTestPage";
+import NotificationTestPage from "./pages/test/NotificationTestPage";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import ScrollToTop from "./components/layout/ScrollToTop";
 import { Toaster } from "./components/ui/toaster";
 import { AppRoute } from "./components/route/AppRoute";
 import { useAuthInit } from "./hooks/useAuthInit";
+import { NotificationProvider } from "./components/providers/NotificationProvider";
 
 function App() {
   // 앱 초기화 시 로그인 상태 확인
@@ -44,8 +46,9 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <ScrollToTop />
+      <NotificationProvider>
+        <Router>
+          <ScrollToTop />
         <div className="min-h-screen flex flex-col">
           <Header />
 
@@ -243,13 +246,23 @@ function App() {
                   />
                 }
               />
+              <Route
+                path={ROUTES.NOTIFICATION_TEST}
+                element={
+                  <AppRoute
+                    path={ROUTES.NOTIFICATION_TEST}
+                    element={<NotificationTestPage />}
+                  />
+                }
+              />
             </Routes>
           </main>
 
           <Footer />
         </div>
         <Toaster />
-      </Router>
+        </Router>
+      </NotificationProvider>
     </QueryClientProvider>
   );
 }

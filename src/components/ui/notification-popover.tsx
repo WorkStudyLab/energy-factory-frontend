@@ -1,104 +1,86 @@
-import { Bell, Package, ShoppingBag, Gift, CheckCircle } from "lucide-react";
+import {
+  Bell,
+  Package,
+  ShoppingBag,
+  CheckCircle,
+  Truck,
+  XCircle,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-
-interface Notification {
-  id: string;
-  type: "order" | "promotion" | "system" | "delivery";
-  title: string;
-  message: string;
-  timestamp: string;
-  isRead: boolean;
-}
+import { useNotificationStore } from "@/stores/useNotificationStore";
+import { subscribeNotificationChange } from "@/utils/notificationBroadcast";
+import type { OrderNotificationType } from "@/types/notification";
+import { formatDistanceToNow } from "@/lib/utils";
+import { useEffect } from "react";
 
 interface NotificationPopoverContentProps {
-  notifications?: Notification[];
-  onMarkAsRead?: (id: string) => void;
-  onMarkAllAsRead?: () => void;
   className?: string;
 }
 
-const getNotificationIcon = (type: Notification["type"]) => {
+const getNotificationIcon = (type: OrderNotificationType) => {
   switch (type) {
-    case "order":
+    case "ORDER_CONFIRMED":
       return <Package className="h-4 w-4 text-blue-600" />;
-    case "promotion":
-      return <Gift className="h-4 w-4 text-green-600" />;
-    case "delivery":
-      return <ShoppingBag className="h-4 w-4 text-orange-600" />;
-    case "system":
-      return <Bell className="h-4 w-4 text-gray-600" />;
+    case "ORDER_SHIPPED":
+      return <Truck className="h-4 w-4 text-orange-600" />;
+    case "ORDER_DELIVERED":
+      return <ShoppingBag className="h-4 w-4 text-green-600" />;
+    case "ORDER_CANCELLED":
+      return <XCircle className="h-4 w-4 text-red-600" />;
     default:
       return <Bell className="h-4 w-4 text-gray-600" />;
   }
 };
 
-const getNotificationTypeLabel = (type: Notification["type"]) => {
+const getNotificationTypeLabel = (type: OrderNotificationType) => {
   switch (type) {
-    case "order":
-      return "주문";
-    case "promotion":
-      return "프로모션";
-    case "delivery":
-      return "배송";
-    case "system":
-      return "시스템";
+    case "ORDER_CONFIRMED":
+      return "주문 확인";
+    case "ORDER_SHIPPED":
+      return "배송 시작";
+    case "ORDER_DELIVERED":
+      return "배송 완료";
+    case "ORDER_CANCELLED":
+      return "주문 취소";
     default:
       return "알림";
   }
 };
 
-const defaultNotifications: Notification[] = [
-  {
-    id: "1",
-    type: "order",
-    title: "주문이 접수되었습니다",
-    message: "주문번호 #EF2024001이 성공적으로 접수되었습니다.",
-    timestamp: "2시간 전",
-    isRead: false,
-  },
-  {
-    id: "2",
-    type: "delivery",
-    title: "배송이 시작되었습니다",
-    message: "고객님의 상품이 배송 중입니다. 예상 도착일: 내일",
-    timestamp: "5시간 전",
-    isRead: false,
-  },
-  {
-    id: "3",
-    type: "promotion",
-    title: "신규 할인 이벤트",
-    message: "프리미엄 단백질 보충제 20% 할인! 지금 확인해보세요.",
-    timestamp: "1일 전",
-    isRead: true,
-  },
-  {
-    id: "4",
-    type: "system",
-    title: "개인정보 처리방침 업데이트",
-    message: "개인정보 처리방침이 업데이트되었습니다.",
-    timestamp: "3일 전",
-    isRead: true,
-  },
-];
-
 export function NotificationPopoverContent({
-  notifications = defaultNotifications,
-  onMarkAsRead,
-  onMarkAllAsRead,
   className,
 }: NotificationPopoverContentProps) {
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const { notifications, unreadCount, markAsRead, markAllAsRead } =
+    useNotificationStore();
+
+  // 다른 탭에서 알림 변경 시 localStorage에서 다시 로드
+  useEffect(() => {
+    const unsubscribe = subscribeNotificationChange(() => {
+      const stored = localStorage.getItem("notification-storage");
+      if (stored) {
+        try {
+          const data = JSON.parse(stored);
+          if (data.state) {
+            useNotificationStore.setState(data.state);
+          }
+        } catch (error) {
+          console.error("알림 동기화 에러:", error);
+        }
+      }
+    });
+
+    return unsubscribe;
+  }, []);
 
   const handleMarkAsRead = (id: string) => {
-    onMarkAsRead?.(id);
+    markAsRead(id);
   };
 
   const handleMarkAllAsRead = () => {
-    onMarkAllAsRead?.();
+    markAllAsRead();
   };
 
   return (
@@ -164,7 +146,7 @@ export function NotificationPopoverContent({
                     {notification.message}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {notification.timestamp}
+                    {formatDistanceToNow(new Date(notification.timestamp))}
                   </p>
                 </div>
                 {notification.isRead && (

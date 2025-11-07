@@ -46,6 +46,8 @@ export const ROUTES = {
   LOGIN_API_TEST: "/test/login-api",
   // 다이얼로그 테스트
   DIALOG_TEST: "/test/dialog",
+  // 알림 테스트
+  NOTIFICATION_TEST: "/test/notification",
 } as const;
 
 // 타입 정의
