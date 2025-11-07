@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   CheckCircle,
   Clock,
@@ -29,6 +30,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import type { OrderListItem, OrderStatus } from "@/types/order";
+import OrderDetailDialog from "./OrderDetailDialog";
 
 interface OrderItemProps {
   order: OrderListItem;
@@ -104,9 +106,11 @@ const getPaymentStatusText = (
 
 const OrderItem = ({ order, onReorder, onCancelOrder }: OrderItemProps) => {
   const statusInfo = getStatusInfo(order.status);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   return (
-    <Card className="overflow-hidden">
+    <>
+      <Card className="overflow-hidden">
       <CardHeader className="pb-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -235,12 +239,24 @@ const OrderItem = ({ order, onReorder, onCancelOrder }: OrderItemProps) => {
           </Button>
         )}
 
-        <Button variant="outline" size="sm">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setIsDetailOpen(true)}
+        >
           <Eye className="h-4 w-4 mr-1" />
           주문 상세
         </Button>
       </CardFooter>
     </Card>
+
+      {/* 주문 상세보기 다이얼로그 */}
+      <OrderDetailDialog
+        orderNumber={order.orderNumber}
+        open={isDetailOpen}
+        onOpenChange={setIsDetailOpen}
+      />
+    </>
   );
 };
 

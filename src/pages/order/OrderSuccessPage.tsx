@@ -14,42 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { ROUTES } from "@/constants/routes";
 import { useOrderDetail } from "@/features/order/hooks/useOrderDetail";
 import { formatPhoneNumber } from "@/utils/numberUtils";
-
-// 날짜 포맷 유틸리티 함수 (한국 시간 기준)
-const formatOrderDate = (dateString: string) => {
-  const utcString = dateString.endsWith("Z") ? dateString : dateString + "Z";
-  const date = new Date(utcString);
-  const koreaTimeOffset = 9 * 60 * 60 * 1000;
-  const koreaTime = new Date(date.getTime() + koreaTimeOffset);
-
-  const year = koreaTime.getUTCFullYear();
-  const month = koreaTime.getUTCMonth() + 1;
-  const day = koreaTime.getUTCDate();
-  const hours = koreaTime.getUTCHours();
-  const minutes = koreaTime.getUTCMinutes();
-
-  return `${year}년 ${month}월 ${day}일 ${hours}:${
-    minutes < 10 ? "0" + minutes : minutes
-  }`;
-};
-
-const formatDeliveryDate = (dateString: string) => {
-  const utcString = dateString.endsWith("Z") ? dateString : dateString + "Z";
-  const date = new Date(utcString);
-  const koreaTimeOffset = 9 * 60 * 60 * 1000;
-  const koreaTime = new Date(date.getTime() + koreaTimeOffset);
-
-  // 3일 추가
-  koreaTime.setUTCDate(koreaTime.getUTCDate() + 3);
-
-  const year = koreaTime.getUTCFullYear();
-  const month = koreaTime.getUTCMonth() + 1;
-  const day = koreaTime.getUTCDate();
-  const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
-  const weekday = weekdays[koreaTime.getUTCDay()];
-
-  return `${year}년 ${month}월 ${day}일 (${weekday})`;
-};
+import { formatOrderDate, formatDeliveryDate } from "@/utils/dateUtils";
 
 // 결제 수단 매핑 함수
 const getPaymentMethodText = (method: string) => {
