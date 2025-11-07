@@ -56,6 +56,7 @@ export interface Payment {
 export interface Order {
   id: number;
   userId: number;
+  deliveryInfo: DeliveryInfo;
   orderNumber: number;
   totalPrice: number;
   status: OrderStatus;
@@ -67,6 +68,21 @@ export interface Order {
   addressLine2: string;
   orderItems: OrderItem[];
   payment: Payment;
+  nutritionSummary: {
+    carbsRatio: number;
+    fatRatio: number;
+    proteinRatio: number;
+    totalCalories: number;
+    totalCarbs: number;
+    totalFat: number;
+    totalProtein: number;
+  };
+}
+
+export interface DeliveryInfo {
+  address: string;
+  estimatedDeliveryDate: string;
+  recipientName: string;
 }
 
 export interface OrderApiResponse {

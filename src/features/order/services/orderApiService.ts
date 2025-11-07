@@ -3,6 +3,8 @@ import type {
   OrderListApiResponse,
   OrderListData,
   OrderListQueryParams,
+  OrderApiResponse,
+  Order,
 } from "@/types/order";
 
 export class OrderApiService {
@@ -20,6 +22,15 @@ export class OrderApiService {
         size: params.pageable.size,
       },
     });
+
+    return response.data.data;
+  }
+
+  /** 주문 상세 조회 API */
+  static async getOrderDetail(orderNumber: number): Promise<Order> {
+    const response = await api.get<OrderApiResponse>(
+      `${this.BASE_URL}/${orderNumber}`,
+    );
 
     return response.data.data;
   }

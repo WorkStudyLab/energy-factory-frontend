@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { formatPhoneNumber } from "@/utils/numberUtils";
 
 interface MyPageBasicInfoProps {
   userInfo: {
@@ -36,7 +37,9 @@ export function MyPageBasicInfo({ userInfo }: MyPageBasicInfoProps) {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-base text-neutral-700">연락처</span>
-          <span className="text-base text-neutral-900">{userInfo.phone}</span>
+          <span className="text-base text-neutral-900">
+            {formatPhoneNumber(userInfo.phone)}
+          </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-base text-neutral-700">생년월일</span>
