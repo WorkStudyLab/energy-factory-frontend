@@ -76,42 +76,49 @@ const OrderDetailDialog = ({
 }: OrderDetailDialogProps) => {
   const { order, isLoading, error } = useOrderDetail(orderNumber);
 
-  console.log("ytw", order);
-
   // 영양소 계산 및 차트 데이터 생성
   const nutritionData = useMemo(() => {
-    if (!order?.orderItems) return null;
+    if (!order?.nutritionSummary) return null;
 
-    // 임시로 각 상품의 영양소 정보를 하드코딩 (실제로는 API에서 받아야 함)
-    const totalCarbs = 45;
-    const totalProtein = 35;
-    const totalFat = 16;
-    const totalCalories = 396;
+    const {
+      carbsRatio,
+      fatRatio,
+      proteinRatio,
+      totalCalories,
+      totalCarbs,
+      totalFat,
+      totalProtein,
+    } = order.nutritionSummary;
 
-    const total = totalCarbs + totalProtein + totalFat;
-    const carbsPercent = Math.round((totalCarbs / total) * 100);
-    const proteinPercent = Math.round((totalProtein / total) * 100);
-    const fatPercent = Math.round((totalFat / total) * 100);
+    // 비율 (이미 퍼센트 형태: 52.1, 47.9 등)
+    const carbsPercent = Math.round(carbsRatio);
+    const proteinPercent = Math.round(proteinRatio);
+    const fatPercent = Math.round(fatRatio);
+
+    // 칼로리 계산 (그래프용)
+    const carbsCalories = totalCalories * (carbsRatio / 100);
+    const proteinCalories = totalCalories * (proteinRatio / 100);
+    const fatCalories = totalCalories * (fatRatio / 100);
 
     // recharts용 차트 데이터
     const chartData = [
       {
         name: "탄수화물",
-        value: totalCarbs * 4,
+        value: carbsCalories,
         grams: totalCarbs,
         color: "#008cdd",
         percentage: carbsPercent,
       },
       {
         name: "단백질",
-        value: totalProtein * 4,
+        value: proteinCalories,
         grams: totalProtein,
         color: "#16a34a",
         percentage: proteinPercent,
       },
       {
         name: "지방",
-        value: totalFat * 9,
+        value: fatCalories,
         grams: totalFat,
         color: "#3ab4ea",
         percentage: fatPercent,
@@ -122,7 +129,7 @@ const OrderDetailDialog = ({
       carbs: totalCarbs,
       protein: totalProtein,
       fat: totalFat,
-      calories: totalCalories,
+      calories: Math.round(totalCalories),
       carbsPercent,
       proteinPercent,
       fatPercent,
@@ -211,10 +218,6 @@ const OrderDetailDialog = ({
                     </p>
                     <p className="text-xs text-neutral-600 mb-1">
                       {item.variantName}
-                    </p>
-                    {/* 영양소 정보는 임시로 표시 (실제로는 API에서 받아야 함) */}
-                    <p className="text-xs text-neutral-500">
-                      탄수화물 15g · 단백질 8g · 지방 5g
                     </p>
                   </div>
                   <div className="text-right shrink-0">

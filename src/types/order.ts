@@ -68,6 +68,15 @@ export interface Order {
   addressLine2: string;
   orderItems: OrderItem[];
   payment: Payment;
+  nutritionSummary: {
+    carbsRatio: number;
+    fatRatio: number;
+    proteinRatio: number;
+    totalCalories: number;
+    totalCarbs: number;
+    totalFat: number;
+    totalProtein: number;
+  };
 }
 
 export interface DeliveryInfo {
