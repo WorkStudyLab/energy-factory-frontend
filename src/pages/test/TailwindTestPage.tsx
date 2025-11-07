@@ -1,9 +1,26 @@
 import React from "react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
+import { ArrowLeft } from "lucide-react";
 
 const TailwindTestPage: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-4xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <Button
+            variant="outline"
+            onClick={() => navigate(ROUTES.TEST)}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            테스트 센터로 돌아가기
+          </Button>
+        </div>
+
         <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">
           🎨 Tailwind CSS 테스트
         </h1>

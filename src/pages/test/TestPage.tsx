@@ -23,31 +23,13 @@ const TestPage: React.FC = () => {
       route: ROUTES.SHADCN_TEST,
     },
     {
-      id: "login-api",
-      title: "로그인 API 테스트",
-      description: "사용자 로그인 API 기능 테스트",
-      icon: "🔐",
-      color: "from-green-500 to-green-600",
-      hoverColor: "hover:from-green-600 hover:to-green-700",
-      route: ROUTES.LOGIN_API_TEST,
-    },
-    {
-      id: "signup-api",
-      title: "회원가입 API 테스트",
-      description: "사용자 회원가입 API 기능 테스트",
-      icon: "📝",
-      color: "from-blue-500 to-blue-600",
-      hoverColor: "hover:from-blue-600 hover:to-blue-700",
-      route: ROUTES.SIGNUP_API_TEST,
-    },
-    {
-      id: "products-api",
-      title: "상품 API 테스트",
-      description: "상품 관련 API 기능 테스트",
-      icon: "🛍️",
-      color: "from-pink-500 to-pink-600",
-      hoverColor: "hover:from-pink-600 hover:to-pink-700",
-      route: ROUTES.PRODUCTS_API_TEST,
+      id: "tailwind",
+      title: "Tailwind 테스트",
+      description: "Tailwind CSS 스타일링 테스트",
+      icon: "🎨",
+      color: "from-cyan-500 to-cyan-600",
+      hoverColor: "hover:from-cyan-600 hover:to-cyan-700",
+      route: ROUTES.TAILWIND_TEST,
     },
     {
       id: "dialog",
@@ -81,16 +63,16 @@ const TestPage: React.FC = () => {
               <div
                 className={`
                 bg-gradient-to-br ${category.color} ${category.hoverColor}
-                rounded-2xl p-8 text-white transform transition-all duration-300
+                rounded-2xl p-6 text-white transform transition-all duration-300
                 hover:scale-105 hover:shadow-2xl
-                shadow-lg
+                shadow-lg h-full flex flex-col
               `}
               >
-                <div className="text-center">
+                <div className="text-center flex-1 flex flex-col justify-center">
                   <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
                     {category.icon}
                   </div>
-                  <h3 className="text-xl font-bold mb-3">{category.title}</h3>
+                  <h3 className="text-lg font-bold mb-2">{category.title}</h3>
                   <p className="text-sm opacity-90 leading-relaxed">
                     {category.description}
                   </p>

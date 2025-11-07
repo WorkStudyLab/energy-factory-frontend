@@ -82,47 +82,7 @@ function MobileMenu({ isAuthenticated, userRole }: MobileMenuProps) {
                   handleNavigate(ROUTES.TEST);
                 }}
               >
-                테스트 홈
-              </a>
-              <a
-                href={ROUTES.UI_TEST}
-                className="text-base font-medium hover:underline pl-4"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate(ROUTES.UI_TEST);
-                }}
-              >
-                UI 테스트
-              </a>
-              <a
-                href={ROUTES.SHADCN_TEST}
-                className="text-base font-medium hover:underline pl-4"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate(ROUTES.SHADCN_TEST);
-                }}
-              >
-                Shadcn 테스트
-              </a>
-              <a
-                href={ROUTES.TAILWIND_TEST}
-                className="text-base font-medium hover:underline pl-4"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate(ROUTES.TAILWIND_TEST);
-                }}
-              >
-                Tailwind 테스트
-              </a>
-              <a
-                href={ROUTES.DIALOG_TEST}
-                className="text-base font-medium hover:underline pl-4"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavigate(ROUTES.DIALOG_TEST);
-                }}
-              >
-                Dialog 테스트
+                테스트 센터
               </a>
             </>
           )}
@@ -181,31 +141,7 @@ function DesktopNav({ isAuthenticated, userRole }: DesktopNavProps) {
               onClick={() => navigate(ROUTES.TEST)}
               className="cursor-pointer"
             >
-              테스트 홈
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate(ROUTES.UI_TEST)}
-              className="cursor-pointer"
-            >
-              UI 테스트
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate(ROUTES.SHADCN_TEST)}
-              className="cursor-pointer"
-            >
-              Shadcn 테스트
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate(ROUTES.TAILWIND_TEST)}
-              className="cursor-pointer"
-            >
-              Tailwind 테스트
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigate(ROUTES.DIALOG_TEST)}
-              className="cursor-pointer"
-            >
-              Dialog 테스트
+              테스트 센터
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

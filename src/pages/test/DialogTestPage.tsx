@@ -10,12 +10,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useDialogHelpers } from "@/utils/dialogHelpers";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
+import { ArrowLeft } from "lucide-react";
 
 /**
  * 다이얼로그 테스트 페이지
  */
 export const DialogTestPage: React.FC = () => {
   const { alert, confirm, custom } = useDialogHelpers();
+  const navigate = useNavigate();
 
   const [testMessage, setTestMessage] = useState("테스트 메시지입니다.");
   const [itemName, setItemName] = useState("사용자 데이터");
@@ -215,6 +219,17 @@ export const DialogTestPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between mb-6">
+        <Button
+          variant="outline"
+          onClick={() => navigate(ROUTES.TEST)}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          테스트 센터로 돌아가기
+        </Button>
+      </div>
+
       <div className="text-center">
         <h1 className="text-3xl font-bold mb-2">다이얼로그 테스트</h1>
         <p className="text-gray-600">
