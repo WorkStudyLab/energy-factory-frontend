@@ -22,6 +22,7 @@ import NutritionPage from "./pages/nutrition/NutritionPage";
 import DietCoachPage from "./pages/diet-coach/DietCoachPage";
 import OrderHistoryPage from "./pages/order/OrderHistoryPage";
 import OrderCompletePage from "./pages/order/OrderCompletePage";
+import OrderSuccessPage from "./pages/order/OrderSuccessPage";
 import OrderFailPage from "./pages/order/OrderFailPage";
 import MyPage from "./pages/mypage/MyPage";
 import TestPage from "./pages/test/TestPage";
@@ -173,6 +174,15 @@ function App() {
                   <AppRoute
                     path={ROUTES.ORDER_COMPLETE}
                     element={<OrderCompletePage />}
+                  />
+                }
+              />
+              <Route
+                path={ROUTES.ORDER_SUCCESS}
+                element={
+                  <AppRoute
+                    path={ROUTES.ORDER_SUCCESS}
+                    element={<OrderSuccessPage />}
                   />
                 }
               />

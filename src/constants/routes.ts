@@ -31,6 +31,8 @@ export const ROUTES = {
   ORDER_HISTORY: "/order-history",
   // 주문 완료
   ORDER_COMPLETE: "/order-complete",
+  // 주문 성공
+  ORDER_SUCCESS: "/order-success",
   // 결제 실패
   ORDER_FAIL: "/order-fail",
 
