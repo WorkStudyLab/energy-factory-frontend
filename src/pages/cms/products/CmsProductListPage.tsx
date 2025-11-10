@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdminProducts } from "@/features/admin-products/hooks/useAdminProducts";
 import { useDeleteProduct } from "@/features/admin-products/hooks/useDeleteProduct";
+import { useAdminCategories } from "@/features/admin-products/hooks/useAdminCategories";
 import { ProductTable } from "@/features/admin-products/ui/ProductTable";
 import { ProductPagination } from "@/features/admin-products/ui/ProductPagination";
 import { Button } from "@/components/ui/button";
@@ -15,10 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Search } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
-import {
-  categoryOptions,
-  productStatusOptions,
-} from "@/features/admin-products/constants/dummyData";
+import { productStatusOptions } from "@/features/admin-products/constants/dummyData";
 
 export default function CmsProductListPage() {
   const navigate = useNavigate();
@@ -36,6 +34,7 @@ export default function CmsProductListPage() {
     keyword: keyword || undefined,
   });
 
+  const { data: categories } = useAdminCategories();
   const deleteProductMutation = useDeleteProduct();
 
   const handleSearch = () => {
@@ -103,7 +102,7 @@ export default function CmsProductListPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">전체 카테고리</SelectItem>
-                  {categoryOptions.map((cat) => (
+                  {categories?.map((cat) => (
                     <SelectItem key={cat} value={cat}>
                       {cat}
                     </SelectItem>

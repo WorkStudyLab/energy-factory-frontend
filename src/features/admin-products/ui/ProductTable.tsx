@@ -71,6 +71,15 @@ export function ProductTable({ products, onDelete }: ProductTableProps) {
     return new Intl.NumberFormat("ko-KR").format(price);
   };
 
+  // variants의 총 재고 계산
+  const getTotalStock = (product: Product) => {
+    if (!product.variants || product.variants.length === 0) return 0;
+    return product.variants.reduce(
+      (sum, variant) => sum + variant.availableStock,
+      0,
+    );
+  };
+
   if (products.length === 0) {
     return (
       <div className="text-center py-12 text-gray-500">
@@ -128,17 +137,29 @@ export function ProductTable({ products, onDelete }: ProductTableProps) {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span
-                    className={
-                      product.stock === 0
-                        ? "text-red-600"
-                        : product.stock < 20
-                          ? "text-yellow-600"
-                          : ""
-                    }
-                  >
-                    {product.stock}개
-                  </span>
+                  {(() => {
+                    const totalStock = getTotalStock(product);
+                    return (
+                      <div className="flex flex-col">
+                        <span
+                          className={
+                            totalStock === 0
+                              ? "text-red-600 font-medium"
+                              : totalStock < 20
+                                ? "text-yellow-600 font-medium"
+                                : "font-medium"
+                          }
+                        >
+                          {totalStock}개
+                        </span>
+                        {product.variants && product.variants.length > 1 && (
+                          <span className="text-xs text-gray-500">
+                            {product.variants.length}개 옵션
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </TableCell>
                 <TableCell>{getStatusBadge(product.status)}</TableCell>
                 <TableCell className="text-right">

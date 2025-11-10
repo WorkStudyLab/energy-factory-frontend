@@ -16,9 +16,16 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
         name: v.name,
         price: v.price,
         stock: v.stock,
+        availableStock: v.stock, // 서버에서 availableStock이 없으면 stock을 사용
       }))
     : [
-        { id: serverData.id, name: `${serverData.weight}${serverData.weightUnit}`, price: serverData.price, stock: serverData.stock || 0 },
+        {
+          id: serverData.id,
+          name: `${serverData.weight}${serverData.weightUnit}`,
+          price: serverData.price,
+          stock: 0,
+          availableStock: 0
+        },
       ];
 
   // 배송 정보 처리 (서버 데이터 우선)
@@ -65,7 +72,6 @@ const transformServerToDetail = (serverData: ProductServerDetail): ProductDetail
     images,
     weight: serverData.weight,
     weightUnit: serverData.weightUnit,
-    stock: serverData.stock || 0,
     status: serverData.status,
     averageRating: serverData.averageRating,
     rating: serverData.averageRating,  // rating은 averageRating과 동일

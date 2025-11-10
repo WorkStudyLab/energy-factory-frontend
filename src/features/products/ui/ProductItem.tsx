@@ -59,7 +59,7 @@ export function ProductItem({ product }: ProductItemProps) {
         )}
 
         {/* 품절일 때만 이미지 위에 표시 */}
-        {product.stock <= 0 && (
+        {product.status === "OUT_OF_STOCK" && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
             <div className="bg-red-500 text-white text-sm font-bold px-4 py-2 rounded-full">
               품절

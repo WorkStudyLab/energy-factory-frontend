@@ -11,10 +11,8 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  categoryOptions,
-  productStatusOptions,
-} from "../constants/dummyData";
+import { productStatusOptions } from "../constants/dummyData";
+import { useAdminCategories } from "../hooks/useAdminCategories";
 
 interface ProductFormProps {
   initialData?: Partial<Product>;
@@ -31,6 +29,8 @@ export function ProductForm({
   isLoading = false,
   mode,
 }: ProductFormProps) {
+  const { data: categories } = useAdminCategories();
+
   const [formData, setFormData] = useState<Partial<Product>>({
     name: initialData?.name || "",
     brand: initialData?.brand || "Energy Factory",
@@ -40,7 +40,6 @@ export function ProductForm({
     discount: initialData?.discount || undefined,
     weight: initialData?.weight || 0,
     weightUnit: initialData?.weightUnit || "g",
-    stock: initialData?.stock || 0,
     status: initialData?.status || "AVAILABLE",
     imageUrl:
       initialData?.imageUrl || "https://via.placeholder.com/300?text=Product",
@@ -119,7 +118,7 @@ export function ProductForm({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {categoryOptions.map((cat) => (
+                  {categories?.map((cat) => (
                     <SelectItem key={cat} value={cat}>
                       {cat}
                     </SelectItem>
@@ -152,7 +151,7 @@ export function ProductForm({
 
       <Card>
         <CardHeader>
-          <CardTitle>가격 및 재고</CardTitle>
+          <CardTitle>가격 및 상품 정보</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -183,7 +182,7 @@ export function ProductForm({
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="weight">중량</Label>
               <Input
@@ -211,16 +210,10 @@ export function ProductForm({
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label htmlFor="stock">재고</Label>
-              <Input
-                id="stock"
-                type="number"
-                value={formData.stock}
-                onChange={(e) => handleNumberChange("stock", e.target.value)}
-                placeholder="0"
-              />
-            </div>
+          </div>
+
+          <div className="p-3 bg-blue-50 border border-blue-200 rounded text-sm text-blue-800">
+            ℹ️ <strong>재고 관리:</strong> 상품 옵션별 재고는 상품 생성 후 별도로 관리됩니다.
           </div>
 
           <div>
