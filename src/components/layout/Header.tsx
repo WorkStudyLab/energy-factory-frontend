@@ -75,6 +75,16 @@ function MobileMenu({ isAuthenticated, userRole }: MobileMenuProps) {
             <>
               <div className="text-lg font-bold text-green-600 mt-4">CMS</div>
               <a
+                href={ROUTES.CMS_PRODUCTS}
+                className="text-base font-medium hover:underline pl-4"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigate(ROUTES.CMS_PRODUCTS);
+                }}
+              >
+                상품 관리
+              </a>
+              <a
                 href={ROUTES.TEST}
                 className="text-base font-medium hover:underline pl-4"
                 onClick={(e) => {
@@ -137,6 +147,12 @@ function DesktopNav({ isAuthenticated, userRole }: DesktopNavProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
+            <DropdownMenuItem
+              onClick={() => navigate(ROUTES.CMS_PRODUCTS)}
+              className="cursor-pointer"
+            >
+              상품 관리
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => navigate(ROUTES.TEST)}
               className="cursor-pointer"

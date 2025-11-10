@@ -15,6 +15,16 @@ export interface Nutrient {
   unit: string;
 }
 
+// 상품 변형 타입
+export interface ProductVariant {
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+  reservedStock?: number;  // 주문 중 재고
+  availableStock: number;  // 실제 판매 가능 재고
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -24,13 +34,13 @@ export interface Product {
   brand: string;
   weight: number;
   weightUnit: string;
-  stock: number;
   status: string;
   averageRating: number;
   reviewCount: number;
   tags: string[];  // 목록에서는 string 배열
   originalPrice?: number;  // 할인 전 원가
   discount?: number;  // 할인율 (%)
+  variants?: ProductVariant[];  // 상품 변형 (옵션별 재고)
 }
 
 // 실제 서버 응답 구조에 맞춘 상품 상세
@@ -155,12 +165,7 @@ export interface VitaminMineral {
   daily: number;
 }
 
-export interface ProductVariant {
-  id: number;
-  name: string;
-  price: number;
-  stock: number;
-}
+// ProductVariant는 파일 상단에 이미 정의되어 있음 (중복 제거)
 
 export interface ShippingInfo {
   fee: number;

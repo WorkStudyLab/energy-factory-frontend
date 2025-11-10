@@ -30,6 +30,9 @@ import UiTestPage from "./pages/test/UiTestPage";
 import ShadcnTestPage from "./pages/test/ShadcnTestPage";
 import TailwindTestPage from "./pages/test/TailwindTestPage";
 import { DialogTestPage } from "./pages/test/DialogTestPage";
+import CmsProductListPage from "./pages/cms/products/CmsProductListPage";
+import CmsProductCreatePage from "./pages/cms/products/CmsProductCreatePage";
+import CmsProductEditPage from "./pages/cms/products/CmsProductEditPage";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import ScrollToTop from "./components/layout/ScrollToTop";
@@ -198,6 +201,35 @@ function App() {
                   <AppRoute path={ROUTES.MY_PAGE} element={<MyPage />} />
                 }
               />
+              {/* CMS 라우트 */}
+              <Route
+                path={ROUTES.CMS_PRODUCTS}
+                element={
+                  <AppRoute
+                    path={ROUTES.CMS_PRODUCTS}
+                    element={<CmsProductListPage />}
+                  />
+                }
+              />
+              <Route
+                path={ROUTES.CMS_PRODUCTS_CREATE}
+                element={
+                  <AppRoute
+                    path={ROUTES.CMS_PRODUCTS_CREATE}
+                    element={<CmsProductCreatePage />}
+                  />
+                }
+              />
+              <Route
+                path={ROUTES.CMS_PRODUCTS_EDIT}
+                element={
+                  <AppRoute
+                    path={ROUTES.CMS_PRODUCTS_EDIT}
+                    element={<CmsProductEditPage />}
+                  />
+                }
+              />
+              {/* 테스트 라우트 */}
               <Route
                 path={ROUTES.TEST}
                 element={<AppRoute path={ROUTES.TEST} element={<TestPage />} />}

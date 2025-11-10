@@ -73,6 +73,20 @@ export const ROUTE_AUTH: Record<string, RouteAuth> = {
     redirectUnauth: ROUTES.LOGIN,
   },
 
+  // CMS 페이지 - ADMIN만 접근 가능
+  [ROUTES.CMS_PRODUCTS]: {
+    allowedRoles: ["admin"],
+    redirectUnauth: ROUTES.LOGIN,
+  },
+  [ROUTES.CMS_PRODUCTS_CREATE]: {
+    allowedRoles: ["admin"],
+    redirectUnauth: ROUTES.LOGIN,
+  },
+  [ROUTES.CMS_PRODUCTS_EDIT]: {
+    allowedRoles: ["admin"],
+    redirectUnauth: ROUTES.LOGIN,
+  },
+
   // 테스트 페이지 - ADMIN만 접근 가능
   [ROUTES.TEST]: {
     allowedRoles: ["admin"],
