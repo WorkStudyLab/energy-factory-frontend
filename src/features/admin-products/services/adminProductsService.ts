@@ -35,9 +35,18 @@ export class AdminProductsService {
       const serverData = response.data.data;
 
       // Tag[] 객체 배열을 string[] 배열로 변환
+      // null 값을 undefined로 변환하여 Product 타입과 호환
+      // variants에 availableStock 필드 추가
       return {
         ...serverData,
         tags: serverData.tags?.map(t => t.name) || [],
+        originalPrice: serverData.originalPrice ?? undefined,
+        discount: serverData.discount ?? undefined,
+        variants: serverData.variants?.map(v => ({
+          ...v,
+          reservedStock: 0,
+          availableStock: v.stock,
+        })),
       };
     } catch (error) {
       return null;
