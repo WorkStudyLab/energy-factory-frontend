@@ -1,4 +1,6 @@
-import { Bell, Menu, ShoppingCart } from "lucide-react";
+import { Bell, Menu, ShoppingCart, TreePine, Snowflake } from "lucide-react";
+import { useThemeStore } from "@/stores/useThemeStore";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -179,6 +181,7 @@ function HeaderActions({
 }: HeaderActionsProps) {
   const navigate = useNavigate();
   const unreadCount = useNotificationStore((state) => state.unreadCount);
+  const { theme, toggleChristmas } = useThemeStore();
 
   // 다른 탭에서 알림 변경 시 localStorage에서 다시 로드
   useEffect(() => {
@@ -203,6 +206,26 @@ function HeaderActions({
 
   return (
     <div className="flex items-center gap-4">
+      {/* Christmas Theme Toggle */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleChristmas}
+        className={cn(
+          "relative transition-all duration-300",
+          theme === "christmas"
+            ? "text-[hsl(42,85%,65%)] hover:text-[hsl(42,85%,75%)] hover:bg-[hsl(220,20%,18%)]"
+            : "hover:text-[hsl(350,65%,45%)]"
+        )}
+        title={theme === "christmas" ? "기본 테마로 전환" : "크리스마스 테마로 전환"}
+      >
+        {theme === "christmas" ? (
+          <Snowflake className="h-5 w-5 animate-spin" style={{ animationDuration: "3s" }} />
+        ) : (
+          <TreePine className="h-5 w-5" />
+        )}
+      </Button>
+
       {isAuthenticated && (
         <a
           className="relative hover:cursor-pointer"
@@ -275,9 +298,18 @@ export default function Header() {
   const navigate = useNavigate();
   const { cartCount } = useCartCount();
   const { isAuthenticated, user } = useAuthStore();
+  const theme = useThemeStore((state) => state.theme);
+  const isChristmas = theme === "christmas";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white">
+    <header
+      className={cn(
+        "sticky top-0 z-50 w-full border-b transition-all duration-300",
+        isChristmas
+          ? "bg-gradient-to-r from-[hsl(220,25%,8%)] via-[hsl(220,22%,12%)] to-[hsl(220,20%,10%)] text-[hsl(40,30%,92%)] border-[hsl(220,20%,18%)] shadow-lg shadow-black/30"
+          : "bg-[hsl(var(--header-bg))] text-[hsl(var(--header-foreground))]"
+      )}
+    >
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-4">
           <MobileMenu isAuthenticated={isAuthenticated} userRole={user?.role} />
@@ -288,7 +320,14 @@ export default function Header() {
               navigate(ROUTES.PRODUCTS);
             }}
           >
-            <span className="font-bold text-xl text-green-600">
+            <span
+              className={cn(
+                "font-bold text-xl transition-colors duration-300",
+                isChristmas
+                  ? "bg-gradient-to-r from-[hsl(0,70%,55%)] via-[hsl(42,85%,60%)] to-[hsl(0,70%,55%)] bg-clip-text text-transparent drop-shadow-[0_0_10px_hsl(42,85%,50%/30%)]"
+                  : "text-[hsl(var(--header-brand))]"
+              )}
+            >
               Energy Factory
             </span>
           </a>

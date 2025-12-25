@@ -5,6 +5,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
+import Snowfall from "react-snowfall";
 import { queryClient } from "./lib/tanstack/queryClient";
 import { ROUTES } from "./constants/routes";
 import LandingPage from "./pages/landing/LandingPage";
@@ -40,16 +41,37 @@ import { Toaster } from "./components/ui/toaster";
 import { AppRoute } from "./components/route/AppRoute";
 import { useAuthInit } from "./hooks/useAuthInit";
 import { NotificationProvider } from "./components/providers/NotificationProvider";
+import { useThemeStore } from "./stores/useThemeStore";
 
 function App() {
   // 앱 초기화 시 로그인 상태 확인
   useAuthInit();
+
+  // 테마 상태 구독 (hydration 트리거)
+  const theme = useThemeStore((state) => state.theme);
 
   return (
     <QueryClientProvider client={queryClient}>
       <NotificationProvider>
         <Router>
           <ScrollToTop />
+          {/* Christmas Snowfall Effect */}
+          {theme === "christmas" && (
+            <Snowfall
+              snowflakeCount={180}
+              speed={[0.5, 2]}
+              wind={[-0.5, 1.5]}
+              radius={[1, 4]}
+              color="rgba(255, 255, 255, 0.95)"
+              style={{
+                position: "fixed",
+                width: "100vw",
+                height: "100vh",
+                zIndex: 9999,
+                pointerEvents: "none",
+              }}
+            />
+          )}
         <div className="min-h-screen flex flex-col">
           <Header />
 

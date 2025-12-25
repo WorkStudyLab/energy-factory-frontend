@@ -75,6 +75,9 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --header-bg: 0 0% 100%;
+    --header-foreground: 0 0% 3.9%;
+    --header-brand: 142 76% 36%;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -101,6 +104,47 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --header-bg: 0 0% 7%;
+    --header-foreground: 0 0% 98%;
+    --header-brand: 142 76% 46%;
+  }
+  .christmas {
+    /* 배경: 어두운 네이비/차콜 */
+    --background: 220 25% 11%;
+    --foreground: 40 20% 90%;
+    /* 카드: 약간 밝은 다크 */
+    --card: 220 20% 15%;
+    --card-foreground: 40 15% 88%;
+    --popover: 220 18% 16%;
+    --popover-foreground: 40 15% 88%;
+    /* Primary: 크리스마스 레드 */
+    --primary: 0 65% 52%;
+    --primary-foreground: 0 0% 100%;
+    /* Secondary: 어두운 그린/틸 */
+    --secondary: 220 18% 18%;
+    --secondary-foreground: 40 15% 85%;
+    /* Muted: 카드보다 약간 어두운 */
+    --muted: 220 18% 18%;
+    --muted-foreground: 220 10% 55%;
+    /* Accent: 크리스마스 그린 */
+    --accent: 155 50% 35%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+    /* Border: 부드러운 보더 */
+    --border: 220 15% 22%;
+    --input: 220 18% 18%;
+    --ring: 0 65% 52%;
+    /* Chart 색상: 크리스마스 팔레트 */
+    --chart-1: 0 65% 52%;
+    --chart-2: 155 50% 40%;
+    --chart-3: 42 85% 55%;
+    --chart-4: 350 40% 50%;
+    --chart-5: 155 35% 40%;
+    /* 헤더: 다크 그라데이션용 */
+    --header-bg: 220 25% 8%;
+    --header-foreground: 40 20% 92%;
+    --header-brand: 42 85% 65%;
   }
 }
 
@@ -111,4 +155,251 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Christmas theme utility overrides */
+.christmas .bg-white {
+  background-color: hsl(var(--card));
+}
+
+.christmas .bg-gray-50,
+.christmas .bg-gray-100 {
+  background-color: hsl(var(--muted));
+}
+
+.christmas .text-gray-500,
+.christmas .text-gray-600 {
+  color: hsl(var(--muted-foreground));
+}
+
+.christmas .text-gray-700,
+.christmas .text-gray-800,
+.christmas .text-gray-900 {
+  color: hsl(var(--foreground));
+}
+
+.christmas .border-gray-200,
+.christmas .border-gray-300 {
+  border-color: hsl(var(--border));
+}
+
+/* Christmas primary color overrides (green -> red/gold) */
+.christmas .text-green-600,
+.christmas .text-green-700 {
+  color: hsl(0, 65%, 55%);
+}
+
+.christmas .text-green-800 {
+  color: hsl(0, 60%, 45%);
+}
+
+.christmas .bg-green-50,
+.christmas .bg-green-100 {
+  background-color: hsl(0, 50%, 20%);
+}
+
+.christmas .bg-green-600 {
+  background-color: hsl(0, 65%, 50%);
+}
+
+.christmas .border-green-600 {
+  border-color: hsl(0, 65%, 50%);
+}
+
+.christmas .hover\:text-green-600:hover {
+  color: hsl(42, 85%, 60%);
+}
+
+.christmas .hover\:bg-gray-100:hover {
+  background-color: hsl(220, 18%, 20%);
+}
+
+/* Christmas accent colors */
+.christmas .ring-green-600 {
+  --tw-ring-color: hsl(0, 65%, 50%);
+}
+
+/* Star ratings */
+.christmas .fill-gray-200 {
+  fill: hsl(220, 15%, 25%);
+}
+
+.christmas .text-gray-200 {
+  color: hsl(220, 15%, 25%);
+}
+
+.christmas .text-gray-400 {
+  color: hsl(220, 12%, 45%);
+}
+
+/* Spinners/loaders */
+.christmas .border-green-600 {
+  border-color: hsl(0, 65%, 50%);
+}
+
+/* Shadows and overlays */
+.christmas .shadow-md,
+.christmas .shadow-lg {
+  --tw-shadow-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Form focus states */
+.christmas .focus\:ring-green-500:focus {
+  --tw-ring-color: hsl(0, 65%, 50%);
+}
+
+/* Scale effects */
+.christmas .scale-105 {
+  transform: scale(1.05);
+}
+
+/* Gradient backgrounds for cards */
+.christmas .from-green-50,
+.christmas .to-blue-50 {
+  --tw-gradient-from: hsl(220, 20%, 18%);
+  --tw-gradient-to: hsl(220, 18%, 16%);
+}
+
+.christmas .bg-gradient-to-r.from-green-50 {
+  background: linear-gradient(to right, hsl(155, 30%, 18%), hsl(220, 25%, 18%));
+}
+
+.christmas .border-green-200 {
+  border-color: hsl(155, 40%, 25%);
+}
+
+/* Text colors for nutrition card */
+.christmas .text-purple-600 {
+  color: hsl(280, 60%, 65%);
+}
+
+.christmas .text-blue-600 {
+  color: hsl(210, 70%, 60%);
+}
+
+.christmas .text-amber-600 {
+  color: hsl(42, 85%, 55%);
+}
+
+/* Ring colors */
+.christmas .ring-green-600 {
+  --tw-ring-color: hsl(0, 65%, 50%);
+}
+
+.christmas .ring-2.ring-green-600 {
+  box-shadow: 0 0 0 2px hsl(0, 65%, 50%);
+}
+
+/* Badge colors for BEST tag */
+.christmas .bg-green-100.text-green-700 {
+  background-color: hsl(155, 40%, 22%);
+  color: hsl(155, 50%, 55%);
+}
+
+/* Star gray colors */
+.christmas .text-gray-300 {
+  color: hsl(220, 12%, 35%);
+}
+
+/* Ensure proper text colors in cards and sections */
+.christmas .text-gray-600 {
+  color: hsl(220, 10%, 55%);
+}
+
+/* Preserve some colors that should stay */
+.christmas .text-red-500 {
+  color: hsl(0, 70%, 55%);
+}
+
+.christmas .bg-red-500 {
+  background-color: hsl(0, 70%, 50%);
+}
+
+.christmas .fill-red-500 {
+  fill: hsl(0, 70%, 55%);
+}
+
+/* Preserve yellow for stars */
+.christmas .fill-yellow-400 {
+  fill: hsl(42, 95%, 55%);
+}
+
+.christmas .text-yellow-400 {
+  color: hsl(42, 95%, 55%);
+}
+
+/* Neutral color overrides */
+.christmas .text-neutral-900 {
+  color: hsl(40, 15%, 90%);
+}
+
+.christmas .text-neutral-800 {
+  color: hsl(40, 12%, 85%);
+}
+
+.christmas .text-neutral-700 {
+  color: hsl(220, 10%, 70%);
+}
+
+.christmas .text-neutral-600 {
+  color: hsl(220, 10%, 60%);
+}
+
+.christmas .border-neutral-200,
+.christmas .border-neutral-300 {
+  border-color: hsl(220, 15%, 22%);
+}
+
+.christmas .hover\:bg-neutral-50:hover,
+.christmas .hover\:bg-neutral-100:hover {
+  background-color: hsl(220, 18%, 20%);
+}
+
+.christmas .hover\:text-neutral-900:hover {
+  color: hsl(40, 15%, 90%);
+}
+
+/* Checkbox green to red conversion */
+.christmas .data-\[state\=checked\]\:bg-green-600[data-state="checked"] {
+  background-color: hsl(0, 65%, 50%);
+}
+
+.christmas .data-\[state\=checked\]\:border-green-600[data-state="checked"] {
+  border-color: hsl(0, 65%, 50%);
+}
+
+/* Green buttons to red */
+.christmas .bg-green-600 {
+  background-color: hsl(0, 65%, 50%);
+}
+
+.christmas .hover\:bg-green-700:hover {
+  background-color: hsl(0, 65%, 42%);
+}
+
+/* Christmas body decorations */
+.christmas body {
+  background: linear-gradient(
+    180deg,
+    hsl(220, 30%, 8%) 0%,
+    hsl(220, 25%, 11%) 30%,
+    hsl(220, 22%, 10%) 70%,
+    hsl(220, 28%, 7%) 100%
+  );
+}
+
+.christmas body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(ellipse at 5% 15%, hsl(0, 65%, 45%, 0.12) 0%, transparent 40%),
+    radial-gradient(ellipse at 95% 85%, hsl(155, 55%, 35%, 0.10) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 20%, hsl(42, 80%, 50%, 0.08) 0%, transparent 35%),
+    radial-gradient(ellipse at 20% 80%, hsl(0, 60%, 40%, 0.08) 0%, transparent 35%);
+  pointer-events: none;
+  z-index: 0;
 }
